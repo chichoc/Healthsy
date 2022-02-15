@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from '@emotion/styled';
+import { Nav, Ul } from '../styles/main_top';
 
 const MainTop = ({ title, isLogin }) => {
   return (
@@ -18,19 +18,5 @@ const MainTop = ({ title, isLogin }) => {
     </Nav>
   );
 };
-
-const Nav = styled.nav`
-  background-color: #e8f3f1;
-  height: 30px;
-  align-items: ${(props) => props.align};
-  padding: 5px 120px;
-`;
-
-const Ul = styled.ul`
-  li {
-    padding: 0 10px;
-    /* background-color: red; */
-  }
-`;
 
 export default MainTop;

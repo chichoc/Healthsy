@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from '@emotion/styled';
+import { Search } from '../styles/login_other';
 
 const LoginSearch = () => {
   return (
@@ -23,21 +23,5 @@ const LoginSearch = () => {
     </Search>
   );
 };
-
-const Search = styled.div`
-  text-align: center;
-  margin: 10px 0;
-  ul {
-    justify-content: center;
-  }
-  li {
-    font-size: 13px;
-    /* background-color: red; */
-  }
-  .join:hover {
-    /* background-color: red; */
-    cursor: pointer;
-  }
-`;
 
 export default LoginSearch;

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { Content } from '../styles/main_content';
 
 const MainContent = ({ notice, isLogin }) => {
   return (
@@ -17,17 +17,5 @@ const MainContent = ({ notice, isLogin }) => {
     </Content>
   );
 };
-
-const Content = styled.main`
-  text-align: center;
-  flex: 1 0 auto;
-  img {
-    height: 300px;
-  }
-  button {
-    margin-top: 10px;
-    padding: 10px;
-  }
-`;
 
 export default MainContent;

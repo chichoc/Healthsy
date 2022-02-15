@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LoginForm from '../components/LoginForm';
-import LoginSearch from '../components/LoginSearch';
+import LoginOther from '../components/LoginOther';
 import LoginSocial from '../components/LoginSocial';
 import MainFooter from '../components/MainFooter';
 import MainHeader from '../components/MainHeader';
@@ -16,7 +16,7 @@ const Login = () => {
     <>
       <MainHeader />
       <LoginForm inputLogin={inputLogin} onChangeInputLogin={onChangeInputLogin} />
-      <LoginSearch />
+      <LoginOther />
       <LoginSocial />
       <MainFooter />
     </>
