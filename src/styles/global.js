@@ -28,10 +28,15 @@ const global = () => {
             background-color: transparent;
           }
 
+          input:focus {
+            outline: none;
+          }
+
           .horizontal_flex {
             display: flex;
             justify-content: space-between;
             /* align-items: props.align; */
+            flex-wrap: wrap;
           }
 
           .vertical_flex {
@@ -39,6 +44,7 @@ const global = () => {
             flex-direction: column;
             justify-content: space-between;
             /* align-items: props.align; */
+            flex-wrap: wrap;
           }
           @import url('https://fonts.googleapis.com/css2?family=Rokkitt:wght@600&display=swap');
 

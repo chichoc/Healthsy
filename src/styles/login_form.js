@@ -18,21 +18,57 @@ const Form = styled.form`
     border-radius: 20px;
     padding: 10px 20px;
   }
-  input {
+`;
+
+const InputContainer = styled.label`
+  position: relative;
+
+  span {
+    position: absolute;
+    top: 0;
+    padding: 10px 20px;
+    font-size: 15px;
+    transition: top 0.5s ease-in-out, font-size 0.2s ease-in-out;
+    z-index: 1000;
+    display: none;
+  }
+
+  span.focus {
+    top: 5px;
+    left: 20px;
+    padding: 0 3px;
+    display: inline;
+    font-size: 13px;
+    background-color: white;
+  }
+
+  input[type='text'] {
     border: 1px solid #dddd;
     margin-top: 10px;
     font-size: 15px;
+    box-sizing: border-box;
+    width: 100%;
   }
-  button {
-    background-color: #00c9b7;
-    color: white;
-    margin-top: 10px;
-    font-size: 15px;
+
+  input:focus {
+    border: 2px solid #555;
   }
-  label {
-    text-align: left;
-    font-size: 13px;
+
+  input:focus::placeholder {
+    color: transparent;
   }
 `;
 
-export { Div, Form };
+const InputCheck = styled.label`
+  text-align: left;
+  font-size: 13px;
+`;
+
+const Button = styled.button`
+  background-color: #00c9b7;
+  color: white;
+  margin-top: 10px;
+  font-size: 15px;
+`;
+
+export { Div, Form, Button, InputContainer, InputCheck };

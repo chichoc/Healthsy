@@ -7,15 +7,30 @@ import MainHeader from '../components/MainHeader';
 
 const Login = () => {
   const [inputLogin, setInputLogin] = useState({});
+  const [inputFocus, setInputFocus] = useState({});
 
   const onChangeInputLogin = (e) => {
     setInputLogin({ ...inputLogin, [e.target.name]: e.target.value });
   };
 
+  const onFocusInput = (e) => {
+    setInputFocus({ ...inputFocus, [e.target.name]: true });
+  };
+
+  const onBlurInput = (e) => {
+    setInputFocus({ ...inputFocus, [e.target.name]: false });
+  };
+
   return (
     <>
       <MainHeader />
-      <LoginForm inputLogin={inputLogin} onChangeInputLogin={onChangeInputLogin} />
+      <LoginForm
+        inputLogin={inputLogin}
+        inputFocus={inputFocus}
+        onChangeInputLogin={onChangeInputLogin}
+        onFocusInput={onFocusInput}
+        onBlurInput={onBlurInput}
+      />
       <LoginOther />
       <LoginSocial />
       <MainFooter />
