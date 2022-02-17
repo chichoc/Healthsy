@@ -27,7 +27,9 @@ const MainHeader = () => {
           <li>
             <Link to='/help'>고객센터</Link>
           </li>
-          <li>검색</li>
+          <li>
+            <img className='search' src='./images/search.png' alt='검색'></img>
+          </li>
         </Ul>
       </Nav>
     </Header>

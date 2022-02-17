@@ -16,6 +16,12 @@ const Ul = styled.ul`
     padding: 0 10px;
     /* background-color: blue; */
   }
+  img.search {
+    width: 20px;
+    /* background-color: red; */
+    vertical-align: text-bottom;
+    margin-bottom: -2px;
+  }
 `;
 
 export { Header, Nav, Ul };
