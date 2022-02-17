@@ -10,13 +10,13 @@ const Join = styled.section`
 
 const Title = styled.h1`
   font-size: 30px;
-  margin: 10px 0;
+  margin: 20px 0;
   font-weight: bold;
 `;
 
 const Form = styled.form`
   label {
-    margin: 10px 0;
+    margin: 15px 0;
     /* background-color: red; */
   }
   .oval {
@@ -29,24 +29,37 @@ const Form = styled.form`
     /* background-color: red; */
     margin-top: 10px;
     font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  input:focus {
+    border: 1px solid #555;
   }
   .pw_check {
     /* background-color: red; */
     margin: 10px 0;
   }
   button {
-    background-color: #00c9b7;
-    color: white;
     margin-top: 10px;
     font-size: 15px;
+    font-weight: bold;
+    border: 1px solid #00c9b7;
+    color: #00c9b7;
   }
 
   .join_btn {
+    color: white;
     padding: 15px 20px;
     font-size: 20px;
     font-weight: bold;
+    background-color: #00c9b7;
   }
 `;
-const Email = styled.div``;
+const PhoneNumber = styled.div`
+  input {
+    width: auto;
+    display: inline-block;
+  }
+`;
 
-export { Join, Title, Form, Email };
+export { Join, Title, Form, PhoneNumber };

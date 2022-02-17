@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 const Terms = styled.section`
   text-align: left;
   border: 1px solid #dddd;
-  margin: 10px 0;
+  margin: 30px 0;
   border-radius: 20px;
 
   label {
