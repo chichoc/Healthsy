@@ -7,7 +7,7 @@ const LoginSearch = () => {
     <Search>
       <ul className='horizontal_flex'>
         <li>
-          <button>아이디 찾기</button>
+          <button>이메일 찾기</button>
         </li>
         <li>ㅣ</li>
         <li>
