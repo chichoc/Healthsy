@@ -32,6 +32,10 @@ const global = () => {
             outline: none;
           }
 
+          label:hover {
+            cursor: pointer;
+          }
+
           .horizontal_flex {
             display: flex;
             justify-content: space-between;
