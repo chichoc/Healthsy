@@ -8,9 +8,19 @@ const Nav = styled.nav`
 `;
 
 const Ul = styled.ul`
+  align-items: ${(props) => props.align};
   li {
     padding: 0 10px;
     /* background-color: red; */
+  }
+  img {
+    vertical-align: text-bottom;
+  }
+  img.wish {
+    width: 27px;
+  }
+  img.cart {
+    width: 20px;
   }
 `;
 
