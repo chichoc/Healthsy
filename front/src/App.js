@@ -9,16 +9,22 @@ import Sale from './pages/Sale';
 import MyPage from './pages/MyPage';
 
 const App = () => {
+  const pageIndex = {
+    main: { path: '/', component: () => <Main /> },
+    login: { path: '/login', component: () => <Login /> },
+    join: { path: '/join', component: () => <Join /> },
+    sale: { path: '/sale', component: () => <Sale /> },
+    help: { path: '/help', component: () => <Help /> },
+    myPage: { path: '/mypage', component: () => <MyPage /> },
+    notFound: { path: '*', component: () => <NotFound /> },
+  };
+
   return (
     <>
       <Routes>
-        <Route path='/' element={<Main />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/join' element={<Join />} />
-        <Route path='/sale' element={<Sale />} />
-        <Route path='/help' element={<Help />} />
-        <Route path='/mypage' element={<MyPage />} />
-        <Route path='*' element={<NotFound />} />
+        {Object.values(pageIndex).map((elem) => (
+          <Route key={elem} path={elem.path} element={elem.component()} />
+        ))}
       </Routes>
     </>
   );
