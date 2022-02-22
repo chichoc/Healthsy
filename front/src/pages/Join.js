@@ -7,7 +7,7 @@ const Join = () => {
   const [inputJoin, setInputJoin] = useState({});
   const [inputEmailId, setInputEmailId] = useState('');
 
-  const emailDomain = [{ domain1: '@naver.com' }, { domain2: '@gmail.com' }, { domain3: '@apple.com' }];
+  const emailDomain = [{ domain: 'naver.com' }, { domain: 'gmail.com' }, { domain: 'apple.com' }];
 
   const onChangeInputJoin = (e) => {
     setInputJoin({ ...inputJoin, [e.target.name]: e.target.value });

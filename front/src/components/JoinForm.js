@@ -17,9 +17,9 @@ const JoinForm = ({ emailDomain, inputEmailId, onChangeInputJoin }) => {
           onChangeMethod={onChangeInputJoin}
         />
         <datalist id='email-domain' className='oval'>
-          emailDomain.map(() => {} )<option value={`${inputEmailId}@naver.com`}></option>
-          <option value={`${inputEmailId}@gmail.com`}></option>
-          <option value={`${inputEmailId}@apple.com`}></option>
+          {emailDomain.map((elem, index) => (
+            <option key={index.toString()} value={`${inputEmailId}@${elem.domain}`}></option>
+          ))}
         </datalist>
         <label>
           <h3>비밀번호</h3>
@@ -67,7 +67,6 @@ const JoinForm = ({ emailDomain, inputEmailId, onChangeInputJoin }) => {
           ></input>
           <button className='oval'>확인</button>
         </PhoneNumber>
-
         <JoinTerms />
         <button type='submit' className='oval join_btn'>
           가입하기
