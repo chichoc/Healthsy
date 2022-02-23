@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import JoinForm from '../components/JoinForm';
-import MainHeader from '../components/MainHeader';
-import MainTop from '../components/MainTop';
+import withPage from './withPage';
 
 const Join = () => {
   const [inputJoin, setInputJoin] = useState({});
@@ -20,11 +19,9 @@ const Join = () => {
 
   return (
     <>
-      <MainTop />
-      <MainHeader />
       <JoinForm emailDomain={emailDomain} inputEmailId={inputEmailId} onChangeInputJoin={onChangeInputJoin} />
     </>
   );
 };
 
-export default Join;
+export default withPage(Join);

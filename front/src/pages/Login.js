@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import LoginForm from '../components/LoginForm';
 import LoginOther from '../components/LoginOther';
 import LoginSocial from '../components/LoginSocial';
-import MainFooter from '../components/MainFooter';
-import MainHeader from '../components/MainHeader';
 import axios from 'axios';
+import withPage from './withPage';
 
 const Login = () => {
   const [inputLogin, setInputLogin] = useState({});
@@ -34,7 +33,7 @@ const Login = () => {
   const loginDB = (email, password) => {
     axios({
       method: 'post',
-      url: 'http://localhost:8888',
+      // url: 'http://localhost:8888',
       data: {
         email: email,
         password: password,
@@ -50,7 +49,6 @@ const Login = () => {
 
   return (
     <>
-      <MainHeader />
       <LoginForm
         inputLogin={inputLogin}
         inputFocus={inputFocus}
@@ -61,9 +59,7 @@ const Login = () => {
       />
       <LoginOther />
       <LoginSocial />
-      <MainFooter />
     </>
   );
 };
-
-export default Login;
+export default withPage(Login);
