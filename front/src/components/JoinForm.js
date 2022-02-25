@@ -3,7 +3,7 @@ import JoinTerms from './JoinTerms';
 import { Join, Title, Form, PhoneNumber } from '../styles/join_form';
 import Input from './Input';
 
-const JoinForm = ({ emailDomain, inputEmailId, onChangeInputJoin }) => {
+const JoinForm = ({ emailDomain, inputEmailId, onChangeInputJoin, onClickJoin }) => {
   return (
     <Join>
       <Title>회원가입</Title>
@@ -27,14 +27,14 @@ const JoinForm = ({ emailDomain, inputEmailId, onChangeInputJoin }) => {
             className='oval'
             type='password'
             placeholder='8~20자 영문, 숫자, 특수문자 중 2가지 이상'
-            name={'pw'}
+            name={'password'}
             onChange={onChangeInputJoin}
           ></input>
           <input
             className='oval pw_check'
             type='password'
             placeholder='비밀번호 확인'
-            name={'pw_check'}
+            name={'password_check'}
             onChange={onChangeInputJoin}
           ></input>
         </label>
@@ -68,7 +68,7 @@ const JoinForm = ({ emailDomain, inputEmailId, onChangeInputJoin }) => {
           <button className='oval'>확인</button>
         </PhoneNumber>
         <JoinTerms />
-        <button type='submit' className='oval join_btn'>
+        <button type='submit' className='oval join_btn' onClick={onClickJoin}>
           가입하기
         </button>
       </Form>

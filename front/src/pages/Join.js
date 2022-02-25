@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import JoinForm from '../components/JoinForm';
 import withPage from './withPage';
+import axios from 'axios';
 
 const Join = () => {
+  const emailDomain = [{ domain: 'naver.com' }, { domain: 'gmail.com' }, { domain: 'apple.com' }];
+
   const [inputJoin, setInputJoin] = useState({});
   const [inputEmailId, setInputEmailId] = useState('');
-
-  const emailDomain = [{ domain: 'naver.com' }, { domain: 'gmail.com' }, { domain: 'apple.com' }];
 
   const onChangeInputJoin = (e) => {
     setInputJoin({ ...inputJoin, [e.target.name]: e.target.value });
@@ -17,9 +18,28 @@ const Join = () => {
     }
   };
 
+  const onClickJoin = () => {
+    axios
+      .post('http://localhost:8888/join', {
+        email: inputJoin.email,
+        password: inputJoin.password,
+      })
+      .then((response) => {
+        console.log('join:', response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
-      <JoinForm emailDomain={emailDomain} inputEmailId={inputEmailId} onChangeInputJoin={onChangeInputJoin} />
+      <JoinForm
+        emailDomain={emailDomain}
+        inputEmailId={inputEmailId}
+        onChangeInputJoin={onChangeInputJoin}
+        onClickJoin={onClickJoin}
+      />
     </>
   );
 };

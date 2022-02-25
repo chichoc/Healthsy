@@ -8,6 +8,7 @@ import withPage from './withPage';
 const Login = () => {
   const [inputLogin, setInputLogin] = useState({});
   const [inputFocus, setInputFocus] = useState({});
+  const [isLogin, setIsLogin] = useState(false);
   const [cookie, setCookie] = useState();
 
   const onChangeInputLogin = (e) => {
@@ -22,28 +23,28 @@ const Login = () => {
     setInputFocus({ ...inputFocus, [e.target.name]: false });
   };
 
-  const onClickLoginBtn = () => {
+  const onClickLogin = () => {
     if (inputLogin.email === '' || inputLogin.pw === '') {
       // '아이디와 비밀번호를 입력해주세요.'
     }
     // 이메일 형식 체크
-    loginDB(inputLogin.email, inputLogin.pw);
+    loginDB();
   };
 
-  const loginDB = (email, password) => {
-    axios({
-      method: 'post',
-      // url: 'http://localhost:8888',
-      data: {
-        email: email,
-        password: password,
-      },
-    })
-      .then((res) => {
-        console.log(res);
+  const loginDB = () => {
+    axios
+      .post('http://localhost:8888/login', {
+        email: inputLogin.email,
+        password: inputLogin.password,
       })
-      .catch((error) => {
-        console.log(error);
+      .then((response) => {
+        if (!response.data.message) {
+          setIsLogin(response.data.message);
+          console.log(response);
+        } else {
+          setIsLogin(response.data[0].message);
+          console.log(response);
+        }
       });
   };
 
@@ -55,7 +56,7 @@ const Login = () => {
         onChangeInputLogin={onChangeInputLogin}
         onFocusInput={onFocusInput}
         onBlurInput={onBlurInput}
-        onClickLoginBtn={onClickLoginBtn}
+        onClickLogin={onClickLogin}
       />
       <LoginOther />
       <LoginSocial />
