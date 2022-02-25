@@ -43,7 +43,7 @@ const InputContainer = styled.label`
     color: #616161;
   }
 
-  input[type='text'] {
+  input {
     border: 1px solid #dcdcdc;
     margin-top: 10px;
     font-size: 15px;
@@ -81,12 +81,12 @@ const InputCheck = styled.label`
     height: 18px;
     border-radius: 18px;
     margin: 0 4px;
-    margin-right: 4px;
     vertical-align: baseline;
   }
   input[type='checkbox']:checked + span::before {
     border-color: #00c9b7;
     content: '\u2713';
+    font-weight: bold;
     font-size: 14px;
     padding-left: 1px;
     color: white;
