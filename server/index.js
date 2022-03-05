@@ -13,11 +13,8 @@ app.use(
   })
 );
 
-const JoinRouter = require('./router/join');
-const LoginRouter = require('./router/login');
-
-app.use('/join', JoinRouter);
-app.use('/login', LoginRouter);
+const router = require('./router');
+app.use('/', router);
 
 app.listen(PORT, () => {
   console.log('running on express', PORT);
