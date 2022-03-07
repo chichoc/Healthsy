@@ -1,28 +1,41 @@
 import styled from '@emotion/styled';
 
-const Terms = styled.section`
+const Terms = styled.ul`
   text-align: left;
   border: 1px solid #dddd;
   margin: 30px 0;
   border-radius: 20px;
 
-  label {
+  li {
     border-bottom: 1px solid #dddd;
     margin: 0;
-    padding: 10px;
+    padding: 15px 10px 15px 15px;
+    font-size: 15px;
+    position: relative;
   }
 
-  label:last-child {
+  li:last-child {
     border-bottom: none;
   }
 
   input {
     margin-right: 10px;
-    width: 10px;
   }
 
   span {
-    vertical-align: baseline;
+    font-size: 12px;
+  }
+  span.required {
+    color: red;
+  }
+  span.optional {
+    color: #ababab;
+  }
+
+  .termBtn {
+    position: absolute;
+    right: 10px;
+    font-weight: lighter;
   }
 `;
 
