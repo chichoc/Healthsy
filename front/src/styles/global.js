@@ -32,7 +32,8 @@ const global = () => {
             outline: none;
           }
 
-          label:hover {
+          label:hover,
+          button:hover {
             cursor: pointer;
           }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Terms } from '../styles/join_terms';
-import ModalTerm from './ModalTerm';
 import Modal from '../Modal';
+import TermService from './TermService';
 
 const JoinTerms = ({ inputJoin, isCheckAll, isModal, setIsModal, onCheck, onCheckAll, onModalOpen, onModalClose }) => {
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
@@ -23,7 +23,7 @@ const JoinTerms = ({ inputJoin, isCheckAll, isModal, setIsModal, onCheck, onChec
       button: false,
     },
     {
-      content: '서비스 이용약관',
+      content: '서비스 이용약관 동의',
       id: 'checkService',
       checkedValue: checkService,
       onChangeMethod: (e) => onCheck(e),
@@ -54,7 +54,7 @@ const JoinTerms = ({ inputJoin, isCheckAll, isModal, setIsModal, onCheck, onChec
   return (
     <Terms className='vertical_flex'>
       {terms.map((term) => (
-        <li>
+        <li key={term.id}>
           <input
             type='checkbox'
             id={term.id}
@@ -69,13 +69,13 @@ const JoinTerms = ({ inputJoin, isCheckAll, isModal, setIsModal, onCheck, onChec
               &#10095;
             </button>
           )}
+          {isModal && (
+            <Modal>
+              <TermService termHeader={term.content} onModalClose={onModalClose} />
+            </Modal>
+          )}
         </li>
       ))}
-      {isModal && (
-        <Modal>
-          <ModalTerm onModalClose={onModalClose} />
-        </Modal>
-      )}
     </Terms>
   );
 };
