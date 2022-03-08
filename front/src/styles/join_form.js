@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 const Join = styled.section`
   /* background-color: red; */
-  width: 400px;
+  width: 420px;
   padding: 20px 0;
   margin: 0 auto;
   text-align: left;
@@ -15,51 +15,24 @@ const Title = styled.h1`
 `;
 
 const Form = styled.form`
-  label {
-    margin: 15px 0;
+  div .row_form {
     /* background-color: red; */
+    margin-top: 20px;
   }
-  .oval {
-    border-radius: 20px;
-    padding: 10px 20px;
-    /* background-color: red; */
-    border: 1px solid #dddd;
-  }
-  input {
-    /* background-color: red; */
-    margin-top: 10px;
-    font-size: 15px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  input:focus {
-    border: 1px solid #555;
-  }
+
   .pw_check {
-    /* background-color: red; */
-    margin: 10px 0;
-  }
-  button {
-    margin-top: 10px;
-    font-size: 15px;
-    font-weight: bold;
-    border: 1px solid #00c9b7;
-    color: #00c9b7;
   }
 
   .join_btn {
     color: white;
+    border-radius: 20px;
     padding: 15px 20px;
     font-size: 20px;
     font-weight: bold;
-    background-color: #00c9b7;
-  }
-`;
-const PhoneNumber = styled.div`
-  input {
-    width: auto;
-    display: inline-block;
+    /* background-color: #00c9b7; */
+    background-color: #ababab;
+    border: 1px solid #ababab;
   }
 `;
 
-export { Join, Title, Form, PhoneNumber };
+export { Join, Title, Form };

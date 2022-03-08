@@ -4,7 +4,7 @@ const db = require('../config');
 
 router.use(express.json());
 
-router.post('/login', (req, res) => {
+router.post('/', (req, res) => {
   const { email, password } = req.body;
 
   db.execute('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (err, result) => {
