@@ -5,7 +5,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: process.env.DATABASE_PASSWORD,
-  database: 'login',
+  database: 'healthsy',
 });
 
 db.connect();
