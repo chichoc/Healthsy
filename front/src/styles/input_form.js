@@ -44,6 +44,10 @@ const Div = styled.div`
     flex-grow: 1;
     border-radius: 0 20px 20px 0;
   }
+
+  button {
+    flex-grow: 1;
+  }
   h5 {
     font-size: 12px;
     margin-top: 5px;
@@ -60,6 +64,9 @@ const Div = styled.div`
     border-radius: 20px 0 0 20px;
     padding: 10px 20px;
     border-right: none;
+  }
+  .ovalInputWithButton:focus {
+    border-right: #00c9b7 1px solid;
   }
   .ovalButtonWithInput {
     border-radius: 0 20px 20px 0;

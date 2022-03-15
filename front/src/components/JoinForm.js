@@ -1,25 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import JoinTerms from './JoinTerms';
-import { Join, Title, Form } from '../styles/join_form';
+import { Join, Title, Form, Button } from '../styles/join_form';
 import InputForm from './InputForm';
 import emailDomains from '../assets/api/dataEmailDomain';
+import { JoinContext } from '../contexts/JoinContext';
 
-const JoinForm = ({
-  inputJoin,
-  inputEmailId,
-  isModal,
-  setIsModal,
-  isCheckAll,
-  onChangeInputJoin,
-  datalistEmail,
-  sendEmail,
-  verifyEmail,
-  onCheck,
-  onCheckAll,
-  onClickJoin,
-  onModalOpen,
-  onModalClose,
-}) => {
+const JoinForm = ({ inputEmailId, datalistEmail, onChangeInputJoin, sendEmail, verifyEmail, onClickJoin }) => {
+  const { inputFocusJoin, onFocusInputJoin, onBlurInputJoin } = useContext(JoinContext);
+
+  const { email, emailVerifyCode, password, passwordCheck, userName, phoneNumber } = inputFocusJoin;
+
   return (
     <Join>
       <Title>회원가입</Title>
@@ -27,6 +17,9 @@ const JoinForm = ({
         <div>
           <InputForm
             label='이메일'
+            focusState={email}
+            onFocusMethod={onFocusInputJoin}
+            onBlurMethod={onBlurInputJoin}
             className='ovalInputWithButton'
             type='text'
             name='email'
@@ -45,9 +38,12 @@ const JoinForm = ({
         <div>
           <InputForm
             label='인증번호'
+            onFocusMethod={onFocusInputJoin}
+            onBlurMethod={onBlurInputJoin}
+            focusState={emailVerifyCode}
             className='ovalInputWithButton'
             type='type'
-            name='emailV'
+            name='emailVerifyCode'
             placeHolder='인증번호 입력'
             onChangeMethod={onChangeInputJoin}
             condition='제한 시간 내로 입력해주세요'
@@ -59,6 +55,9 @@ const JoinForm = ({
         <div className='horizontal_flex'>
           <InputForm
             label='비밀번호'
+            focusState={password}
+            onFocusMethod={onFocusInputJoin}
+            onBlurMethod={onBlurInputJoin}
             className='oval'
             type='password'
             name='password'
@@ -68,6 +67,9 @@ const JoinForm = ({
           />
           <InputForm
             label='비밀번호 확인'
+            focusState={passwordCheck}
+            onFocusMethod={onFocusInputJoin}
+            onBlurMethod={onBlurInputJoin}
             className='oval pw_check'
             type='password'
             name='passwordCheck'
@@ -78,14 +80,20 @@ const JoinForm = ({
         <div className='horizontal_flex'>
           <InputForm
             label='이름'
+            focusState={userName}
+            onFocusMethod={onFocusInputJoin}
+            onBlurMethod={onBlurInputJoin}
             className='oval'
             type='text'
-            name='username'
+            name='userName'
             placeHolder='이름'
             onChangeMethod={onChangeInputJoin}
           />
           <InputForm
             label='연락처'
+            focusState={phoneNumber}
+            onFocusMethod={onFocusInputJoin}
+            onBlurMethod={onBlurInputJoin}
             className='oval'
             type='text'
             name='phoneNumber'
@@ -95,19 +103,10 @@ const JoinForm = ({
           />
         </div>
 
-        <JoinTerms
-          inputJoin={inputJoin}
-          isCheckAll={isCheckAll}
-          isModal={isModal}
-          setIsModal={setIsModal}
-          onCheck={onCheck}
-          onCheckAll={onCheckAll}
-          onModalOpen={onModalOpen}
-          onModalClose={onModalClose}
-        />
-        <button type='submit' className='oval join_btn' onClick={onClickJoin}>
+        <JoinTerms />
+        <Button type='submit' className='oval join_btn' onClick={onClickJoin}>
           가입하기
-        </button>
+        </Button>
       </Form>
     </Join>
   );

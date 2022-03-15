@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { PageContext } from '../contexts/PageContext';
 import { Nav, Ul } from '../styles/main_top';
 
-const MainTop = ({ title }) => {
+const MainTop = () => {
+  const { title } = useContext(PageContext);
   return (
     <Nav className='horizontal_flex' align='center'>
       <Link to='/help'>[공지사항] {title}</Link>

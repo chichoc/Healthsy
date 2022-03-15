@@ -6,7 +6,7 @@ const LoginForm = ({ inputLogin, inputFocus, onChangeInputLogin, onFocusInput, o
   return (
     <Div>
       <p>
-        로그인하시고 필요한 영양제를 <br />
+        필요한 영양제를 <br />
         쉽고 빠르게 구매하세요!
       </p>
       <Form className='vertical_flex' align='center'>

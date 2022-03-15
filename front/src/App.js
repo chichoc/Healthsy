@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Sale from './pages/Sale';
 import MyPage from './pages/MyPage';
+import PageProvider from './contexts/PageContext';
 
 const App = () => {
   const pageIndex = {
@@ -20,13 +21,13 @@ const App = () => {
   };
 
   return (
-    <>
+    <PageProvider>
       <Routes>
         {Object.values(pageIndex).map((elem) => (
           <Route key={elem} path={elem.path} element={elem.component()} />
         ))}
       </Routes>
-    </>
+    </PageProvider>
   );
 };
 

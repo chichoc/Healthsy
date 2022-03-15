@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import MainFooter from '../components/MainFooter';
 import MainHeader from '../components/MainHeader';
 import MainTop from '../components/MainTop';
-import dataNotice from '../assets/api/dataNotice';
 import MainTopLogin from '../components/MainTopLogin';
+import JoinProvider from '../contexts/JoinContext';
+import { PageContext } from '../contexts/PageContext';
 
 const withPage = (WrappedComponent) => {
   const Component = () => {
-    const [notice, setNotice] = useState(dataNotice);
-    const [isLogin, setIsLogin] = useState(false);
-    const title = notice[notice.length - 1].title;
+    const { isLogin, title } = useContext(PageContext);
+
     return (
       <>
         {isLogin ? <MainTopLogin title={title} /> : <MainTop title={title} />}
         <MainHeader />
-        <WrappedComponent />
+        <JoinProvider>
+          <WrappedComponent />
+        </JoinProvider>
         <MainFooter />
       </>
     );

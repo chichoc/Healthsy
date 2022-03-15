@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Terms } from '../styles/join_terms';
 import Modal from '../Modal';
 import TermService from './TermService';
+import { JoinContext } from '../contexts/JoinContext';
 
-const JoinTerms = ({ inputJoin, isCheckAll, isModal, setIsModal, onCheck, onCheckAll, onModalOpen, onModalClose }) => {
+const JoinTerms = () => {
+  const { inputJoin, isCheckAll, isModal, onCheck, onCheckAll, onModalOpen, onModalClose } = useContext(JoinContext);
+
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
+
   const terms = [
     {
       content: '아래 내용에 모두 동의합니다.',

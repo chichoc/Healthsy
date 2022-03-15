@@ -3,6 +3,7 @@ import { Div } from '../styles/input_form';
 
 const InputForm = ({
   label,
+  focusState,
   className,
   type,
   name,
@@ -16,7 +17,7 @@ const InputForm = ({
 }) => {
   return (
     <Div className='row_form'>
-      <span className={label ? 'focus' : ''}>{label}</span>
+      <span className={focusState ? 'focus' : ''}>{label}</span>
       <div className='horizontal_flex'>
         <input
           className={className}
@@ -24,6 +25,7 @@ const InputForm = ({
           name={name}
           placeholder={placeHolder}
           onChange={onChangeMethod}
+          onFocus={onFocusMethod}
           onBlur={onBlurMethod}
         ></input>
         {button ? (
@@ -35,6 +37,7 @@ const InputForm = ({
         )}
       </div>
       {condition ? <h5>{`ⓘ ${condition}`}</h5> : ''}
+      {/* {condition ? <h5>형식에 맞지 않습니다.</h5> : ''} */}
     </Div>
   );
 };

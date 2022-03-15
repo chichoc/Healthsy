@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import JoinForm from '../components/JoinForm';
 import withPage from './withPage';
 import axios from 'axios';
+import { PageContext } from '../contexts/PageContext';
+import { JoinContext } from '../contexts/JoinContext';
 
 const Join = () => {
-  const [inputJoin, setInputJoin] = useState({
-    check: { checkAge: false, checkService: false, checkInfo: false, checkMarketing: false },
-  });
   const [inputEmailId, setInputEmailId] = useState('');
-  const [isCheckAll, setIsCheckAll] = useState(false);
-  const [isModal, setIsModal] = useState(false);
+  const [sendVerifyCode, setSendVerifyCode] = useState('');
+  const { navigate } = useContext(PageContext);
+  const { inputJoin, setInputJoin, setIsCheckAll } = useContext(JoinContext);
 
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
 
@@ -29,6 +29,15 @@ const Join = () => {
     e.target.setAttribute('list', 'email-domain');
   }, []);
 
+  const duplicateEmail = () => {
+    axios
+      .post('http://localhost:8888/join/duplicateEmail', {
+        email: inputJoin.email,
+      })
+      .then((response) => console.log(response.data))
+      .catch((error) => console.log(error));
+  };
+
   const sendEmail = (e) => {
     e.preventDefault();
     const validateEmailResult = validateEmail();
@@ -36,11 +45,11 @@ const Join = () => {
 
     if (validateEmailResult && duplicateEmailResult) {
       axios
-        .post('http://localhost:8888/join', {
+        .post('http://localhost:8888/join/sendEmail', {
           email: inputJoin.email,
         })
         .then((response) => {
-          console.log(response);
+          setSendVerifyCode(response.data.sendVerifyCode);
         })
         .catch((error) => {
           console.log(error);
@@ -50,6 +59,12 @@ const Join = () => {
 
   const verifyEmail = (e) => {
     e.preventDefault();
+    if (sendVerifyCode === +inputJoin.emailVerifyCode) {
+      console.log('인증 완료!');
+      setInputJoin({ ...inputJoin, verifyEmail: true });
+    } else {
+      console.log('인증 실패');
+    }
   };
 
   const onChangeInputJoin = useCallback(
@@ -60,37 +75,6 @@ const Join = () => {
     [datalistEmail, inputJoin]
   );
 
-  const onCheck = (e) => {
-    const { name } = e.target;
-    const checkData = { ...inputJoin, check: { ...inputJoin.check, [name]: !inputJoin.check[name] } };
-    setInputJoin(checkData);
-  };
-
-  const onCheckAll = () => {
-    if (isCheckAll === true) {
-      setInputJoin({
-        ...inputJoin,
-        check: { checkAge: false, checkService: false, checkInfo: false, checkMarketing: false },
-      });
-    } else {
-      setInputJoin({
-        ...inputJoin,
-        check: { checkAge: true, checkService: true, checkInfo: true, checkMarketing: true },
-      });
-    }
-    setIsCheckAll(!isCheckAll);
-  };
-
-  const onModalOpen = (e) => {
-    e.preventDefault();
-    setIsModal(true);
-  };
-
-  const onModalClose = () => {
-    setIsModal(false);
-  };
-
-  const duplicateEmail = () => {};
   const validateEmail = () => {
     const regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     if (!regEmail.test(inputJoin.email)) {
@@ -102,9 +86,19 @@ const Join = () => {
   };
 
   const validatePassword = () => {
-    const regExp = /^[0-9a-zA-Z]{8,20}$/;
-    if (!regExp.test(inputJoin.password)) {
+    const regPw = /^[0-9a-zA-Z]{8,20}$/;
+    if (!regPw.test(inputJoin.password)) {
       console.log('비밀번호 형식에 맞게 다시 입력해주세요');
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const validatePhoneNumber = () => {
+    const regPhone = /^\d{3}-\d{3,4}-\d{4}$/;
+    if (!regPhone.test(inputJoin.phoneNumber)) {
+      console.log('연락처 형식에 맞게 다시 입력해주세요');
       return false;
     } else {
       return true;
@@ -124,40 +118,45 @@ const Join = () => {
     }
   };
 
-  const onClickJoin = (e) => {
-    e.preventDefault();
-    checkNull();
-    validatePassword();
+  const joinDB = () => {
     axios
-      .post('http://localhost:8888/join', {
+      .post('http://localhost:8888/join/dataInsert', {
         email: inputJoin.email,
         password: inputJoin.password,
+        name: inputJoin.userName,
+        phone: inputJoin.phoneNumber,
+        checkMarketing: inputJoin.check.checkMarketing,
       })
       .then((response) => {
-        console.log(response);
+        if (response.data === 'success') {
+          alert('회원가입되셨습니다!');
+          navigate('/login');
+          // + 스크롤바 최상단으로 이동
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
+  const onClickJoin = (e) => {
+    e.preventDefault();
+    checkNull();
+    if (!inputJoin.verifyEmail) {
+      console.log('이메일 인증을 진행해주세요');
+    }
+    validateEmail() && validatePassword() && validatePhoneNumber ? joinDB() : console.log('형식에 맞게 입력해주세요');
+  };
+
   return (
     <>
       <JoinForm
-        inputJoin={inputJoin}
         inputEmailId={inputEmailId}
-        isModal={isModal}
-        setIsModal={setIsModal}
         datalistEmail={datalistEmail}
         sendEmail={sendEmail}
         verifyEmail={verifyEmail}
         onChangeInputJoin={onChangeInputJoin}
         onClickJoin={onClickJoin}
-        isCheckAll={isCheckAll}
-        onCheck={onCheck}
-        onCheckAll={onCheckAll}
-        onModalOpen={onModalOpen}
-        onModalClose={onModalClose}
       />
     </>
   );
