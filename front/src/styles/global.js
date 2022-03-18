@@ -40,18 +40,16 @@ const global = () => {
           .horizontal_flex {
             display: flex;
             justify-content: space-between;
+            flex-flow: row wrap;
             /* align-items: props.align; */
-            flex-wrap: wrap;
           }
 
           .vertical_flex {
             display: flex;
-            flex-direction: column;
+            flex-flow: column wrap;
             justify-content: space-between;
             /* align-items: props.align; */
-            flex-wrap: wrap;
           }
-          @import url('https://fonts.googleapis.com/css2?family=Rokkitt:wght@600&display=swap');
 
           .logo {
             font-size: 40px;
