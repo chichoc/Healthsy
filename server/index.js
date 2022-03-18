@@ -16,6 +16,15 @@ app.use(
 const router = require('./router');
 app.use('/', router);
 
+app.use((req, res, next) => {
+  res.status(404).send('요청과 일치하는 주소가 없습니다!');
+});
+
+app.use((error, req, res, next) => {
+  console.error(error.stack);
+  res.status(500).send('Server error!');
+});
+
 app.listen(PORT, () => {
   console.log('running on express', PORT);
 });

@@ -3,13 +3,11 @@ const router = express.Router();
 const db = require('../config');
 const bcrypt = require('bcrypt');
 
-router.use(express.json());
-
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
   const { email, password } = req.body;
 
   db.execute('SELECT * FROM users WHERE user_email = ?', [email], (error, result) => {
-    if (error) console.log(error);
+    if (error) next(error);
     else if (result.length === 1) {
       bcrypt.compare(password, result[0].user_password, (error, result) => {
         if (result) res.send('success');
