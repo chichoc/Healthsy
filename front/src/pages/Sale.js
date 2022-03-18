@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SaleList from '../components/SaleList';
+import SaleNav from '../components/SaleNav';
+import withPage from './withPage';
+import axios from 'axios';
+import SaleSort from '../components/SaleSort';
 
 const Sale = () => {
+  const [apiData, setApiData] = useState();
+
+  axios
+    .get('주소')
+    .then((response) => console.log(response))
+    .catch((error) => console.log(error));
+
   return (
     <>
-      <h1>제품 판매</h1>
+      <SaleNav />
+      <SaleSort />
+      <SaleList />
     </>
   );
 };
 
-export default Sale;
+export default withPage(Sale);
