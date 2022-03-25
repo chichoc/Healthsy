@@ -16,13 +16,11 @@ const Title = styled.h1`
 
 const Form = styled.form`
   div .row_form {
-    /* background-color: red; */
     margin-bottom: 40px;
   }
 
-  div > div:first-child {
-    /* margin-bottom: 20px; */
-    /* background-color: red; */
+  & > div:first-of-type {
+    margin-bottom: -20px;
   }
 
   .pw_check {

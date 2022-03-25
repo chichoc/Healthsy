@@ -2,7 +2,7 @@ import React from 'react';
 import { PopUp, Term } from '../styles/with_modal';
 
 const withModal = (WrappedComponent) => {
-  const Component = ({ onModalClose, termHeader }) => {
+  const Component = ({ termHeader, onModalClose }) => {
     return (
       <PopUp>
         <Term>

@@ -9,7 +9,7 @@ const JoinProvider = (props) => {
   });
   const [inputFocusJoin, setInputFocusJoin] = useState({});
   const [isCheckAll, setIsCheckAll] = useState(false);
-  const [isModal, setIsModal] = useState(false);
+  const [isModal, setIsModal] = useState(undefined);
 
   const onFocusInputJoin = (e) => {
     setInputFocusJoin({ ...inputFocusJoin, [e.target.name]: true });
@@ -39,13 +39,13 @@ const JoinProvider = (props) => {
     }
     setIsCheckAll(!isCheckAll);
   };
-  const onModalOpen = (e) => {
-    e.preventDefault();
-    setIsModal(true);
-  };
 
+  const onModalOpen = (index) => (e) => {
+    e.preventDefault();
+    setIsModal(index);
+  };
   const onModalClose = () => {
-    setIsModal(false);
+    setIsModal(undefined);
   };
 
   return (

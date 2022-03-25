@@ -13,7 +13,7 @@ const PopUp = styled.article`
 
 const Term = styled.div`
   background: white;
-  padding: 20px 40px 40px 40px;
+  padding: 20px 30px 40px 40px;
   width: 100%;
   max-width: 350px;
   height: 500px;
@@ -21,37 +21,45 @@ const Term = styled.div`
 
   nav {
     height: 40px;
-    padding: 10px 0 15px 0;
+    padding: 10px 0 10px 0;
   }
   nav h1 {
     font-size: 20px;
     font-weight: bold;
-    top: 0;
   }
   nav button {
     color: #ababab;
     font-size: 25px;
   }
-  article {
+  main {
     max-height: 430px;
     overflow-y: auto;
+    padding-right: 10px;
   }
-  article h2 {
+  main h2 {
     font-weight: bold;
     padding: 10px 0;
   }
-  article p,
-  article ol {
+  main p,
+  main ol {
     line-height: 1.3;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
+    font-size: 15px;
   }
-  article ol {
+  main ol {
     display: list-item;
-    list-style-position: outside;
+    padding-left: 20px;
   }
-  article ol li {
+  main ol li {
     padding: 2px 0;
+    list-style: decimal outside;
     word-break: keep-all;
+  }
+  main li > ol {
+    padding-left: 0px;
+  }
+  main li > ol li {
+    list-style: none;
   }
 `;
 

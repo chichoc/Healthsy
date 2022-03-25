@@ -2,12 +2,16 @@ import React, { useContext } from 'react';
 import { Terms } from '../styles/join_terms';
 import Modal from '../Modal';
 import TermService from './TermService';
+import TermInfo from './TermInfo';
+import TermMarketing from './TermMarketing';
 import { JoinContext } from '../contexts/JoinContext';
 
 const JoinTerms = () => {
   const { inputJoin, isCheckAll, isModal, onCheck, onCheckAll, onModalOpen, onModalClose } = useContext(JoinContext);
 
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
+
+  let Term;
 
   const terms = [
     {
@@ -45,7 +49,7 @@ const JoinTerms = () => {
       button: true,
     },
     {
-      content: 'SMS/ 이메일 (마케팅 정보) 수신 동의',
+      content: '마케팅 정보 수신 및 활용 동의',
       id: 'checkMarketing',
       checkedValue: checkMarketing,
       onChangeMethod: (e) => onCheck(e),
@@ -57,7 +61,7 @@ const JoinTerms = () => {
 
   return (
     <Terms className='vertical_flex'>
-      {terms.map((term) => (
+      {terms.map((term, index) => (
         <li key={term.id}>
           <input
             type='checkbox'
@@ -66,16 +70,18 @@ const JoinTerms = () => {
             checked={term.checkedValue}
             onChange={term.onChangeMethod}
           ></input>
-          <label for={term.id}>{term.content}</label>
+          <label htmlFor={term.id}>{term.content}</label>
           {term.detail ? <span className={term.detailClassName}>&nbsp;{term.detail}</span> : ''}
           {term.button && (
-            <button className='termBtn' onClick={onModalOpen}>
+            <button className='termBtn' onClick={onModalOpen(index)}>
               &#10095;
             </button>
           )}
-          {isModal && (
+          {(Term = index === 2 ? TermService : index === 3 ? TermInfo : TermMarketing)}
+
+          {isModal === index && (
             <Modal>
-              <TermService termHeader={term.content} onModalClose={onModalClose} />
+              <Term termHeader={term.content} onModalClose={onModalClose} />
             </Modal>
           )}
         </li>
