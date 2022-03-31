@@ -5,7 +5,7 @@ const Footer = styled.footer`
   color: #96b1ac;
   border-top: solid 1px #e8f3f1;
   margin-top: 30px;
-  padding: 70px 120px;
+  padding: 70px 100px;
   flex-shrink: 0;
   nav {
     padding-bottom: 20px;

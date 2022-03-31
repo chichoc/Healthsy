@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const Nav = styled.nav`
-  padding: 0 120px;
+  padding: 0 100px;
   margin: 20px 0;
   li {
     background-color: #dddd;

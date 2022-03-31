@@ -4,7 +4,7 @@ const Nav = styled.nav`
   background-color: #e8f3f1;
   height: 30px;
   align-items: ${(props) => props.align};
-  padding: 5px 120px;
+  padding: 5px 100px;
 `;
 
 const Ul = styled.ul`
