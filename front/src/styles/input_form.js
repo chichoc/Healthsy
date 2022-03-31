@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 
 const Div = styled.div`
-  /* background-color: red; */
   position: relative;
   font-size: 15px;
   margin-bottom: 20px;
@@ -27,11 +26,16 @@ const Div = styled.div`
   input {
     font-size: inherit;
     box-sizing: border-box;
-    flex-grow: 3;
     border: 1px solid #dcdcdc;
   }
   input::placeholder {
     color: #616161;
+  }
+  input[type='password'] {
+    letter-spacing: 5px;
+  }
+  input[type='password']::placeholder {
+    letter-spacing: 0px;
   }
   input:focus {
     border: 2px solid #ababab;
@@ -41,13 +45,9 @@ const Div = styled.div`
   }
   button {
     font-size: inherit;
-    flex-grow: 1;
     border-radius: 0 20px 20px 0;
   }
 
-  button {
-    flex-grow: 1;
-  }
   h5 {
     font-size: 12px;
     margin-top: 5px;
@@ -64,6 +64,7 @@ const Div = styled.div`
     border-radius: 20px 0 0 20px;
     padding: 10px 20px;
     border-right: none;
+    flex: 2;
   }
   .ovalInputWithButton:focus {
     border-right: #00c9b7 1px solid;
@@ -73,6 +74,7 @@ const Div = styled.div`
     padding: 10px 20px;
     border: 1px solid #00c9b7;
     color: #00c9b7;
+    flex: 1;
   }
 `;
 export { Div };

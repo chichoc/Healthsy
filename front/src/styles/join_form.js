@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 
 const Join = styled.section`
-  /* background-color: red; */
   width: 420px;
   padding: 20px 0;
   margin: 0 auto;
@@ -33,8 +32,8 @@ const Button = styled.button`
   padding: 15px 20px;
   font-size: 20px;
   font-weight: bold;
-  border: 1px solid ${(props) => (props.able ? '#00c9b7' : '#ababab')};
-  background-color: ${(props) => (props.able ? '#00c9b7' : '#ababab')};
+  border: 1px solid ${(props) => (props.disabled ? '#00c9b7' : '#ababab')};
+  background-color: ${(props) => (props.disabled ? '#00c9b7' : '#ababab')};
 `;
 
 export { Join, Title, Form, Button };

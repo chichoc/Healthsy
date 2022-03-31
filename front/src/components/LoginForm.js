@@ -1,5 +1,6 @@
 import React from 'react';
-import { Div, Form, Button, InputContainer, InputCheck } from '../styles/login_form';
+import { Div, Form, Button, InputCheck } from '../styles/login_form';
+import InputForm from './InputForm';
 
 const LoginForm = ({ inputLogin, inputFocus, onChangeInputLogin, onFocusInput, onBlurInput, onClickLogin }) => {
   const { email, password } = inputFocus;
@@ -10,30 +11,28 @@ const LoginForm = ({ inputLogin, inputFocus, onChangeInputLogin, onFocusInput, o
         쉽고 빠르게 구매하세요!
       </p>
       <Form className='vertical_flex' align='center'>
-        <InputContainer>
-          <span className={email ? 'focus' : ''}>이메일</span>
-          <input
-            className='oval'
-            type='text'
-            placeholder='이메일'
-            name={'email'}
-            onChange={onChangeInputLogin}
-            onFocus={onFocusInput}
-            onBlur={onBlurInput}
-          ></input>
-        </InputContainer>
-        <InputContainer>
-          <span className={password ? 'focus' : ''}>비밀번호</span>
-          <input
-            className='oval'
-            type='password'
-            placeholder='비밀번호'
-            name={'password'}
-            onChange={onChangeInputLogin}
-            onFocus={onFocusInput}
-            onBlur={onBlurInput}
-          ></input>
-        </InputContainer>
+        <InputForm
+          label='이메일'
+          focusState={email}
+          onFocusMethod={onFocusInput}
+          onBlurMethod={onBlurInput}
+          className='oval'
+          type='text'
+          name='email'
+          placeHolder='이메일'
+          onChangeMethod={onChangeInputLogin}
+        />
+        <InputForm
+          label='비밀번호'
+          focusState={password}
+          onFocusMethod={onFocusInput}
+          onBlurMethod={onBlurInput}
+          className='oval'
+          type='password'
+          name='password'
+          placeHolder='비밀번호'
+          onChangeMethod={onChangeInputLogin}
+        />
         <InputCheck>
           <input type='checkbox' id='loginCheck' />
           <span>로그인 상태 유지</span>

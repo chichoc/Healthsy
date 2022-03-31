@@ -18,7 +18,7 @@ const InputForm = ({
   return (
     <Div className='row_form'>
       <span className={focusState ? 'focus' : ''}>{label}</span>
-      <div className='horizontal_flex'>
+      <div className={button ? 'horizontal_flex' : ''}>
         <input
           className={className}
           type={type}
