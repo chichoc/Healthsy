@@ -11,7 +11,9 @@ const JoinTerms = () => {
 
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
 
-  let Term;
+  const termComponent = [undefined, undefined, TermService, TermInfo, TermMarketing];
+
+  let Term = isModal && termComponent[isModal];
 
   const terms = [
     {
@@ -77,7 +79,6 @@ const JoinTerms = () => {
               &#10095;
             </button>
           )}
-          {(Term = index === 2 ? TermService : index === 3 ? TermInfo : TermMarketing)}
 
           {isModal === index && (
             <Modal>

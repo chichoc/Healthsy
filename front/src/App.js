@@ -7,8 +7,8 @@ const App = () => {
   return (
     <PageProvider>
       <Routes>
-        {Object.values(dataPageIndex).map((elem) => (
-          <Route key={elem} path={elem.path} element={elem.component()} />
+        {Object.entries(dataPageIndex).map((elem) => (
+          <Route key={elem[0]} path={elem[1].path} element={elem[1].component()} />
         ))}
       </Routes>
     </PageProvider>
