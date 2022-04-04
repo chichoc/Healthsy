@@ -11,20 +11,25 @@ const JoinTerms = () => {
 
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
 
-  const termComponent = [undefined, undefined, TermService, TermInfo, TermMarketing];
-
-  let Term = isModal && termComponent[isModal];
+  const setTermComponent = (index, termProps) => {
+    const mapIndexToComponent = {
+      2: <TermService {...termProps} />,
+      3: <TermInfo {...termProps} />,
+      4: <TermMarketing {...termProps} />,
+    };
+    return mapIndexToComponent[index];
+  };
 
   const terms = [
     {
-      content: '아래 내용에 모두 동의합니다.',
+      header: '아래 내용에 모두 동의합니다.',
       id: 'checkAll',
       checkedValue: isCheckAll,
       onChangeMethod: onCheckAll,
       button: false,
     },
     {
-      content: '만 14세 이상입니다.',
+      header: '만 14세 이상입니다.',
       id: 'checkAge',
       checkedValue: checkAge,
       onChangeMethod: (e) => onCheck(e),
@@ -33,7 +38,7 @@ const JoinTerms = () => {
       button: false,
     },
     {
-      content: '서비스 이용약관 동의',
+      header: '서비스 이용약관 동의',
       id: 'checkService',
       checkedValue: checkService,
       onChangeMethod: (e) => onCheck(e),
@@ -42,7 +47,7 @@ const JoinTerms = () => {
       button: true,
     },
     {
-      content: '개인 정보 수집 및 이용 동의',
+      header: '개인정보 처리방침 동의',
       id: 'checkInfo',
       checkedValue: checkInfo,
       onChangeMethod: (e) => onCheck(e),
@@ -51,7 +56,7 @@ const JoinTerms = () => {
       button: true,
     },
     {
-      content: '마케팅 정보 수신 및 활용 동의',
+      header: '마케팅 정보 수신 및 활용 동의',
       id: 'checkMarketing',
       checkedValue: checkMarketing,
       onChangeMethod: (e) => onCheck(e),
@@ -72,7 +77,7 @@ const JoinTerms = () => {
             checked={term.checkedValue}
             onChange={term.onChangeMethod}
           ></input>
-          <label htmlFor={term.id}>{term.content}</label>
+          <label htmlFor={term.id}>{term.header}</label>
           {term.detail ? <span className={term.detailClassName}>&nbsp;{term.detail}</span> : ''}
           {term.button && (
             <button className='termBtn' onClick={onModalOpen(index)}>
@@ -81,9 +86,7 @@ const JoinTerms = () => {
           )}
 
           {isModal === index && (
-            <Modal>
-              <Term termHeader={term.content} onModalClose={onModalClose} />
-            </Modal>
+            <Modal>{setTermComponent(index, { termHeader: term.header.slice(0, -3), onModalClose })}</Modal>
           )}
         </li>
       ))}
