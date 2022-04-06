@@ -5,6 +5,8 @@ const db = require('../config');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const nodemailer = require('nodemailer');
+const { customAlphabet } = require('nanoid');
+const alphabet = '0123456789ABCDEFabcdef';
 
 router.post('/sendEmail', function (req, res, next) {
   const { email } = req.body;
@@ -46,6 +48,8 @@ router.post('/duplicateEmail', function (req, res, next) {
 router.post('/dataInsert', (req, res, next) => {
   const { email, password, name, phone, checkMarketing } = req.body;
 
+  const nanoid = customAlphabet(alphabet, 14);
+
   checkMarketing ? (marketing = 'Y') : (marketing = 'N');
 
   let joinDate = new Date().toISOString().slice(0, 10);
@@ -54,8 +58,8 @@ router.post('/dataInsert', (req, res, next) => {
     .hash(password, saltRounds)
     .then((hash) => {
       db.execute(
-        'INSERT INTO users (user_email, user_password, user_name, user_phone, user_marketing, user_join_date) VALUES (?,?,?,?,?,?)',
-        [email, hash, name, phone, marketing, joinDate],
+        'INSERT INTO users (user_id, user_email, user_password, user_name, user_phone, user_marketing, user_join_date) VALUES (UNHEX(?),?,?,?,?,?,?)',
+        [nanoid(), email, hash, name, phone, marketing, joinDate],
         (error, result) => {
           if (error) next(error);
           else {
