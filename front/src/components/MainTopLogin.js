@@ -24,6 +24,10 @@ const MainTopLogin = () => {
             <img className='cart' src='./images/profile.png' alt='마이페이지'></img>
           </Link>
         </li>
+        <li>
+          <Link to='/login'>로그아웃</Link>
+          {/* 레디스에서 토큰 삭제 */}
+        </li>
       </Ul>
     </Nav>
   );
