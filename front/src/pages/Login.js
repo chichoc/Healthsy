@@ -9,8 +9,7 @@ import { PageContext } from '../contexts/PageContext';
 const Login = () => {
   const [inputLogin, setInputLogin] = useState({});
   const [inputFocus, setInputFocus] = useState({});
-  const [cookie, setCookie] = useState();
-  const { setIsLogin, navigate } = useContext(PageContext);
+  const { navigate, setIsLogin, setCookie, setAuthorizationToken } = useContext(PageContext);
 
   const onChangeInputLogin = (e) => {
     setInputLogin({ ...inputLogin, [e.target.name]: e.target.value });
@@ -35,18 +34,21 @@ const Login = () => {
 
   const loginDB = () => {
     axios
-      .post('http://localhost:8888/login', {
+      .post('http://localhost:8888/login/authentication', {
         email: inputLogin.email,
         password: inputLogin.password,
       })
-      .then((response) => {
-        if (response.data === 'success') {
+      .then((res) => {
+        if (res.data.result === true) {
+          const accessToken = res.data;
+          setCookie('token', accessToken);
+          setAuthorizationToken(accessToken);
           setIsLogin(true);
           navigate('/');
-        } else if (response.data === 'password') {
-          console.log('비밀번호를 다시 입력해주세요');
-        } else if (response.data === 'email') {
-          console.log('이메일을 다시 입력해주세요');
+        } else if (res.data.content === 'password') {
+          alert('비밀번호를 다시 입력해주세요');
+        } else if (res.data.content === 'email') {
+          alert('이메일을 다시 입력해주세요');
         }
       })
       .catch((error) => {
