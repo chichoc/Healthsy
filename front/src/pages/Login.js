@@ -7,7 +7,7 @@ import withPage from './withPage';
 import { PageContext } from '../contexts/PageContext';
 
 const Login = () => {
-  const [inputLogin, setInputLogin] = useState({});
+  const [inputLogin, setInputLogin] = useState({ email: '', password: '' });
   const [inputFocus, setInputFocus] = useState({});
   const { navigate, setIsLogin, setCookie, setAuthorizationToken } = useContext(PageContext);
 
@@ -25,9 +25,7 @@ const Login = () => {
 
   const onClickLogin = (e) => {
     e.preventDefault();
-    if (inputLogin.email === '' || inputLogin.pw === '') {
-      // '아이디와 비밀번호를 입력해주세요.'
-    }
+    if (inputLogin.email === '' || inputLogin.pw === '') return alert('아이디와 비밀번호를 입력해주세요.');
     // 이메일 형식 체크
     loginDB();
   };
@@ -40,7 +38,7 @@ const Login = () => {
       })
       .then((res) => {
         if (res.data.result === true) {
-          const accessToken = res.data;
+          const accessToken = res.data.content;
           setCookie('token', accessToken);
           setAuthorizationToken(accessToken);
           setIsLogin(true);

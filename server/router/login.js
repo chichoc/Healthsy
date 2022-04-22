@@ -75,33 +75,31 @@ router.post('/authentication', (req, res, next) => {
           if (resultRedis) {
             res.json({ result: true, content: accessToken });
           }
-        }
-        // 인증이 필요한 로직마다 인가헤더 추가해서 토큰 보내기
-        else res.json({ result: false, content: 'password' });
+        } else res.json({ result: false, content: 'password' });
       });
     } else res.json({ result: false, content: 'email' });
   });
 });
 
-router.post('/authorization', (req, res, next) => {
+// 인증이 필요한 로직마다 인가헤더 추가해서 토큰 보내기
+router.post('/authorization', async (req, res, next) => {
   const token = req.headers['authorization'].replace('Bearer ', '');
   if (token) {
-    verifyToken(token)
-      .then((result) => {
-        const redisToken = getRedisValue(result.userId);
-        if (redisToken === token) {
-          res.json({
-            result: true,
-          });
-          // 30분 초과x but 옛날 토큰
-        } else {
-          res.json({ result: false });
-        }
-      })
-      // 30분 초과 or 애초에 생성되지 않은 토큰
-      .catch((error) => {
-        res.json({ result: false, content: error.message });
-      });
+    try {
+      const verifyTokenResult = await verifyToken(token);
+      const redisToken = await getRedisValue(verifyTokenResult.userId);
+      if (redisToken === token) {
+        res.json({
+          result: true,
+        });
+      } else {
+        // 30분 초과x but 옛날 토큰
+        res.json({ result: false });
+      }
+    } catch (error) {
+      //30분 초과 or 애초에 생성되지 않은 토큰
+      res.json({ result: false, content: error.message });
+    }
   }
 });
 

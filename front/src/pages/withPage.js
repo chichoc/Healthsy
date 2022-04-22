@@ -16,7 +16,7 @@ const withPage = (WrappedComponent) => {
         setAuthorizationToken(getCookie('token'));
         if (getCookie('token')) {
           axios.post('http://localhost:8888/login/authorization', {}).then((res) => {
-            if (res.result) setIsLogin(true);
+            if (res.data.result) setIsLogin(true);
             else {
               // 토큰이 없거나 유효햐지 않다면 로그인 유도 (리다이렉트)
               alert('로그인이 만료되어 다시 로그인 부탁드립니다');
