@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Header, Ul } from '../styles/main_header';
+import { Header, HeaderLogo, Ul } from '../styles/main_header';
 import dataMainMenu from '../assets/api/dataMainMenu';
 
 const MainHeader = () => {
   return (
     <Header className='horizontal_flex' align='center'>
-      <span>
+      <HeaderLogo>
         <Link to='/' className='logo'>
           Healthsy
         </Link>
-      </span>
+      </HeaderLogo>
       <Ul className='horizontal_flex' align='center'>
         {dataMainMenu.map((menu, index) => (
           <li key={index.toString()}>

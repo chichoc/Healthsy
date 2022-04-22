@@ -1,16 +1,18 @@
 import React from 'react';
 import SaleProduct from './SaleProduct';
-import { Main } from '../styles/sale_list';
+import { Main, Ul } from '../styles/sale_list';
+import dataProduct from '../assets/api/dataProduct';
 
-const SaleList = () => {
+const SaleList = ({ apiData }) => {
   return (
-    <Main className='horizontal_flex' align='flex-start'>
-      <SaleProduct />
-      <SaleProduct />
-      <SaleProduct />
-      <SaleProduct />
-      <SaleProduct />
-      <SaleProduct />
+    <Main>
+      <Ul className='horizontal_flex'>
+        {dataProduct.map((sale, index) => (
+          <li key={index}>
+            <SaleProduct brandName={sale.BSSH_NM} productName={sale.PRDLST_NM} />
+          </li>
+        ))}
+      </Ul>
     </Main>
   );
 };

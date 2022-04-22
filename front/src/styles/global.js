@@ -39,8 +39,8 @@ const global = () => {
 
           .horizontal_flex {
             display: flex;
-            justify-content: space-between;
             flex-flow: row wrap;
+            justify-content: space-between;
             /* align-items: props.align; */
           }
 
@@ -51,10 +51,6 @@ const global = () => {
             /* align-items: props.align; */
           }
 
-          .logo {
-            font-size: 40px;
-            font-family: 'Rokkitt', serif;
-          }
           html,
           body {
             height: 100%;
