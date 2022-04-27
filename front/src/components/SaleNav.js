@@ -6,7 +6,7 @@ const SaleNav = () => {
   return (
     <Nav className='horizontal_flex'>
       {nutrients.map((nutrient, index) => (
-        <button>{nutrient}</button>
+        <button key={index}>{nutrient}</button>
       ))}
     </Nav>
   );

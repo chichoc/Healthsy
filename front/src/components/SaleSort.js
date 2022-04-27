@@ -11,11 +11,9 @@ const SaleSort = () => {
         ))}
       </ul>
       <select>
-        <option selected saleCount='9'>
-          9개씩
-        </option>
-        <option saleCount='16'>16개씩</option>
-        <option saleCount='25'>25개씩</option>
+        <option defaultValue='9'>9개씩</option>
+        <option value='16'>16개씩</option>
+        <option value='25'>25개씩</option>
       </select>
     </SortNav>
   );

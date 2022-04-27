@@ -4,12 +4,17 @@ const Main = styled.main`
   padding: 0px 100px;
 `;
 const Ul = styled.ul`
+  justify-content: flex-start;
+  margin-top: 15px;
   li {
     width: auto;
-    margin: 30px 10px 0;
+    margin: 20px 5px;
     text-align: left;
+    flex: 1 1 30%;
+    align-items: center;
     img {
-      width: 150px;
+      width: auto;
+      max-width: 100%;
     }
     .productBrand,
     .productName {
