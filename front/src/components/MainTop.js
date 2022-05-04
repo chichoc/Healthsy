@@ -4,10 +4,11 @@ import { PageContext } from '../contexts/PageContext';
 import { Nav, Ul } from '../styles/main_top';
 
 const MainTop = () => {
-  const { title } = useContext(PageContext);
+  const { noticeTitle } = useContext(PageContext);
+
   return (
     <Nav className='horizontal_flex' align='center'>
-      <Link to='/help'>[공지사항] {title}</Link>
+      <Link to='/help'>[공지사항] {noticeTitle}</Link>
       <Ul className='horizontal_flex' align='center'>
         <li>
           <Link to='/login'>

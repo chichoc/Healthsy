@@ -9,7 +9,7 @@ import { PageContext } from '../contexts/PageContext';
 const Login = () => {
   const [inputLogin, setInputLogin] = useState({ email: '', password: '' });
   const [inputFocus, setInputFocus] = useState({});
-  const { navigate, setIsLogin, setCookie, setAuthorizationToken } = useContext(PageContext);
+  const { navigate, setIsLogin } = useContext(PageContext);
 
   const onChangeInputLogin = (e) => {
     setInputLogin({ ...inputLogin, [e.target.name]: e.target.value });
@@ -32,15 +32,16 @@ const Login = () => {
 
   const loginDB = () => {
     axios
-      .post('http://localhost:8888/login/authentication', {
-        email: inputLogin.email,
-        password: inputLogin.password,
-      })
+      .post(
+        'http://localhost:8888/login/authentication',
+        {
+          email: inputLogin.email,
+          password: inputLogin.password,
+        },
+        { withCredentials: true }
+      )
       .then((res) => {
         if (res.data.result === true) {
-          const accessToken = res.data.content;
-          setCookie('token', accessToken);
-          setAuthorizationToken(accessToken);
           setIsLogin(true);
           navigate('/');
         } else if (res.data.content === 'password') {

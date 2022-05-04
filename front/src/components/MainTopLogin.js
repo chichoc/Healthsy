@@ -1,13 +1,22 @@
+import axios from 'axios';
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { PageContext } from '../contexts/PageContext';
 import { Nav, Ul } from '../styles/main_top';
 
 const MainTopLogin = () => {
-  const { title } = useContext(PageContext);
+  const { navigate, noticeTitle, setIsLogin, setIsLogout } = useContext(PageContext);
+
+  const logOut = () => {
+    axios.post('http://localhost:8888/login/logout', {}, { withCredentials: true }).then((res) => {
+      setIsLogout(true);
+      setIsLogin(false);
+      navigate('/');
+    });
+  };
   return (
     <Nav className='horizontal_flex' align='center'>
-      <Link to='/help'>[공지사항] {title}</Link>
+      <Link to='/help'>[공지사항] {noticeTitle}</Link>
       <Ul className='horizontal_flex' align='center'>
         <li>
           <Link to='/mypage'>
@@ -25,8 +34,7 @@ const MainTopLogin = () => {
           </Link>
         </li>
         <li>
-          <Link to='/login'>로그아웃</Link>
-          {/* 레디스에서 토큰 삭제 */}
+          <button onClick={logOut}>로그아웃</button>
         </li>
       </Ul>
     </Nav>
