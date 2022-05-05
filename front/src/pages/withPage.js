@@ -15,16 +15,12 @@ const withPage = (WrappedComponent) => {
       // 로그아웃 직후가 아닌 경우
       if (!isLogin && !isLogout) {
         axios.post('http://localhost:8888/login/authorization', {}, { withCredentials: true }).then((res, req) => {
-          if (res.data.token) {
-            if (res.data.updated) setIsLogin(true);
-            else {
-              if (window.location.pathname !== '/login') alert('로그인이 만료되어 다시 로그인 부탁드립니다');
-              navigate('/login');
-              res.content && console.log(res.content);
-            }
-          } else {
-            // 토큰이 존재하지 않는 경우
-            return;
+          if (!res.data.token) return;
+          if (res.data.updated) setIsLogin(true);
+          else {
+            if (window.location.pathname !== '/login') alert('로그인이 만료되어 다시 로그인 부탁드립니다');
+            navigate('/login');
+            res.content && console.log(res.content);
           }
         });
       }

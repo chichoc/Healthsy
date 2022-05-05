@@ -4,19 +4,7 @@ const db = require('../config-mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const redisClient = require('../config-redis');
-
-const getCookie = (cookie, name) => {
-  if (cookie) {
-    const cookieValue = cookie.split('; ').find((row) => row.startsWith(name));
-    if (cookieValue) {
-      // access token인 경우
-      return cookieValue.split('=')[1];
-    }
-    // token이 있지만 access token이 아닌 경우
-    return cookieValue;
-  } // 어떠한 token도 없는 경우
-  else return cookie;
-};
+const authMiddleware = require('../middleware/auth');
 
 const createToken = async (id) => {
   return await new Promise((resolve, reject) => {
@@ -37,15 +25,6 @@ const createToken = async (id) => {
   });
 };
 
-const verifyToken = async (token) => {
-  return await new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (error, decoded) => {
-      if (error) return reject(error);
-      return resolve(decoded);
-    });
-  });
-};
-
 const tokenToRedis = async (id, token) => {
   console.log(id + ' ' + token);
   return await redisClient
@@ -59,17 +38,6 @@ const tokenToRedis = async (id, token) => {
     .catch((error) => {
       console.log(`tokenToRedis error!: ${error}`);
       return false;
-    });
-};
-
-const getRedisValue = async (key) => {
-  return await redisClient
-    .get(key)
-    .then((value) => {
-      return value;
-    })
-    .catch((error) => {
-      console.log(`getRedisValue error!: ${error}`);
     });
 };
 
@@ -107,48 +75,16 @@ router.post('/authentication', (req, res, next) => {
   });
 });
 
-// 인증이 필요한 로직마다 인가헤더 추가해서 토큰 보내기
-router.post('/authorization', async (req, res, next) => {
-  if (req.headers.cookie) {
-    const reqToken = getCookie(req.headers.cookie, 'accessToken');
-    if (reqToken) {
-      // 토큰이 존재하는 경우
-      try {
-        const verifyTokenResult = await verifyToken(reqToken);
-        const redisToken = await getRedisValue(verifyTokenResult.userId);
-        if (redisToken === reqToken) res.json({ token: true, updated: true });
-        // 30분 초과x but 옛날 토큰
-        else res.json({ token: true, updated: false });
-      } catch (error) {
-        // 30분 초과 or 애초에 생성되지 않는 토큰
-        res.json({ token: true, updated: false, content: error.message });
-      }
-    }
-  } else {
-    // 토큰이 존재하지 않는 경우
-    res.json({ token: false });
-  }
+router.post('/authorization', authMiddleware, async (req, res, next) => {
+  // 유효한 토큰이 존재하는 경우
+  res.json({ token: true, updated: true });
 });
 
-router.post('/logout', async (req, res) => {
-  const reqToken = getCookie(req.headers.cookie, 'accessToken');
+router.post('/logout', authMiddleware, async (req, res) => {
+  // 유효한 토큰이 존재하는 경우
+  await deleteRedisValue(verifyTokenResult.userId);
   res.clearCookie('accessToken');
-  // 토큰이 존재할 수 밖에 없음
-  try {
-    const verifyTokenResult = await verifyToken(reqToken);
-    const redisToken = await getRedisValue(verifyTokenResult.userId);
-    if (redisToken === reqToken) {
-      await deleteRedisValue(verifyTokenResult.userId);
-      res.clearCookie('accessToken');
-      res.json({});
-    } else {
-      // 30분 초과x but 옛날 토큰
-      res.json({});
-    }
-  } catch (error) {
-    // 30분 초과 or 애초에 생성되지 않은 토큰
-    res.json({});
-  }
+  res.json({});
 });
 
 module.exports = router;
