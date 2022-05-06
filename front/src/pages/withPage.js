@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useContext, useEffect, Suspense } from 'react';
+import React, { useContext, useEffect } from 'react';
 import MainFooter from '../components/MainFooter';
 import MainHeader from '../components/MainHeader';
 import MainTop from '../components/MainTop';
@@ -20,7 +20,7 @@ const withPage = (WrappedComponent) => {
           else {
             if (window.location.pathname !== '/login') alert('로그인이 만료되어 다시 로그인 부탁드립니다');
             navigate('/login');
-            res.content && console.log(res.content);
+            res.error && console.log(res.error);
           }
         });
       }

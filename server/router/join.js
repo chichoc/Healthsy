@@ -64,7 +64,6 @@ router.post('/dataInsert', (req, res, next) => {
           if (error) next(error);
           else {
             res.send('success');
-            console.log(result);
           }
         }
       );

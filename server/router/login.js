@@ -84,7 +84,7 @@ router.post('/logout', authMiddleware, async (req, res) => {
   // 유효한 토큰이 존재하는 경우
   await deleteRedisValue(verifyTokenResult.userId);
   res.clearCookie('accessToken');
-  res.json({});
+  res.end();
 });
 
 module.exports = router;
