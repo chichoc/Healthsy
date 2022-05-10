@@ -52,14 +52,12 @@ router.post('/dataInsert', (req, res, next) => {
 
   checkMarketing ? (marketing = 'Y') : (marketing = 'N');
 
-  let joinDate = new Date().toISOString().slice(0, 10);
-
   bcrypt
     .hash(password, saltRounds)
     .then((hash) => {
       db.execute(
-        'INSERT INTO users (user_id, user_email, user_password, user_name, user_phone, user_marketing, user_join_date) VALUES (UNHEX(?),?,?,?,?,?,?)',
-        [nanoid(), email, hash, name, phone, marketing, joinDate],
+        'INSERT INTO users (user_id, user_email, user_password, user_name, user_phone, user_marketing) VALUES (UNHEX(?),?,?,?,?,?)',
+        [nanoid(), email, hash, name, phone, marketing],
         (error, result) => {
           if (error) next(error);
           else {

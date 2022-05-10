@@ -56,10 +56,10 @@ router.post('/authentication', (req, res, next) => {
   const { email, password } = req.body;
 
   db.execute('SELECT user_id, user_password FROM users WHERE user_email = ?', [email], async (dbError, dbResult) => {
-    if (dbError) next('db execute error: ' + dbError);
+    if (dbError) next(dbError);
     else if (dbResult.length === 1) {
       bcrypt.compare(password, dbResult[0].user_password, async (bcryptError, bcryptResult) => {
-        if (bcryptError) next('bcrypt error: ' + bcryptError);
+        if (bcryptError) next(bcryptError);
         else if (bcryptResult) {
           const userId = dbResult[0].user_id.toString('hex');
           const accessToken = await createToken(userId);
@@ -75,16 +75,20 @@ router.post('/authentication', (req, res, next) => {
   });
 });
 
-router.post('/authorization', authMiddleware, async (req, res, next) => {
+router.post('/authorization', authMiddleware, async (req, res) => {
   // 유효한 토큰이 존재하는 경우
   res.json({ token: true, updated: true });
 });
 
-router.post('/logout', authMiddleware, async (req, res) => {
-  // 유효한 토큰이 존재하는 경우
-  await deleteRedisValue(verifyTokenResult.userId);
-  res.clearCookie('accessToken');
-  res.end();
+router.post('/logout', authMiddleware, async (req, res, next) => {
+  try {
+    // 유효한 토큰이 존재하는 경우
+    await deleteRedisValue(req.verifyTokenResult.userId);
+    res.clearCookie('accessToken');
+    res.end();
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
