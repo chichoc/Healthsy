@@ -25,10 +25,7 @@ const Sale = () => {
     try {
       setApiLoading(true);
       const requestApiUrl = replaceApiUrl('C003', 1 + dataCount * (pageNum - 1), dataCount * pageNum);
-      const apiResponse = await axios.get({
-        url: requestApiUrl,
-        header: ('Access-Control-Allow-Origin', requestApiUrl),
-      });
+      const apiResponse = await axios.get(requestApiUrl);
       const updateApiData = apiData.concat(apiResponse.data.C003.row);
       setApiData(updateApiData);
     } catch (error) {
@@ -37,27 +34,27 @@ const Sale = () => {
     } finally {
       setApiLoading(false);
     }
-  }, [dataCount, pageNum, apiData, replaceApiUrl]);
+  }, [dataCount, pageNum]);
 
-  const createObserver = useCallback(() => {
+  useEffect(() => {
+    const handleIntersection = async (entries) => {
+      if (!entries[0].isIntersecting) return;
+      console.log('Intersect!');
+      if (!apiLoading) {
+        setPageNum((prevPageNum) => prevPageNum + 1);
+        console.log(pageNum);
+        await getApiData();
+      }
+    };
     const observerOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0,
+      threshold: 0.1,
     };
-    const handleIntersect = (entries) => {
-      if (!entries[0].isIntersecting) return;
-      setPageNum(pageNum + 1);
-      getApiData();
-      // infinite scroll stop: unobserve
-    };
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
     if (apiDataBottom.current) observer.observe(apiDataBottom.current);
-  }, [pageNum, getApiData]);
-
-  useEffect(() => {
-    createObserver();
-  }, []);
+    return () => observer.disconnect();
+  }, [pageNum]);
 
   return (
     <>
