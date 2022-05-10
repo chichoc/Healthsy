@@ -8,7 +8,6 @@ export const PageContext = createContext();
 const PageProvider = (props) => {
   const [notice, setNotice] = useState(dataNotice);
   const [isLogin, setIsLogin] = useState(false);
-  const [isLogout, setIsLogout] = useState(false);
   const noticeTitle = notice[notice.length - 1].title;
   let navigate = useNavigate();
 
@@ -26,8 +25,6 @@ const PageProvider = (props) => {
       value={{
         isLogin,
         setIsLogin,
-        isLogout,
-        setIsLogout,
         noticeTitle,
         navigate,
         addAuthorizationToken,
