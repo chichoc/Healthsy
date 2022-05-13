@@ -2,23 +2,22 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const db = require('../config-mysql');
 const { removeStopwords, kor } = require('stopword');
 
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-const DataToDb = async (array) => {
-  const apiData = await getApiData(array, 1, 3000);
+const DataToDb = async () => {
+  const apiData = await getApiData(1, 10);
   apiData.map((product) => {
+    const keyWordRaw = product.RAWMTRL_NM.replace(/\(.*?\)/g, '');
     db.execute(
-      'INSERT INTO users (prod_id, prod_api) VALUES (?,?)',
-      [Number(product.PRDLST_REPORT_NO), product],
+      'INSERT INTO products (prod_id, prod_api, prod_raw) VALUES (?,?,?)',
+      [Number(product.PRDLST_REPORT_NO), product, keyWordRaw],
       (error, result) => {
-        if (error) next(error);
-        else {
-          console.log(result);
-        }
+        if (error) console.log(error);
       }
     );
   });
@@ -30,7 +29,8 @@ const setApiUrl = (serviceId, startIdx, endIdx) => {
   return apiUrl.href;
 };
 
-const getApiData = async (array, startNum, endNum, item) => {
+const getApiData = async (startNum, endNum, item) => {
+  let array = [];
   try {
     // 데이터 요청은 한번에 최대 1,000건
     const reqCount = Math.ceil((endNum - startNum + 1) / 1000);
@@ -45,10 +45,11 @@ const getApiData = async (array, startNum, endNum, item) => {
       console.log(requestApiUrl);
       const apiResponse = await axios.get(requestApiUrl);
       // 원하는 항목이 있으면 해당하는 데이터만 배열로
-      if (item)
+      if (item) {
         await apiResponse.data.C003.row.map((product) => {
           array.push(product[item]);
         });
+      }
       // 아니면 전체 데이터를 합침
       else apiData = [...apiResponse.data.C003.row];
       await sleep(2000);
@@ -67,15 +68,15 @@ const isDuplicate = async (array) => {
 };
 
 // PRDLST_REPORT_NO 중복 여부 확인 후 PK 설정 및 최대자릿수로 datatype 설정
-const checkPk = async (array) => {
-  array = await getApiData(array, 1, 3000, 'PRDLST_REPORT_NO');
-  const lengthArray = await array.map((pk) => pk.length);
-  console.log(array.length, await isDuplicate(array), Math.max(...lengthArray));
+const checkPk = async () => {
+  apiDataArray = await getApiData(1, 3000, 'PRDLST_REPORT_NO');
+  const lengthArray = await apiDataArray.map((pk) => pk.length);
+  console.log(apiDataArray.length, await isDuplicate(apiDataArray), Math.max(...lengthArray));
 };
 
 const checkFN = async (array) => {
   const circledNumbers = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
-  array = await getApiData(array, 1, 10, 'PRIMARY_FNCLTY');
+  array = await getApiData(1, 10, 'PRIMARY_FNCLTY');
   const keyWordFn = array.map((func) => {
     const splitStr = ['\r\n', ' ', ...circledNumbers];
     for (const str of splitStr) {
@@ -87,9 +88,35 @@ const checkFN = async (array) => {
   console.log(keyWordFn);
 };
 
+const splitStr = (strArray, splitWordArray) => {
+  let splitedStr;
+  for (const str of splitWordArray) {
+    splitedStr = strArray.split(str);
+  }
+  return splitedStr;
+};
+
+const sortedRaw = async () => {
+  const apiDataRaw = await getApiData(1, 3000, 'RAWMTRL_NM');
+  const keyWordRaw = apiDataRaw.map((raw) => raw.replace(/\(.*?\)/g, ''));
+  //   prod_raw 최대자릿수로 datatype 설정: 2843
+  console.log(Math.max(...(await keyWordRaw.map((raw) => raw.length))));
+};
+
 let apiData = [];
-checkPk(apiData);
-checkFN(apiData);
-DataToDb(apiData);
+// checkPk();
+// checkFN(apiData);
+DataToDb();
+
+router.post('/getApiData', function (req, res, next) {
+  db.execute(
+    'SELECT prod_id->"$.PRDLST_NM", prod_id->"$.BSSH_NM",prod_price, prod_stock FROM products limit ?,?',
+    [req.body.startIdx, req.body.endIdx],
+    (error, result) => {
+      if (error) next(error);
+      else res.send(result);
+    }
+  );
+});
 
 module.exports = router;

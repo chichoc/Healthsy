@@ -6,6 +6,7 @@ import axios from 'axios';
 import SaleSort from '../components/SaleSort';
 
 const Sale = () => {
+  const [apiDb, setApiDb] = useState([]);
   const [apiData, setApiData] = useState([]);
   const [dataCount, setDataCount] = useState(9);
   const [pageNum, setPageNum] = useState(1);
@@ -24,26 +25,38 @@ const Sale = () => {
   const getApiData = useCallback(async () => {
     try {
       setApiLoading(true);
-      const requestApiUrl = replaceApiUrl('C003', 1 + dataCount * (pageNum - 1), dataCount * pageNum);
-      const apiResponse = await axios.get(requestApiUrl);
-      const updateApiData = apiData.concat(apiResponse.data.C003.row);
-      setApiData(updateApiData);
+      axios.get('http://localhost:8888/sale/getApiData', { startIdx: 1, endIdx: 1000 }).then((res, req) => {
+        setApiDb(...apiData, res.data);
+      });
     } catch (error) {
       setApiError(error);
       console.log(error);
     } finally {
       setApiLoading(false);
     }
-  }, [dataCount, pageNum]);
+  }, []);
+
+  const range = (start, stop, step) => {
+    Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
+  };
+
+  const showApiData = () => {
+    const showStartIdx = 1 + dataCount * (pageNum - 1);
+    const showEndIdx = dataCount * pageNum;
+    for (let i of range(showStartIdx, showEndIdx, 1)) {
+      setApiData(...apiDb[i]);
+    }
+  };
 
   useEffect(() => {
+    getApiData();
     const handleIntersection = async (entries) => {
       if (!entries[0].isIntersecting) return;
       console.log('Intersect!');
       if (!apiLoading) {
         setPageNum((prevPageNum) => prevPageNum + 1);
         console.log(pageNum);
-        await getApiData();
+        showApiData();
       }
     };
     const observerOptions = {
