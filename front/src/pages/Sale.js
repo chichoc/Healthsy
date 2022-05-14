@@ -16,16 +16,10 @@ const Sale = () => {
 
   const apiDataBottom = useRef(null);
 
-  const replaceApiUrl = useCallback((serviceId, startIdx, endIdx) => {
-    const apiUrlPath = [process.env.REACT_APP_OPEN_API_KEY_ID, serviceId, 'json', startIdx, endIdx];
-    const apiUrl = new URL(apiUrlPath.join('/'), 'http://openapi.foodsafetykorea.go.kr/api/');
-    return apiUrl.href;
-  }, []);
-
   const getApiData = useCallback(async () => {
     try {
       setApiLoading(true);
-      axios.get('http://localhost:8888/sale/getApiData', { startIdx: 1, endIdx: 1000 }).then((res, req) => {
+      axios.get('http://localhost:8888/sale/getApiData', { startIdx: 1, endIdx: 10 }).then((res, req) => {
         setApiDb(...apiData, res.data);
       });
     } catch (error) {
