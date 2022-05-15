@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const axios = require('axios');
 const router = express.Router();
+const axios = require('axios');
 const db = require('../config-mysql');
 const { removeStopwords, kor } = require('stopword');
 
@@ -10,7 +10,7 @@ const sleep = (ms) => {
 };
 
 const DataToDb = async () => {
-  const apiData = await getApiData(1, 10);
+  const apiData = await getApiData(1, 1000);
   apiData.map((product) => {
     const keyWordRaw = product.RAWMTRL_NM.replace(/\(.*?\)/g, '');
     db.execute(
@@ -21,6 +21,7 @@ const DataToDb = async () => {
       }
     );
   });
+  console.log('DataToDb: success');
 };
 
 const setApiUrl = (serviceId, startIdx, endIdx) => {
@@ -106,12 +107,13 @@ const sortedRaw = async () => {
 let apiData = [];
 // checkPk();
 // checkFN(apiData);
-DataToDb();
+// DataToDb();
 
-router.post('/getApiData', function (req, res, next) {
+router.post('/getApiData', async (req, res, next) => {
+  const { startIdx, endIdx } = await req.body;
   db.execute(
-    'SELECT prod_id->"$.PRDLST_NM", prod_id->"$.BSSH_NM",prod_price, prod_stock FROM products limit ?,?',
-    [req.body.startIdx, req.body.endIdx],
+    'SELECT prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_api->"$.BSSH_NM" as BSSH_NM, prod_price, prod_stock FROM products limit ?,?',
+    [startIdx, endIdx],
     (error, result) => {
       if (error) next(error);
       else res.send(result);
