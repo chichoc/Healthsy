@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import SaleList from '../components/SaleList';
 import SaleNav from '../components/SaleNav';
 import withPage from './withPage';
@@ -19,49 +19,55 @@ const Sale = () => {
   const getApiData = useCallback(async () => {
     try {
       setApiLoading(true);
-      axios.get('http://localhost:8888/sale/getApiData', { startIdx: 1, endIdx: 10 }).then((res, req) => {
-        setApiDb(...apiData, res.data);
-      });
+      const { data } = await axios.post('http://localhost:8888/sale/getApiData', { startIdx: 0, endIdx: 1000 });
+      setApiDb(...apiDb, data);
     } catch (error) {
       setApiError(error);
       console.log(error);
     } finally {
       setApiLoading(false);
     }
-  }, []);
+  }, [apiDb]);
 
   const range = (start, stop, step) => {
-    Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
+    return Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
   };
 
-  const showApiData = () => {
-    const showStartIdx = 1 + dataCount * (pageNum - 1);
-    const showEndIdx = dataCount * pageNum;
-    for (let i of range(showStartIdx, showEndIdx, 1)) {
-      setApiData(...apiDb[i]);
+  const showApiData = useCallback(() => {
+    const showStartIdx = dataCount * (pageNum - 1);
+    const showEndIdx = dataCount * pageNum - 1;
+    console.log(apiDb.length);
+    const rangeArray = range(showStartIdx, showEndIdx, 1);
+    for (let i of rangeArray) {
+      setApiData(...apiData, apiDb[i]);
     }
+  }, [dataCount, pageNum, apiDb, apiData]);
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1,
   };
+
+  useLayoutEffect(() => {
+    getApiData();
+  }, []);
 
   useEffect(() => {
-    getApiData();
+    if (!apiDb) return;
+    showApiData();
     const handleIntersection = async (entries) => {
       if (!entries[0].isIntersecting) return;
       console.log('Intersect!');
       if (!apiLoading) {
         setPageNum((prevPageNum) => prevPageNum + 1);
         console.log(pageNum);
-        showApiData();
       }
-    };
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1,
     };
     const observer = new IntersectionObserver(handleIntersection, observerOptions);
     if (apiDataBottom.current) observer.observe(apiDataBottom.current);
     return () => observer.disconnect();
-  }, [pageNum]);
+  }, [apiDb, apiLoading, pageNum, showApiData]);
 
   return (
     <>
