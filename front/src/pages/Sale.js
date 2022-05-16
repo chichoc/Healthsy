@@ -19,7 +19,7 @@ const Sale = () => {
   const getApiData = useCallback(async () => {
     try {
       setApiLoading(true);
-      const { data } = await axios.post('http://localhost:8888/sale/getApiData', { startIdx: 0, endIdx: 1000 });
+      const { data } = await axios.post('http://localhost:8888/sale/getApiData', { startIdx: 0, endIdx: 100 });
       setApiDb(...apiDb, data);
     } catch (error) {
       setApiError(error);
@@ -39,14 +39,15 @@ const Sale = () => {
     console.log(apiDb.length);
     const rangeArray = range(showStartIdx, showEndIdx, 1);
     for (let i of rangeArray) {
-      setApiData(...apiData, apiDb[i]);
+      setApiData((prevApiData) => [...prevApiData, apiDb[i]]);
     }
+    console.log(apiData);
   }, [dataCount, pageNum, apiDb, apiData]);
 
   const observerOptions = {
     root: null,
     rootMargin: '0px',
-    threshold: 0.1,
+    threshold: 0.5,
   };
 
   useLayoutEffect(() => {
@@ -54,20 +55,22 @@ const Sale = () => {
   }, []);
 
   useEffect(() => {
-    if (!apiDb) return;
-    showApiData();
+    if (apiDb.length === 0) return;
+
     const handleIntersection = async (entries) => {
       if (!entries[0].isIntersecting) return;
       console.log('Intersect!');
       if (!apiLoading) {
         setPageNum((prevPageNum) => prevPageNum + 1);
         console.log(pageNum);
+        showApiData();
       }
     };
     const observer = new IntersectionObserver(handleIntersection, observerOptions);
     if (apiDataBottom.current) observer.observe(apiDataBottom.current);
+
     return () => observer.disconnect();
-  }, [apiDb, apiLoading, pageNum, showApiData]);
+  }, [apiLoading, pageNum, apiDb.length]);
 
   return (
     <>
