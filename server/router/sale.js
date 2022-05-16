@@ -112,7 +112,7 @@ let apiData = [];
 router.post('/getApiData', async (req, res, next) => {
   const { startIdx, endIdx } = await req.body;
   db.execute(
-    'SELECT prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_api->"$.BSSH_NM" as BSSH_NM, prod_price, prod_stock FROM products limit ?,?',
+    'SELECT prod_id, prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_api->"$.BSSH_NM" as BSSH_NM, prod_price, prod_stock FROM products limit ?,?',
     [startIdx, endIdx],
     (error, result) => {
       if (error) next(error);

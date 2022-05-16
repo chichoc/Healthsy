@@ -12,6 +12,7 @@ const Ul = styled.ul`
     text-align: left;
     flex: 1 1 30%;
     align-items: center;
+    cursor: pointer;
     img {
       width: auto;
       max-width: 100%;
