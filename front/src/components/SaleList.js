@@ -11,19 +11,22 @@ const SaleList = ({ apiData, apiLoading, apiError, apiDataBottom }) => {
       <Ul className='horizontal_flex'>
         {apiData &&
           apiData.map((sale, index) => (
-            <li
+            <SaleProduct
               key={index}
               onClick={() => {
                 navigate(`/product/${sale.prod_id}`);
               }}
-            >
-              <SaleProduct brandName={sale.BSSH_NM} productName={sale.PRDLST_NM} productPrice={sale.prod_price} />
-            </li>
+              brandName={sale.BSSH_NM}
+              productName={sale.PRDLST_NM}
+              productPrice={sale.prod_price}
+            />
           ))}
+        <span className='observerTarget' ref={apiDataBottom}>
+          dd
+        </span>
       </Ul>
       {apiLoading && <div>Loading..</div>}
       {apiError && <div>Error!</div>}
-      <div ref={apiDataBottom}></div>
     </Main>
   );
 };
