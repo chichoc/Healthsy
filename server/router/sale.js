@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const db = require('../config-mysql');
-const { removeStopwords, kor } = require('stopword');
+const fs = require('fs');
 
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -13,6 +13,7 @@ const DataToDb = async () => {
   const apiData = await getApiData(1, 1000);
   apiData.map((product) => {
     const keyWordRaw = product.RAWMTRL_NM.replace(/\(.*?\)/g, '');
+    // null 또는 undefined가 있으면 값 넣어줘야 함
     db.execute(
       'INSERT INTO products (prod_id, prod_api, prod_raw) VALUES (?,?,?)',
       [Number(product.PRDLST_REPORT_NO), product, keyWordRaw],
@@ -58,7 +59,7 @@ const getApiData = async (startNum, endNum, item) => {
   } catch (error) {
     console.log(error);
   }
-  return item ? await array : apiData;
+  return item ? array : apiData;
 };
 
 const isDuplicate = async (array) => {
@@ -75,6 +76,64 @@ const checkPk = async () => {
   console.log(apiDataArray.length, await isDuplicate(apiDataArray), Math.max(...lengthArray));
 };
 
+const checkBrand = async () => {
+  const apiDataArray = await getApiData(1, 3000, 'BSSH_NM');
+  const result = apiDataArray.reduce((allBrands, brand) => {
+    if (brand in allBrands) allBrands[brand]++;
+    else allBrands[brand] = 1;
+    return allBrands;
+  }, {});
+  console.log(result, Object.keys(result).length);
+  // {
+  //   '고려인삼과학주식회사': 78,
+  //   '(주)비피도': 127,
+  //   '(주)일화': 150,
+  //   '주식회사 네추럴웨이': 75,
+  //   '(주)유유헬스케어': 449,
+  //   '강원인삼농협': 17,
+  //   '(주)고센바이오텍': 17,
+  //   '(주)허브큐어': 282,
+  //   '(주)파시코': 12,
+  //   '(주)진생사이언스': 3,
+  //   '(주)화인내츄럴': 63,
+  //   '주식회사한미양행': 816,
+  //   '(주)팜텍코리아': 71,
+  //   '포천인삼영농조합법인': 15,
+  //   '(재)춘천바이오산업진흥원': 3,
+  //   '주)팜크로스': 321,
+  //   '경성제약주식회사': 40,
+  //   '삼아제약주식회사': 5,
+  //   '(주)화진바이오코스메틱': 34,
+  //   '(주)삼진GNF': 36,
+  //   '(주)이롬': 3,
+  //   '개성인삼농협': 11,
+  //   '(주)백천바이오텍(biotech)': 8,
+  //   '(주)청우식품': 2,
+  //   '디에이치팜(주)': 21,
+  //   '주식회사 굿씨드': 16,
+  //   '일동후디스주식회사': 1,
+  //   '(주)하티': 9,
+  //   '(주)메디언스': 30,
+  //   '주식회사비엠제약': 2,
+  //   '주식회사웰파인': 12,
+  //   '(주)한국인삼공사': 57,
+  //   '농업회사법인지에이치내츄럴': 15,
+  //   '(주)바이오션': 9,
+  //   '드림바이오(주)': 5,
+  //   '주식회사 대웅생명과학': 2,
+  //   '(주)한국지네틱팜': 6,
+  //   '(주)휴온스푸디언스': 9,
+  //   '(주)바이오 로제트': 61,
+  //   '주식회사 웰빙엘에스': 4,
+  //   '(주)프로게이너': 25,
+  //   '농업회사법인(주)개성상인': 52,
+  //   '(주)팜투팜2공장': 17,
+  //   '(주)빈스힐': 1,
+  //   '(주)바이오시네틱스 제1공장': 1,
+  //   '주식회사 네추럴웨이 포천 제2공장': 7
+  // }
+};
+
 const checkFN = async (array) => {
   const circledNumbers = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
   array = await getApiData(1, 10, 'PRIMARY_FNCLTY');
@@ -83,18 +142,14 @@ const checkFN = async (array) => {
     for (const str of splitStr) {
       func = func.split(str);
     }
-    console.log(func);
-    return removeStopwords(func, kor);
   });
   console.log(keyWordFn);
 };
 
-const splitStr = (strArray, splitWordArray) => {
-  let splitedStr;
-  for (const str of splitWordArray) {
-    splitedStr = strArray.split(str);
-  }
-  return splitedStr;
+const getFN = async () => {
+  let data = await getApiData(1, 1000, 'PRIMARY_FNCLTY');
+  const dataJSON = JSON.stringify(data);
+  fs.writeFileSync('FN.json', dataJSON);
 };
 
 const sortedRaw = async () => {
@@ -104,9 +159,10 @@ const sortedRaw = async () => {
   console.log(Math.max(...(await keyWordRaw.map((raw) => raw.length))));
 };
 
-let apiData = [];
 // checkPk();
-// checkFN(apiData);
+checkBrand();
+// checkFN();
+// getFN();
 // DataToDb();
 
 router.post('/getApiData', async (req, res, next) => {

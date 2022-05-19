@@ -25,7 +25,7 @@ const Ul = styled.ul`
   }
 `;
 
-const Description = styled.p`
+const Description = styled.article`
   margin: 0 auto;
   text-align: left;
   .productBrand,
