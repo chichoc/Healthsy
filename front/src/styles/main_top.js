@@ -11,7 +11,6 @@ const Ul = styled.ul`
   align-items: ${(props) => props.align};
   li {
     padding: 0 10px;
-    /* background-color: red; */
   }
   img {
     vertical-align: text-bottom;

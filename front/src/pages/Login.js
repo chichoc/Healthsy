@@ -1,15 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { onLogIn } from '../store/features/page';
+import axios from 'axios';
+import withPage from './withPage';
 import LoginForm from '../components/LoginForm';
 import LoginOther from '../components/LoginOther';
 import LoginSocial from '../components/LoginSocial';
-import axios from 'axios';
-import withPage from './withPage';
-import { PageContext } from '../contexts/PageContext';
 
 const Login = () => {
   const [inputLogin, setInputLogin] = useState({ email: '', password: '' });
   const [inputFocus, setInputFocus] = useState({});
-  const { navigate, setIsLogin } = useContext(PageContext);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onChangeInputLogin = (e) => {
     setInputLogin({ ...inputLogin, [e.target.name]: e.target.value });
@@ -42,7 +45,7 @@ const Login = () => {
       )
       .then((res) => {
         if (res.data.result === true) {
-          setIsLogin(true);
+          dispatch(onLogIn());
           navigate('/');
         } else if (res.data.content === 'password') {
           alert('비밀번호를 다시 입력해주세요');

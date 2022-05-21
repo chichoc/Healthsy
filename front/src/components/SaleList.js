@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import SaleProduct from './SaleProduct';
 import { Main, Ul } from '../styles/sale_list';
-import { PageContext } from '../contexts/PageContext';
 
 const SaleList = ({ apiData, apiLoading, apiError, apiDataBottom }) => {
-  const { navigate } = useContext(PageContext);
+  const navigate = useNavigate();
 
   return (
     <Main>
@@ -16,14 +17,14 @@ const SaleList = ({ apiData, apiLoading, apiError, apiDataBottom }) => {
               onClick={() => {
                 navigate(`/product/${sale.prod_id}`);
               }}
-              brandName={sale.BSSH_NM}
-              productName={sale.PRDLST_NM}
-              productPrice={sale.prod_price}
+              // brandName={sale.BSSH_NM}
+              brandName={'BSSH_NM' in sale ? sale.BSSH_NM : ''}
+              productName={'PRDLST_NM' in sale ? sale.PRDLST_NM : ''}
+              productPrice={'prod_price' in sale ? sale.prod_price : ''}
+              // 콘솔 찍어볼 것
             />
           ))}
-        <span className='observerTarget' ref={apiDataBottom}>
-          dd
-        </span>
+        <span className='observerTarget' ref={apiDataBottom}></span>
       </Ul>
       {apiLoading && <div>Loading..</div>}
       {apiError && <div>Error!</div>}

@@ -1,15 +1,22 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { PageContext } from '../contexts/PageContext';
-import { Nav, Ul } from '../styles/main_top';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { onLogOut } from '../store/features/page';
 import axios from 'axios';
+import { Nav, Ul } from '../styles/main_top';
+import dataNotice from '../assets/api/dataNotice';
 
 const MainTop = () => {
-  const { navigate, noticeTitle, isLogin, setIsLogin } = useContext(PageContext);
+  const [notice, setNotice] = useState(dataNotice);
+  const noticeTitle = notice[notice.length - 1].title;
+
+  const page = useSelector((state) => state.page.value);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const onLogout = () => {
     axios.post('http://localhost:8888/login/logout', {}, { withCredentials: true }).then((res) => {
-      setIsLogin(false);
+      dispatch(onLogOut());
       navigate('/');
     });
   };
@@ -18,7 +25,7 @@ const MainTop = () => {
     <Nav className='horizontal_flex' align='center'>
       <Link to='/help'>[공지사항] {noticeTitle}</Link>
 
-      {isLogin ? (
+      {page.isLogin ? (
         // 로그인한 상태
         <Ul className='horizontal_flex' align='center'>
           <li>

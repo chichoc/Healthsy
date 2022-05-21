@@ -1,14 +1,15 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import JoinForm from '../components/JoinForm';
 import withPage from './withPage';
-import axios from 'axios';
-import { PageContext } from '../contexts/PageContext';
 import { JoinContext } from '../contexts/JoinContext';
 
 const Join = () => {
   const [inputEmailId, setInputEmailId] = useState('');
   const [sendVerifyCode, setSendVerifyCode] = useState('');
-  const { navigate } = useContext(PageContext);
+  const navigate = useNavigate();
+
   const { inputJoin, setInputJoin, setIsCheckAll } = useContext(JoinContext);
 
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
@@ -145,7 +146,7 @@ const Join = () => {
     if (!inputJoin.verifyEmail) {
       console.log('이메일 인증을 진행해주세요');
     }
-    validateEmail() && validatePassword() && validatePhoneNumber ? joinDB() : console.log('형식에 맞게 입력해주세요');
+    validateEmail() && validatePassword() && validatePhoneNumber() ? joinDB() : console.log('형식에 맞게 입력해주세요');
   };
 
   return (

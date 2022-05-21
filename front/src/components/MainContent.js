@@ -1,7 +1,7 @@
 import React from 'react';
 import { Content } from '../styles/main_content';
 
-const MainContent = ({ notice, isLogin }) => {
+const MainContent = () => {
   return (
     <Content>
       <div className='content-top'>
