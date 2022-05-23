@@ -13,6 +13,7 @@ const nutrients = [
   '요오드',
   '셀레늄',
   '오메가3',
+  '홍삼',
 ];
 
 export default nutrients;
