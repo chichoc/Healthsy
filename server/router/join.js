@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 const { customAlphabet } = require('nanoid');
 const alphabet = '0123456789ABCDEFabcdef';
 
-router.post('/sendEmail', function (req, res, next) {
+router.post('/sendEmail', (req, res, next) => {
   const { email } = req.body;
   let userEmail = email;
   let verifyCode = Math.floor(Math.random() * 1000000);
@@ -38,7 +38,7 @@ router.post('/sendEmail', function (req, res, next) {
   res.send({ sendVerifyCode: verifyCode });
 });
 
-router.post('/duplicateEmail', function (req, res, next) {
+router.post('/duplicateEmail', (req, res, next) => {
   db.execute('SELECT * FROM users WHERE user_email=?', req.body.email, (error, result) => {
     if (error) next(error);
     else res.send('Email existed!', result);
