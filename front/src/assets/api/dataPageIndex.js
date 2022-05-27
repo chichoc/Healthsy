@@ -7,15 +7,17 @@ import Help from '../../pages/Help';
 import MyPage from '../../pages/MyPage';
 import NotFound from '../../pages/NotFound';
 
-const dataPageIndex = {
-  main: { path: '/', component: () => <Main /> },
-  login: { path: '/login', component: () => <Login /> },
-  join: { path: '/join', component: () => <Join /> },
-  sale: { path: '/sale/:category', component: () => <Sale /> },
-  product: { path: '/product/:id', component: () => <Product /> },
-  help: { path: '/help', component: () => <Help /> },
-  myPage: { path: '/mypage', component: () => <MyPage /> },
-  notFound: { path: '*', component: () => <NotFound /> },
-};
+const dataPageIndex = [
+  { path: '/', component: () => <Main /> },
+  { path: '/login', component: () => <Login /> },
+  { path: '/join', component: () => <Join /> },
+  // { path: '/sale/:category', component: () => <Sale /> },
+  // { path: '/sale', component: () => <Sale /> },
+  // { path: '/product/:id', component: () => <Product /> },
+  // { path: '/product', component: () => <Product /> },
+  { path: '/help', component: () => <Help /> },
+  { path: '/mypage', component: () => <MyPage /> },
+  { path: '*', component: () => <NotFound /> },
+];
 
 export default dataPageIndex;
