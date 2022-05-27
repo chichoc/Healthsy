@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import pageReducer from './features/page';
-import joinReducer from './features/join';
+import pageReducer from './features/pageSlice';
+import formReducer from './features/formSlice';
+import modalReducer from './features/modalSlice';
+import saleReducer from './features/saleSlice';
 
 export default configureStore({
   reducer: {
     page: pageReducer,
-    join: joinReducer,
+    form: formReducer,
+    modal: modalReducer,
+    sale: saleReducer,
   },
 });

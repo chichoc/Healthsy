@@ -15,10 +15,10 @@ const SaleList = ({ apiData, apiLoading, apiError, apiDataBottom }) => {
             <SaleProduct
               key={index}
               onClick={() => {
-                navigate(`/product/${sale.prod_id}`);
+                navigate(`/product/${sale.prod_id}`, { replace: true });
               }}
               // brandName={sale.BSSH_NM}
-              brandName={'BSSH_NM' in sale ? sale.BSSH_NM : ''}
+              brandName={'prod_brand' in sale ? sale.prod_brand : ''}
               productName={'PRDLST_NM' in sale ? sale.PRDLST_NM : ''}
               productPrice={'prod_price' in sale ? sale.prod_price : ''}
               // 콘솔 찍어볼 것

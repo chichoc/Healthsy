@@ -9,16 +9,11 @@ const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-const replaceStr = (str, regex, replaceWordArray) => {
+const removeStr = (str, regex, replaceWord) => {
   let strReplaced = str;
   strReplaced = strReplaced.replace(regex, '');
-  for (const word of replaceWordArray) {
-    const indexOfResult = strReplaced.includes(word);
-    if (indexOfResult) {
-      continue;
-    } else {
-      strReplaced = strReplaced.replace(word, '');
-    }
+  for (let word of replaceWord) {
+    strReplaced = strReplaced.replace(word, '');
   }
   return strReplaced.trim();
 };
@@ -49,7 +44,7 @@ const getApiData = async (startNum, endNum, item) => {
         await apiResponse.data.C003.row.map((product) => {
           // 주식회사 또는 주) 또는 (주) 제거
           if (item === 'BSSH_NM') {
-            const replacedStr = replaceStr(product[item], /\(.*?\)/g, ['주)', '주식회사', '농업회사법인', '법인']);
+            const replacedStr = removeStr(product[item], /\(.*?\)/g, ['주)', '주식회사', '농업회사법인', '법인']);
             array.push(replacedStr);
           } else {
             array.push(product[item]);
@@ -70,11 +65,12 @@ const getApiData = async (startNum, endNum, item) => {
 const DataToDb = async (startIdx, endIdx) => {
   const apiData = await getApiData(startIdx, endIdx);
   apiData.map((product) => {
+    const keyWordBrand = removeStr(product.BSSH_NM, /\(.*?\)/g, ['주)', '주식회사', '농업회사법인', '법인']);
     const keyWordRaw = product.RAWMTRL_NM.replace(/\(.*?\)/g, '');
     // null 또는 undefined가 있으면 값 넣어줘야 함
     db.execute(
-      'INSERT INTO products (prod_id, prod_api, prod_raw) VALUES (?,?,?)',
-      [Number(product.PRDLST_REPORT_NO), product, keyWordRaw],
+      'INSERT INTO products (prod_id, prod_api, prod_brand, prod_raw) VALUES (?,?,?,?)',
+      [Number(product.PRDLST_REPORT_NO), product, keyWordBrand, keyWordRaw],
       (error, result) => {
         if (error) console.log(error);
       }
@@ -131,15 +127,21 @@ const sortLarge = async (array) => {
 };
 
 // checkPk();
-checkBrand();
+// checkBrand();
 // checkRaw();
 // sortObjectValue();
 
 router.post('/getApiData', async (req, res, next) => {
-  const { startIdx, endIdx } = await req.body;
-  await DataToDb(startIdx + 1, startIdx + 1000);
+  const { startIdx, endIdx, category, selectedNav } = await req.body;
+  const result = selectedNav
+    .map((nav) => {
+      return "'" + nav.replace("'", "''") + "'";
+    })
+    .join();
+
+  // await DataToDb(startIdx + 1, startIdx + 1000);
   db.execute(
-    'SELECT prod_id, prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_api->"$.BSSH_NM" as BSSH_NM, prod_price, prod_stock FROM products limit ?,?',
+    `SELECT prod_id, prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_brand , prod_price, prod_stock FROM products where prod_brand in (${result})`,
     [startIdx, endIdx],
     (error, result) => {
       if (error) next(error);

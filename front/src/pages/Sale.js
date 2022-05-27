@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
+import { useSelector } from 'react-redux';
 import SaleList from '../components/SaleList';
 import SaleNav from '../components/SaleNav';
+import SaleSort from '../components/SaleSort';
 import withPage from './withPage';
 import axios from 'axios';
-import SaleSort from '../components/SaleSort';
+import { useParams } from 'react-router-dom';
 
 const Sale = () => {
   const [apiDb, setApiDb] = useState([]);
@@ -14,12 +16,20 @@ const Sale = () => {
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
+  let { category } = useParams();
+  const selectedNav = useSelector((state) => state.sale.value.selectedNav[category]);
+
   const apiDataBottom = useRef(null);
 
   const getApiData = useCallback(async () => {
     try {
       setApiLoading(true);
-      const { data } = await axios.post('http://localhost:8888/sale/getApiData', { startIdx: 0, endIdx: 100 });
+      const { data } = await axios.post('http://localhost:8888/sale/getApiData', {
+        startIdx: 0,
+        endIdx: 100,
+        category,
+        selectedNav,
+      });
       setApiDb(...apiDb, data);
     } catch (error) {
       setApiError(error);
@@ -27,7 +37,7 @@ const Sale = () => {
     } finally {
       setApiLoading(false);
     }
-  }, [apiDb]);
+  }, [apiDb, selectedNav]);
 
   const range = (start, stop, step) => {
     return Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
@@ -36,12 +46,10 @@ const Sale = () => {
   const showApiData = useCallback(() => {
     const showStartIdx = dataCount * (pageNum - 1);
     const showEndIdx = dataCount * pageNum - 1;
-    console.log(apiDb.length);
     const rangeArray = range(showStartIdx, showEndIdx, 1);
     for (let i of rangeArray) {
       setApiData((prevApiData) => [...prevApiData, apiDb[i]]);
     }
-    console.log(apiData);
   }, [dataCount, pageNum, apiDb, apiData]);
 
   const observerOptions = {
@@ -52,17 +60,15 @@ const Sale = () => {
 
   useLayoutEffect(() => {
     getApiData();
-  }, []);
+  }, [selectedNav]);
 
   useEffect(() => {
     if (apiDb.length === 0) return;
 
     const handleIntersection = async (entries) => {
       if (!entries[0].isIntersecting) return;
-      console.log('Intersect!');
       if (!apiLoading) {
         setPageNum((prevPageNum) => prevPageNum + 1);
-        console.log(pageNum);
         showApiData();
       }
     };
