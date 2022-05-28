@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialStateValue = {
   selectedNav: { nutrient: [], brand: [], func: [] },
+  fetchApi: { data: [], startIdx: '', endIdx: '' },
+  showApi: { data: [], countUnit: 9, pageNum: 1 },
 };
 
 export const saleSlice = createSlice({
@@ -27,9 +29,24 @@ export const saleSlice = createSlice({
       const { selectedNav } = state.value;
       selectedNav[category].length !== 0 && (state.value.selectedNav[category] = []);
     },
+    addFetchApi: (state, action) => {
+      state.value.fetchApi.data = [...action.payload];
+    },
+    addShowApi: (state, action) => {
+      const showApiData = state.value.showApi.data;
+      const fetchApiData = state.value.fetchApi.data;
+      console.log(action.payload);
+      for (let i of action.payload) {
+        state.value.showApi.data = [...showApiData, fetchApiData[i]];
+      }
+    },
+    addPageNum: (state) => {
+      const pageNum = state.value.showApi.pageNum;
+      state.value.showApi.pageNum = pageNum + 1;
+    },
   },
 });
 
-export const { onSelectNav, onSelectAllNav } = saleSlice.actions;
+export const { onSelectNav, onSelectAllNav, addFetchApi, addShowApi, addPageNum } = saleSlice.actions;
 
 export default saleSlice.reducer;
