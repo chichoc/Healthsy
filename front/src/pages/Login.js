@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { onLogIn } from '../store/features/page';
+import { onLogIn } from '../store/features/pageSlice';
 import axios from 'axios';
 import withPage from './withPage';
 import LoginForm from '../components/LoginForm';

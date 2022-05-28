@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { onLogOut } from '../store/features/page';
+import { onLogOut } from '../store/features/pageSlice';
 import axios from 'axios';
 import { Nav, Ul } from '../styles/main_top';
 import dataNotice from '../assets/api/dataNotice';
