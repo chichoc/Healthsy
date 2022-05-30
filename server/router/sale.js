@@ -129,25 +129,35 @@ const sortLarge = async (array) => {
 // checkPk();
 // checkBrand();
 // checkRaw();
-// sortObjectValue();
 
 router.post('/getApiData', async (req, res, next) => {
-  const { startIdx, endIdx, category, selectedNav } = await req.body;
-  const result = selectedNav
-    .map((nav) => {
-      return "'" + nav.replace("'", "''") + "'";
-    })
-    .join();
-
   // await DataToDb(startIdx + 1, startIdx + 1000);
-  db.execute(
-    `SELECT prod_id, prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_brand , prod_price, prod_stock FROM products where prod_brand in (${result})`,
-    [startIdx, endIdx],
-    (error, result) => {
-      if (error) next(error);
-      else res.send(result);
-    }
-  );
+  const { startIdx, endIdx, category, selectedNav } = await req.body;
+
+  const executeSql =
+    'SELECT prod_id, prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_brand , prod_price, prod_stock FROM products';
+
+  const whereColumn =
+    {
+      nutrient: 'prod_raw',
+      brand: 'prod_brand',
+      func: 'prod_api->"$.PRIMARY_FNCLTY"',
+    }[category] ?? undefined;
+
+  const reqexpString =
+    selectedNav != ''
+      ? "'" + selectedNav.map((nav) => (whereColumn === 'prod_brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
+      : undefined;
+
+  const addExecuteSql =
+    selectedNav == ''
+      ? executeSql + ' limit ?,?'
+      : executeSql + ` WHERE ${whereColumn} REGEXP (${reqexpString}) limit ?,?`;
+
+  db.execute(addExecuteSql, [startIdx, endIdx], (error, result) => {
+    if (error) next(error);
+    else res.send(result);
+  });
 });
 
 module.exports = router;
