@@ -10,16 +10,18 @@ const SaleList = ({ apiLoading, apiError, apiDataBottom }) => {
     <Main>
       <Ul className='horizontal_flex'>
         {showApiData &&
-          showApiData.map((sale, index) => (
-            <SaleProduct
-              key={index}
-              prodId={' prod_id' in sale ? sale.prod_id : ''}
-              brandName={'prod_brand' in sale ? sale.prod_brand : ''}
-              productName={'PRDLST_NM' in sale ? sale.PRDLST_NM : ''}
-              productPrice={'prod_price' in sale ? sale.prod_price : ''}
-              // 콘솔 찍어볼 것
-            />
-          ))}
+          showApiData.map(
+            (sale, index) =>
+              sale && (
+                <SaleProduct
+                  key={index}
+                  prodId={'prod_id' in sale ? sale.prod_id : ''}
+                  brandName={'prod_brand' in sale ? sale.prod_brand : ''}
+                  productName={'PRDLST_NM' in sale ? sale.PRDLST_NM : ''}
+                  productPrice={'prod_price' in sale ? sale.prod_price : ''}
+                />
+              )
+          )}
         <span className='observerTarget' ref={apiDataBottom}></span>
       </Ul>
       {apiLoading && <div>Loading..</div>}

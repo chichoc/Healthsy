@@ -35,7 +35,6 @@ export const saleSlice = createSlice({
     addShowApi: (state, action) => {
       const showApiData = state.value.showApi.data;
       const fetchApiData = state.value.fetchApi.data;
-      console.log(action.payload);
       for (let i of action.payload) {
         state.value.showApi.data = [...showApiData, fetchApiData[i]];
       }
@@ -48,5 +47,17 @@ export const saleSlice = createSlice({
 });
 
 export const { onSelectNav, onSelectAllNav, addFetchApi, addShowApi, addPageNum } = saleSlice.actions;
+
+const range = (start, stop, step) => {
+  return Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
+};
+
+export const showApiData = () => async (dispatch, getState) => {
+  const { countUnit, pageNum } = getState().sale.value.showApi;
+  const showStartIdx = countUnit * (pageNum - 1);
+  const showEndIdx = countUnit * pageNum - 1;
+  const rangeArray = range(showStartIdx, showEndIdx, 1);
+  dispatch(addShowApi(rangeArray));
+};
 
 export default saleSlice.reducer;
