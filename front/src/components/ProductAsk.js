@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ProductAsk = () => {
-  return <div>상품 문의</div>;
+  return <div>Q&A</div>;
 };
 
 export default ProductAsk;

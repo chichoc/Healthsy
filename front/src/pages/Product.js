@@ -1,21 +1,18 @@
 import React from 'react';
-import ProductAsk from '../components/ProductAsk';
-import ProductDetail from '../components/ProductDetail';
-import ProductInfo from '../components/ProductInfo';
+import { BrowserRouter as Router, useParams } from 'react-router-dom';
 import ProductMain from '../components/ProductMain';
-import ProductReview from '../components/ProductReview';
+import ProductNav from '../components/ProductNav';
+
+import withPage from './withPage';
 
 const Product = () => {
   return (
     <>
       <ProductMain />
+      <ProductNav />
       <h1>다른 상품 추천</h1>
-      <ProductInfo />
-      <ProductReview />
-      <ProductAsk />
-      <ProductDetail />
     </>
   );
 };
 
-export default Product;
+export default withPage(Product);
