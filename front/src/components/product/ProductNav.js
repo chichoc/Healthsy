@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import ProductInfo from '../components/ProductInfo';
-import ProductReview from '../components/ProductReview';
-import ProductAsk from '../components/ProductAsk';
-import ProductDetail from '../components/ProductDetail';
-import { NavProduct } from '../styles/product_nav';
+import ProductInfo from './ProductInfo';
+import ProductReview from './ProductReview';
+import ProductAsk from './ProductAsk';
+import ProductDetail from './ProductDetail';
+import { NavProduct } from '../../styles/product_nav';
 
 const ProductNav = () => {
   const [showComponent, setShowComponent] = useState(0);

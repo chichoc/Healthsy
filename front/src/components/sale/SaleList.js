@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import SaleProduct from './SaleProduct';
-import { Main, Ul } from '../styles/sale_list';
+import { Main, Ul } from '../../styles/sale_list';
 
 const SaleList = ({ apiLoading, apiError, apiDataBottom }) => {
   const showApiData = useSelector((state) => state.sale.value.showApi.data);

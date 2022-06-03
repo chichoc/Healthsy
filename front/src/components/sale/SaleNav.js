@@ -1,11 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { onSelectNav, onSelectAllNav } from '../store/features/saleSlice';
-import { Nav } from '../styles/sale_nav';
-import nutrients from '../assets/api/dataSaleNutrient';
-import brands from '../assets/api/dataSaleBrand';
-import funcs from '../assets/api/dataSaleFunc';
+import { onSelectNav, onSelectAllNav } from '../../store/features/saleSlice';
+import { Nav } from '../../styles/sale_nav';
+import nutrients from '../../assets/api/dataSaleNutrient';
+import brands from '../../assets/api/dataSaleBrand';
+import funcs from '../../assets/api/dataSaleFunc';
 
 const SaleNav = () => {
   let { category } = useParams();

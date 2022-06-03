@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFetchApi, addPageNum, showApiData } from '../store/features/saleSlice';
-import SaleList from '../components/SaleList';
-import SaleNav from '../components/SaleNav';
-import SaleSort from '../components/SaleSort';
+import SaleList from '../components/sale/SaleList';
+import SaleNav from '../components/sale/SaleNav';
+import SaleSort from '../components/sale/SaleSort';
 import withPage from './withPage';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';

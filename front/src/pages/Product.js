@@ -1,8 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, useParams } from 'react-router-dom';
-import ProductMain from '../components/ProductMain';
-import ProductNav from '../components/ProductNav';
-
+import ProductMain from '../components/product/ProductMain';
+import ProductNav from '../components/product/ProductNav';
 import withPage from './withPage';
 
 const Product = () => {

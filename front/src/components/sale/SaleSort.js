@@ -1,6 +1,6 @@
 import React from 'react';
-import { SortNav } from '../styles/sale_sort';
-import sortList from '../assets/api/dataSaleSort';
+import { SortNav } from '../../styles/sale_sort';
+import sortList from '../../assets/api/dataSaleSort';
 
 const SaleSort = () => {
   return (

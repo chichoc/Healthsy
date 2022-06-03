@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { MainProduct } from '../styles/product_main';
+import { MainProduct } from '../../styles/product_main';
 
 const ProductMain = () => {
   let { id } = useParams();
   const showApiData = useSelector((state) => state.sale.value.showApi.data);
-  const selectedProductIndex = showApiData.findIndex((prod) => prod.prod_id == id);
+  const selectedProductIndex = showApiData.findIndex((prod) => prod.prod_id === parseInt(id));
+
   const selectedProduct = showApiData[selectedProductIndex];
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Description } from '../styles/sale_list';
+import { Description } from '../../styles/sale_list';
 
 const SaleProduct = ({ prodId, brandName, productName, productPrice = '20,000' }) => {
   const commaPrice = (price) => {
