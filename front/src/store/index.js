@@ -11,4 +11,10 @@ export default configureStore({
     modal: modalReducer,
     sale: saleReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['form/onChangeInput'],
+      },
+    }),
 });

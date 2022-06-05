@@ -6,7 +6,6 @@ import axios from 'axios';
 import MainFooter from '../components/MainFooter';
 import MainHeader from '../components/MainHeader';
 import MainTop from '../components/MainTop';
-import JoinProvider from '../contexts/JoinContext';
 
 const withPage = (WrappedComponent) => {
   const Component = () => {
@@ -36,9 +35,7 @@ const withPage = (WrappedComponent) => {
       <>
         <MainTop />
         <MainHeader />
-        <JoinProvider>
-          <WrappedComponent />
-        </JoinProvider>
+        <WrappedComponent />
         <MainFooter />
       </>
     );

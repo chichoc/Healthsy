@@ -1,5 +1,5 @@
 import React from 'react';
-import withModal from './withModal';
+import withModal from '../../withModal';
 
 const TermMarketing = () => {
   return <main>마케팅</main>;

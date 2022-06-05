@@ -32,8 +32,8 @@ const Button = styled.button`
   padding: 15px 20px;
   font-size: 20px;
   font-weight: bold;
-  border: 1px solid ${(props) => (props.disabled ? '#00c9b7' : '#ababab')};
-  background-color: ${(props) => (props.disabled ? '#00c9b7' : '#ababab')};
+  border: 1px solid ${(props) => (props.disabled ? '#ababab' : '#00c9b7')};
+  background-color: ${(props) => (props.disabled ? '#ababab' : '#00c9b7')};
 `;
 
 export { Join, Title, Form, Button };
