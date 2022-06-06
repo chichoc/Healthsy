@@ -6,6 +6,7 @@ import axios from 'axios';
 import MainFooter from '../components/MainFooter';
 import MainHeader from '../components/MainHeader';
 import MainTop from '../components/MainTop';
+import { IconContext } from 'react-icons';
 
 const withPage = (WrappedComponent) => {
   const Component = () => {
@@ -33,10 +34,12 @@ const withPage = (WrappedComponent) => {
 
     return (
       <>
-        <MainTop />
-        <MainHeader />
-        <WrappedComponent />
-        <MainFooter />
+        <IconContext.Provider value={{ className: 'react-icons' }}>
+          <MainTop />
+          <MainHeader />
+          <WrappedComponent />
+          <MainFooter />
+        </IconContext.Provider>
       </>
     );
   };

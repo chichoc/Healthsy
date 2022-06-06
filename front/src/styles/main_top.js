@@ -12,15 +12,6 @@ const Ul = styled.ul`
   li {
     padding: 0 10px;
   }
-  img {
-    vertical-align: text-bottom;
-  }
-  img.wish {
-    width: 27px;
-  }
-  img.cart {
-    width: 20px;
-  }
 `;
 
 export { Nav, Ul };

@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { onLogOut } from '../store/features/pageSlice';
+import { BsHeart } from 'react-icons/bs';
+import { BsPerson } from 'react-icons/bs';
 import axios from 'axios';
-import { Nav, Ul } from '../styles/main_top';
 import dataNotice from '../assets/api/dataNotice';
+import { Nav, Ul } from '../styles/main_top';
 
 const MainTop = () => {
   const [notice, setNotice] = useState(dataNotice);
@@ -29,18 +31,13 @@ const MainTop = () => {
         // 로그인한 상태
         <Ul className='horizontal_flex' align='center'>
           <li>
-            <Link to='/mypage'>
-              <img className='wish' src='./images/wish(1).png' alt='찜'></img>
+            <Link to='/login'>
+              <BsHeart title={'찜'} size={20} />
             </Link>
           </li>
           <li>
             <Link to='/mypage'>
-              <img className='cart' src='./images/cart.png' alt='장바구니'></img>
-            </Link>
-          </li>
-          <li>
-            <Link to='/mypage'>
-              <img className='cart' src='./images/profile.png' alt='마이페이지'></img>
+              <BsPerson title={'마이페이지'} size={24} />
             </Link>
           </li>
           <li>
@@ -52,12 +49,7 @@ const MainTop = () => {
         <Ul className='horizontal_flex' align='center'>
           <li>
             <Link to='/login'>
-              <img className='wish' src='./images/wish(1).png' alt='찜'></img>
-            </Link>
-          </li>
-          <li>
-            <Link to='/login'>
-              <img className='cart' src='./images/cart.png' alt='장바구니'></img>
+              <BsHeart title={'찜'} size={20} />
             </Link>
           </li>
           <li>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Header, HeaderLogo, Ul } from '../styles/main_header';
 import dataMainMenu from '../assets/api/dataMainMenu';
+import { BsSearch } from 'react-icons/bs';
 
 const MainHeader = () => {
   return (
@@ -18,7 +19,7 @@ const MainHeader = () => {
           </li>
         ))}
         <li>
-          <img className='search' src='./images/search.png' alt='검색'></img>
+          <BsSearch title={'검색'} size={19} />
         </li>
       </Ul>
     </Header>

@@ -50,7 +50,6 @@ const global = () => {
             justify-content: space-between;
             /* align-items: props.align; */
           }
-
           html,
           body {
             height: 100%;
@@ -58,6 +57,10 @@ const global = () => {
           body {
             display: flex;
             flex-direction: column;
+          }
+          .react-icons {
+            color: black;
+            vertical-align: text-top;
           }
         `}
       />

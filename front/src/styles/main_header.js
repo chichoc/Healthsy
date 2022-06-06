@@ -26,11 +26,6 @@ const Ul = styled.ul`
     padding: 0 10px;
     flex: 0 1 auto;
   }
-  img.search {
-    width: 20px;
-    vertical-align: text-bottom;
-    margin-bottom: -2px;
-  }
 `;
 
 export { Header, HeaderLogo, Ul };
