@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialStateValue = {
-  isModal: undefined,
+  isModal: { joinTerm: undefined, productReview: false },
 };
 
 export const modalSlice = createSlice({
@@ -11,10 +11,15 @@ export const modalSlice = createSlice({
   },
   reducers: {
     onModalOpen: (state, action) => {
-      state.value.isModal = action.payload;
+      const { component, isModal } = action.payload;
+      state.value.isModal[component] = isModal;
     },
     onModalClose: (state) => {
-      state.value.isModal = undefined;
+      const isModal = { ...state.value.isModal };
+      const openModalName = Object.keys(isModal).filter((key) => {
+        return !!isModal[key];
+      });
+      state.value.isModal[openModalName[0]] = undefined;
     },
   },
 });

@@ -8,7 +8,6 @@ const initialStateValue = {
   },
   focusedInputName: {},
   isCheckAll: false,
-  isModal: undefined,
   isDisabled: true,
 };
 
@@ -18,7 +17,7 @@ export const formSlice = createSlice({
     value: initialStateValue,
   },
   reducers: {
-    ableClick: (state) => {
+    enableClick: (state) => {
       state.value.isDisabled = false;
     },
     disableClick: (state) => {
@@ -89,7 +88,7 @@ export const formSlice = createSlice({
 });
 
 export const {
-  ableClick,
+  enableClick,
   disableClick,
   onChangeInput,
   onFocusInput,

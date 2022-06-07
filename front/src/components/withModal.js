@@ -12,13 +12,7 @@ const withModal = (WrappedComponent) => {
         <Term>
           <nav className='horizontal_flex'>
             <h1>{termHeader}</h1>
-            <button
-              onClick={() => {
-                dispatch(onModalClose());
-              }}
-            >
-              &#x2715;
-            </button>
+            <button onClick={() => dispatch(onModalClose())}>&#x2715;</button>
           </nav>
           <WrappedComponent />
         </Term>
