@@ -12,6 +12,13 @@ const SortNav = styled.nav`
       font-size: 14px;
       margin: 0 4px;
       white-space: nowrap;
+      color: #838996;
+    }
+    li::before {
+      content: '\\2713';
+      font-size: 13px;
+      vertical-align: top;
+      margin-right: 3px;
     }
   }
   select {

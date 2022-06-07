@@ -19,7 +19,7 @@ const Ul = styled.ul`
     cursor: pointer;
     img {
       width: 100%;
-      height: 200px;
+      height: 20%;
       object-fit: cover;
     }
   }
@@ -28,6 +28,9 @@ const Ul = styled.ul`
 const Description = styled.article`
   margin: 0 auto;
   text-align: left;
+  img {
+    background-color: red;
+  }
   .productBrand,
   .productName {
     margin-bottom: 5px;

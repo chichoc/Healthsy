@@ -36,6 +36,7 @@ const InputCheck = styled.label`
 
   input[type='checkbox'] {
     display: none;
+    /* appearance: none; */
   }
   input[type='checkbox'] + span::before {
     box-sizing: border-box;
@@ -46,7 +47,7 @@ const InputCheck = styled.label`
     height: 18px;
     border-radius: 18px;
     margin: 0 4px;
-    vertical-align: baseline;
+    /* position: absolute; */
   }
   input[type='checkbox']:checked + span::before {
     border-color: #00c9b7;

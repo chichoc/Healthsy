@@ -1,7 +1,10 @@
 import styled from '@emotion/styled';
 
-const NavProduct = styled.nav`
+const SectionProduct = styled.section`
   margin: 10px 100px 0px;
+`;
+
+const NavProduct = styled.nav`
   height: 50px;
   background-color: #dddd;
   align-items: center;
@@ -14,5 +17,6 @@ const NavProduct = styled.nav`
     border-right: none;
   }
 `;
+const ArticleProduct = styled.article``;
 
-export { NavProduct };
+export { SectionProduct, NavProduct, ArticleProduct };
