@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import JoinForm from '../components/form/join/JoinForm';
 import withPage from './withPage';
-import { ableClick, disableClick, successVerifyEmail } from '../store/features/formSlice';
+import { enableClick, disableClick, successVerifyEmail } from '../store/features/formSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Join = () => {

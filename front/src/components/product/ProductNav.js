@@ -3,7 +3,7 @@ import ProductInfo from './ProductInfo';
 import ProductReview from './ProductReview';
 import ProductAsk from './ProductAsk';
 import ProductDetail from './ProductDetail';
-import { NavProduct } from '../../styles/product_nav';
+import { SectionProduct, NavProduct, ArticleProduct } from '../../styles/product/product_nav';
 
 const ProductNav = () => {
   const [showComponent, setShowComponent] = useState(0);
@@ -15,7 +15,7 @@ const ProductNav = () => {
   ];
 
   return (
-    <>
+    <SectionProduct>
       <NavProduct className='horizontal_flex'>
         {dataProductNav.map((nav, index) => (
           <button
@@ -28,8 +28,8 @@ const ProductNav = () => {
           </button>
         ))}
       </NavProduct>
-      <div>{dataProductNav[showComponent].component}</div>
-    </>
+      <ArticleProduct>{dataProductNav[showComponent].component}</ArticleProduct>
+    </SectionProduct>
   );
 };
 

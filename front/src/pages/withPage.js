@@ -10,14 +10,14 @@ import { IconContext } from 'react-icons';
 
 const withPage = (WrappedComponent) => {
   const Component = () => {
-    const page = useSelector((state) => state.page.value);
+    const isLogin = useSelector((state) => state.page.value.isLogin);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
     useLayoutEffect(() => {
-      if (!page.isLogin) {
-        axios.post('http://localhost:8888/login/authorization', {}).then((res, req) => {
+      if (!isLogin) {
+        axios.post('http://localhost:8888/login/authorization', {}, { withCredentials: true }).then((res, req) => {
           if (!res.data.token) return;
           if (res.data.updated) {
             // 로그인 상태에서 회원가입 못하도록 설정

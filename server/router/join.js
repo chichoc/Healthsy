@@ -39,7 +39,7 @@ router.post('/sendEmail', (req, res, next) => {
 });
 
 router.post('/duplicateEmail', (req, res, next) => {
-  db.execute('SELECT * FROM users WHERE user_email=?', req.body.email, (error, result) => {
+  db.execute('SELECT * FROM users WHERE email=?', req.body.email, (error, result) => {
     if (error) next(error);
     else res.send('Email existed!', result);
   });
@@ -56,7 +56,7 @@ router.post('/dataInsert', (req, res, next) => {
     .hash(password, saltRounds)
     .then((hash) => {
       db.execute(
-        'INSERT INTO users (user_id, user_email, user_password, user_name, user_phone, user_marketing) VALUES (UNHEX(?),?,?,?,?,?)',
+        'INSERT INTO users (id, email, password, name, phone, marketing) VALUES (UNHEX(?),?,?,?,?,?)',
         [nanoid(), email, hash, name, phone, marketing],
         (error, result) => {
           if (error) next(error);

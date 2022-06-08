@@ -1,14 +1,26 @@
 import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onChangeTextArea, onChangeScore } from '../../store/features/productSlice';
-import { BsStarFill } from 'react-icons/bs';
+import { onModalClose } from '../../store/features/modalSlice';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import withModal from '../withModal';
+import { BsStarFill } from 'react-icons/bs';
 import { MainReviewForm } from '../../styles/product/review_form.js';
 
 const ReviewForm = () => {
   const textAreaElement = useRef();
-  const { score } = useSelector((state) => state.product.value.review);
+  let { id: productId } = useParams();
+  const { userId } = useSelector((state) => state.page.value);
+  const { score, content } = useSelector((state) => state.product.value.newReview);
   const dispatch = useDispatch();
+  const createReview = () => {
+    axios.post('http://localhost:8888/product/addReview', { userId, productId, score, content }).then((res, req) => {
+      if (res.data.addReview) {
+        alert('후기 남겨주셔서 감사합니다!');
+      }
+    });
+  };
 
   const starScore = ['1점', '2점', '3점', '4점', '5점'];
 
@@ -34,7 +46,7 @@ const ReviewForm = () => {
       </section>
       <section className='vertical_flex'>
         <label htmlFor='review'>
-          <h2>어떤 점이 좋았나요?</h2>
+          <h2>솔직한 후기를 남겨주세요</h2>
         </label>
         <textarea
           id='review'
@@ -46,8 +58,8 @@ const ReviewForm = () => {
         {/* 사진 첨부하기 */}
       </section>
       <div>
-        <button>취소</button>
-        <button onClick={() => {}}>등록</button>
+        <button onClick={() => dispatch(onModalClose())}>취소</button>
+        <button onClick={() => createReview()}>등록</button>
       </div>
     </MainReviewForm>
   );

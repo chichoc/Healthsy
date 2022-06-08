@@ -1,5 +1,5 @@
 import React from 'react';
-import { SortNav } from '../../styles/sale_sort';
+import { SortNav } from '../../styles/sale/sale_sort';
 import sortList from '../../assets/api/dataSaleSort';
 
 const SaleSort = () => {

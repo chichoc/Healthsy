@@ -16,10 +16,10 @@ export const modalSlice = createSlice({
     },
     onModalClose: (state) => {
       const isModal = { ...state.value.isModal };
-      const openModalName = Object.keys(isModal).filter((key) => {
+      const openModalName = Object.keys(isModal).find((key) => {
         return !!isModal[key];
       });
-      state.value.isModal[openModalName[0]] = undefined;
+      state.value.isModal[openModalName] = undefined;
     },
   },
 });

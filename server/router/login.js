@@ -55,18 +55,18 @@ const deleteRedisValue = async (key) => {
 router.post('/authentication', (req, res, next) => {
   const { email, password } = req.body;
 
-  db.execute('SELECT user_id, user_password FROM users WHERE user_email = ?', [email], async (dbError, dbResult) => {
+  db.execute('SELECT id, password, name FROM users WHERE email = ?', [email], async (dbError, dbResult) => {
     if (dbError) next(dbError);
     else if (dbResult.length === 1) {
-      bcrypt.compare(password, dbResult[0].user_password, async (bcryptError, bcryptResult) => {
+      bcrypt.compare(password, dbResult[0].password, async (bcryptError, bcryptResult) => {
         if (bcryptError) next(bcryptError);
         else if (bcryptResult) {
-          const userId = dbResult[0].user_id.toString('hex');
+          const userId = dbResult[0].id.toString('hex');
           const accessToken = await createToken(userId);
           const resultRedis = await tokenToRedis(userId, accessToken);
           if (resultRedis) {
             res.cookie(`accessToken=${accessToken}; HttpOnly;`);
-            res.json({ result: true, content: accessToken });
+            res.json({ userId: userId, userName: dbResult[0].name, result: true, content: accessToken });
           }
         } // 비밀번호가 db에서 조회된 것과 같지 않는 경우
         else res.json({ result: false, content: 'password' });

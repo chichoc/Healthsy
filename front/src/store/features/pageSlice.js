@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialStateValue = { isLogin: false };
+const initialStateValue = { isLogin: false, userId: '', userName: '' };
 
 export const pageSlice = createSlice({
   name: 'page',
@@ -8,8 +8,9 @@ export const pageSlice = createSlice({
     value: initialStateValue,
   },
   reducers: {
-    onLogIn: (state) => {
-      state.value.isLogin = true;
+    onLogIn: (state, action) => {
+      const { userId, userName } = action.payload;
+      state.value = { isLogin: true, userId: userId, userName: userName };
     },
     onLogOut: (state) => {
       state.value.isLogin = false;

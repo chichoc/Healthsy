@@ -69,7 +69,7 @@ const DataToDb = async (startIdx, endIdx) => {
     const keyWordRaw = product.RAWMTRL_NM.replace(/\(.*?\)/g, '');
     // null 또는 undefined가 있으면 값 넣어줘야 함
     db.execute(
-      'INSERT INTO products (prod_id, prod_api, prod_brand, prod_raw) VALUES (?,?,?,?)',
+      'INSERT INTO products (id, api, brand, raw_material) VALUES (?,?,?,?)',
       [Number(product.PRDLST_REPORT_NO), product, keyWordBrand, keyWordRaw],
       (error, result) => {
         if (error) console.log(error);
@@ -114,7 +114,7 @@ const getFN = async () => {
 const checkRaw = async () => {
   const apiDataRaw = await getApiData(1, 3000, 'RAWMTRL_NM');
   const keyWordRaw = apiDataRaw.map((raw) => raw.replace(/\(.*?\)/g, ''));
-  // prod_raw 최대자릿수로 datatype 설정: 2843
+  // raw 최대자릿수로 datatype 설정: 2843
   console.log(Math.max(...(await keyWordRaw.map((raw) => raw.length))));
 };
 
@@ -131,30 +131,26 @@ const sortLarge = async (array) => {
 // checkRaw();
 
 router.post('/getApiData', async (req, res, next) => {
+  const { startIdx, countUnit, category, selectedNav } = await req.body;
   // await DataToDb(startIdx + 1, startIdx + 1000);
-  const { startIdx, endIdx, category, selectedNav } = await req.body;
-
-  const executeSql =
-    'SELECT prod_id, prod_api->"$.PRDLST_NM" as PRDLST_NM, prod_brand , prod_price, prod_stock FROM products';
+  const executeSql = 'SELECT id, api->"$.PRDLST_NM" as PRDLST_NM, brand, price, stock FROM products';
 
   const whereColumn =
     {
-      nutrient: 'prod_raw',
-      brand: 'prod_brand',
-      func: 'prod_api->"$.PRIMARY_FNCLTY"',
+      nutrient: 'raw_material',
+      brand: 'brand',
+      func: 'api->"$.PRIMARY_FNCLTY"',
     }[category] ?? undefined;
 
-  const reqexpString =
-    selectedNav != ''
-      ? "'" + selectedNav.map((nav) => (whereColumn === 'prod_brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
-      : undefined;
+  const reqexpString = !selectedNav
+    ? "'" + selectedNav.map((nav) => (whereColumn === 'brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
+    : undefined;
 
-  const addExecuteSql =
-    selectedNav == ''
-      ? executeSql + ' limit ?,?'
-      : executeSql + ` WHERE ${whereColumn} REGEXP (${reqexpString}) limit ?,?`;
+  const addExecuteSql = !selectedNav
+    ? executeSql + ` WHERE ${whereColumn} REGEXP (${reqexpString}) limit ?,?`
+    : executeSql + ' limit ?,?';
 
-  db.execute(addExecuteSql, [startIdx, endIdx], (error, result) => {
+  db.execute(addExecuteSql, [startIdx, countUnit], (error, result) => {
     if (error) next(error);
     else res.send(result);
   });
