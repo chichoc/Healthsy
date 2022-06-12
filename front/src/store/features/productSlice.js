@@ -1,28 +1,45 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialStateValue = { info: { name: '', brand: '', price: 0 }, review: { score: 0, content: '' } };
+const initialState = {
+  info: { name: '', brand: '', price: 0 },
+  newReview: { score: 0, content: '' },
+  reviews: [
+    // {
+    //   id: '',
+    //   content: '',
+    //   user: '',
+    //   date: '',
+    //   reactions: {
+    //     thumbsUp: 0,
+    //     thumbsDown: 0,
+    //   },
+    // },
+  ],
+};
 
 export const saleSlice = createSlice({
   name: 'sale',
-  initialState: {
-    value: initialStateValue,
-  },
+  initialState,
   reducers: {
+    getReviews: (state, action) => {
+      console.log(action.payload);
+      state.reviews = [...action.payload];
+    },
     commaToPrice: (state, action) => {
-      if (state.value.price < 1000) return state.value.price;
-      return state.value.price.toLocaleString();
+      if (state.price < 1000) return state.price;
+      return state.price.toLocaleString();
     },
     onChangeTextArea: (state, action) => {
-      const { review } = state.value.review;
-      state.value.review = { ...review, content: action.payload };
+      const { newReview } = state;
+      state.newReview = { ...newReview, content: action.payload };
     },
     onChangeScore: (state, action) => {
-      const { review } = state.value.review;
-      state.value.review = { ...review, score: action.payload };
+      const { newReview } = state;
+      state.newReview = { ...newReview, score: action.payload };
     },
   },
 });
 
-export const { commaToPrice, onChangeTextArea, onChangeScore } = saleSlice.actions;
+export const { commaToPrice, onChangeTextArea, onChangeScore, getReviews } = saleSlice.actions;
 
 export default saleSlice.reducer;

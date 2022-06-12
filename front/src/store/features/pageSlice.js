@@ -1,19 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialStateValue = { isLogin: false, userId: '', userName: '' };
+const initialState = { isLogin: false, userId: '', userName: '' };
 
 export const pageSlice = createSlice({
   name: 'page',
-  initialState: {
-    value: initialStateValue,
-  },
+  initialState,
   reducers: {
     onLogIn: (state, action) => {
       const { userId, userName } = action.payload;
-      state.value = { isLogin: true, userId: userId, userName: userName };
+      state = { isLogin: true, userId: userId, userName: userName };
     },
     onLogOut: (state) => {
-      state.value.isLogin = false;
+      state.isLogin = false;
     },
   },
 });

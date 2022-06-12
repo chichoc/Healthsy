@@ -1,20 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialStateValue = {
+const initialState = {
   selectedNav: { nutrient: [], brand: [], func: [] },
-  fetchApi: { data: [], startIdx: '', endIdx: '' },
-  showApi: { data: [], countUnit: 9, pageNum: 1 },
+  fetchApi: { data: [], countUnit: 20, startIdx: 0 },
+  showApi: { data: [], countUnit: 9, pageNum: 0 },
 };
 
 export const saleSlice = createSlice({
   name: 'sale',
-  initialState: {
-    value: initialStateValue,
-  },
+  initialState,
   reducers: {
     onSelectNav: (state, action) => {
       const { navName, category } = action.payload;
-      const { selectedNav } = state.value;
+      const { selectedNav } = state;
 
       const removeOrAddNavName = selectedNav[category].includes(navName)
         ? selectedNav[category].filter((name) => name !== navName)
@@ -22,33 +20,38 @@ export const saleSlice = createSlice({
         ? [...selectedNav[category], navName]
         : [...selectedNav[category]];
 
-      state.value.selectedNav[category] = removeOrAddNavName;
+      state.selectedNav[category] = removeOrAddNavName;
     },
     onSelectAllNav: (state, action) => {
       const { category } = action.payload;
-      const { selectedNav } = state.value;
-      selectedNav[category].length !== 0 && (state.value.selectedNav[category] = []);
+      const { selectedNav } = state;
+      selectedNav[category].length !== 0 && (state.selectedNav[category] = []);
+    },
+    resetFetchApi: (state = {}, action) => {
+      state.fetchApi.data = [...action.payload];
     },
     addFetchApi: (state, action) => {
-      state.value.fetchApi.data = [...action.payload];
+      const { data } = state.fetchApi;
+      state.fetchApi.data = [...data, ...action.payload];
+      state.fetchApi.startIdx += 50;
     },
     addShowApi: (state, action) => {
       const { showStartIdx, showEndIdx } = action.payload;
-      const showApiData = state.value.showApi.data;
-      const fetchApiData = state.value.fetchApi.data;
-      state.value.showApi.data = [...showApiData, ...fetchApiData.slice(showStartIdx, showEndIdx + 1)];
+      const showApiData = state.showApi.data;
+      const fetchApiData = state.fetchApi.data;
+      state.showApi.data = [...showApiData, ...fetchApiData.slice(showStartIdx, showEndIdx + 1)];
     },
     addPageNum: (state) => {
-      const pageNum = state.value.showApi.pageNum;
-      state.value.showApi.pageNum = pageNum + 1;
+      const pageNum = state.showApi.pageNum;
+      state.showApi.pageNum = pageNum + 1;
     },
   },
 });
 
-export const { onSelectNav, onSelectAllNav, addFetchApi, addShowApi, addPageNum } = saleSlice.actions;
+export const { onSelectNav, onSelectAllNav, resetFetchApi, addFetchApi, addShowApi, addPageNum } = saleSlice.actions;
 
-export const showApiData = () => async (dispatch, getState) => {
-  const { countUnit, pageNum } = getState().sale.value.showApi;
+export const showApiData = () => (dispatch, getState) => {
+  const { countUnit, pageNum } = getState().sale.showApi;
   const showStartIdx = countUnit * (pageNum - 1);
   const showEndIdx = countUnit * pageNum - 1;
   dispatch(addShowApi({ showStartIdx, showEndIdx }));

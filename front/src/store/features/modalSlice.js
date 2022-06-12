@@ -1,25 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialStateValue = {
+const initialState = {
   isModal: { joinTerm: undefined, productReview: false },
 };
 
 export const modalSlice = createSlice({
   name: 'modal',
-  initialState: {
-    value: initialStateValue,
-  },
+  initialState,
   reducers: {
     onModalOpen: (state, action) => {
       const { component, isModal } = action.payload;
-      state.value.isModal[component] = isModal;
+      state.isModal[component] = isModal;
     },
     onModalClose: (state) => {
-      const isModal = { ...state.value.isModal };
+      const isModal = { ...state.isModal };
       const openModalName = Object.keys(isModal).find((key) => {
         return !!isModal[key];
       });
-      state.value.isModal[openModalName] = undefined;
+      state.isModal[openModalName] = undefined;
     },
   },
 });
