@@ -11,8 +11,8 @@ import { MainReviewForm } from '../../styles/product/review_form.js';
 const ReviewForm = () => {
   const textAreaElement = useRef();
   let { id: productId } = useParams();
-  const { userId } = useSelector((state) => state.page.value);
-  const { score, content } = useSelector((state) => state.product.value.newReview);
+  const { userId } = useSelector((state) => state.page);
+  const { score, content } = useSelector((state) => state.product.newReview);
   const dispatch = useDispatch();
   const createReview = () => {
     axios.post('http://localhost:8888/product/addReview', { userId, productId, score, content }).then((res, req) => {

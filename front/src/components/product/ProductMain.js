@@ -6,7 +6,7 @@ import { MainProduct } from '../../styles/product/product_main';
 
 const ProductMain = () => {
   let { id } = useParams();
-  const showApiData = useSelector((state) => state.sale.value.showApi.data);
+  const showApiData = useSelector((state) => state.sale.showApi.data);
   const selectedProductIndex = showApiData.findIndex((prod) => prod.id === parseInt(id));
 
   const selectedProduct = showApiData[selectedProductIndex];

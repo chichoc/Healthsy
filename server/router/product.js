@@ -22,7 +22,7 @@ router.post('/getReviews', async (req, res, next) => {
   const { productId } = await req.body;
 
   db.execute(
-    'SELECT users.name, review.score, review.content, review.reg_date FROM (SELECT * FROM reviews WHERE prod_id = ?) review join users on review.user_id = users.id',
+    'SELECT users.name, review.score, review.content, date_format(review.reg_date,"%Y년 %m월 %d일") as date FROM (SELECT * FROM reviews WHERE prod_id = ?) review join users on review.user_id = users.id',
     [productId],
     (error, result) => {
       if (error) next(error);
