@@ -1,11 +1,15 @@
 import React from 'react';
+import MyMain from '../components/mypage/MyMain';
+import MyMenu from '../components/mypage/MyMenu';
+import withPage from './withPage';
 
 const MyPage = () => {
   return (
-    <>
-      <h1>마이페이지</h1>
-    </>
+    <div className='horizontal_flex'>
+      <MyMenu />
+      <MyMain />
+    </div>
   );
 };
 
-export default MyPage;
+export default withPage(MyPage);

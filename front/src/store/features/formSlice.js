@@ -1,15 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 const initialState = {
   inputValue: {
-    check: { checkAge: false, checkService: false, checkInfo: false, checkMarketing: false },
+    check: { checkAge: true, checkService: true, checkInfo: true, checkMarketing: false },
     verifyEmail: false,
     inputEmailId: '',
   },
   focusedInputName: {},
   isCheckAll: false,
   isDisabled: true,
+  status: 'idle',
 };
+// join: email, emailVerifyCode, password, passwordCheck, userName, phoneNumber
+
+export const fetchUserInfo = createAsyncThunk('mypage/fetchUserInfo', async (userId) => {
+  const response = await axios.post('http://localhost:8888/mypage/fetchUserInfo', {
+    userId,
+  });
+  return response.data.result;
+});
 
 export const formSlice = createSlice({
   name: 'form',
@@ -77,6 +87,20 @@ export const formSlice = createSlice({
       const { inputValue } = state;
       state.inputValue = { ...inputValue, verifyEmail: true };
     },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(fetchUserInfo.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchUserInfo.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.reviews = state.inputValue.concat(action.payload);
+      })
+      .addCase(fetchUserInfo.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 

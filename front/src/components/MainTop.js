@@ -6,13 +6,14 @@ import { BsHeart } from 'react-icons/bs';
 import { BsPerson } from 'react-icons/bs';
 import axios from 'axios';
 import dataNotice from '../assets/api/dataNotice';
-import { Nav, Ul } from '../styles/main_top';
+import { Nav, Ul, ClickMenu } from '../styles/main_top';
 
 const MainTop = () => {
   const [notice, setNotice] = useState(dataNotice);
+  const [openMenu, setOpenMenu] = useState(false);
   const noticeTitle = notice[notice.length - 1].title;
 
-  const page = useSelector((state) => state.page.value);
+  const page = useSelector((state) => state.page);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -27,36 +28,34 @@ const MainTop = () => {
     <Nav className='horizontal_flex' align='center'>
       <Link to='/help'>[공지사항] {noticeTitle}</Link>
 
-      {page.isLogin ? (
-        // 로그인한 상태
-        <Ul className='horizontal_flex' align='center'>
-          <li>
-            <Link to='/login'>
-              <BsHeart title={'찜'} size={20} />
-            </Link>
+      <Ul className='horizontal_flex' align='center'>
+        <li>
+          <Link to='/login'>
+            <BsHeart title={'찜'} size={20} />
+          </Link>
+        </li>
+        {page.isLogin ? (
+          // 로그인한 상태
+          <li
+            onClick={() => {
+              setOpenMenu(!openMenu);
+            }}
+          >
+            <BsPerson title={'마이페이지'} size={24} />
+            <ClickMenu open={openMenu}>
+              <li>
+                <Link to='/mypage'>마이페이지</Link>
+              </li>
+              <li onClick={onLogout}>로그아웃</li>
+            </ClickMenu>
           </li>
-          <li>
-            <Link to='/mypage'>
-              <BsPerson title={'마이페이지'} size={24} />
-            </Link>
-          </li>
-          <li>
-            <button onClick={onLogout}>로그아웃</button>
-          </li>
-        </Ul>
-      ) : (
-        // 로그인하지 않은 상태
-        <Ul className='horizontal_flex' align='center'>
-          <li>
-            <Link to='/login'>
-              <BsHeart title={'찜'} size={20} />
-            </Link>
-          </li>
+        ) : (
+          // 로그인하지 않은 상태
           <li>
             <Link to='/login'>로그인</Link>
           </li>
-        </Ul>
-      )}
+        )}
+      </Ul>
     </Nav>
   );
 };
