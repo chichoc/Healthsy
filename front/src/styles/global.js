@@ -37,19 +37,23 @@ const global = () => {
             cursor: pointer;
           }
 
-          .horizontal_flex {
+          .horizontal_flex,
+          .horizontal_flex_button {
             display: flex;
             flex-flow: row wrap;
             justify-content: space-between;
-            /* align-items: props.align; */
+          }
+
+          .horizontal_flex_button {
+            flex-flow: row nowrap;
           }
 
           .vertical_flex {
             display: flex;
             flex-flow: column wrap;
             justify-content: space-between;
-            /* align-items: props.align; */
           }
+
           html,
           body {
             height: 100%;

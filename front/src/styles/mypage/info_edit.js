@@ -23,7 +23,7 @@ const Form = styled.form`
   }
 
   button {
-    padding: 15px 20px;
+    width: 200px;
   }
 `;
 

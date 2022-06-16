@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserInfo } from '../../store/features/formSlice';
 import InputForm from '../form/InputForm';
 import JoinTerms from '../form/join/JoinTerms';
-import { Join, Title, Form, Button } from '../../styles/mypage/info_edit';
+import { Join, Title, Form } from '../../styles/mypage/info_edit';
+import PrimaryButton from '../form/PrimaryButton';
 
 const InfoEdit = () => {
   const dispatch = useDispatch();
@@ -70,15 +71,11 @@ const InfoEdit = () => {
             <label for='sexFemale'>여자</label>
           </div>
 
-          <div>
-            <Button type='submit' className='oval join_btn'>
-              돌아가기
-            </Button>
-            <Button type='submit' className='oval join_btn'>
-              수정하기
-            </Button>
-            <button>탈퇴하기</button>
+          <div className='horizontal_flex_button'>
+            <PrimaryButton buttonName={'돌아가기'} className={'cancel'} />
+            <PrimaryButton type={'submit'} buttonName={'수정하기'} />
           </div>
+          <button>탈퇴하기</button>
         </Form>
       </Join>
     </>

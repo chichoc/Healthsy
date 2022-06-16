@@ -5,6 +5,7 @@ import { onModalClose } from '../../store/features/modalSlice';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import withModal from '../withModal';
+import PrimaryButton from '../form/PrimaryButton';
 import { BsStarFill } from 'react-icons/bs';
 import { MainReviewForm } from '../../styles/product/review_form.js';
 
@@ -32,9 +33,9 @@ const ReviewForm = () => {
           {starScore.map((score, index) => (
             <BsStarFill
               key={index}
+              className={'score_icon'}
               title={score}
               size={40}
-              color='#E8F3F1'
               onClick={() => {
                 dispatch(onChangeScore(parseInt(score)));
               }}
@@ -57,9 +58,9 @@ const ReviewForm = () => {
         ></textarea>
         {/* 사진 첨부하기 */}
       </section>
-      <div>
-        <button onClick={() => dispatch(onModalClose())}>취소</button>
-        <button onClick={() => createReview()}>등록</button>
+      <div className='horizontal_flex_button '>
+        <PrimaryButton buttonName={'취소하기'} onClickMethod={() => dispatch(onModalClose())} />
+        <PrimaryButton buttonName={'등록하기'} type={'submit'} onClickMethod={() => createReview()} />
       </div>
     </MainReviewForm>
   );

@@ -2,10 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import JoinTerms from './JoinTerms';
 import InputForm from '../InputForm';
-import { Join, Title, Form, Button } from '../../../styles/join_form';
+import { Join, Title, Form } from '../../../styles/form/join/join_form';
+import PrimaryButton from '../PrimaryButton';
 
 const JoinForm = ({ sendEmail, verifyEmail, onClickJoin }) => {
-  const isDisabled = useSelector((state) => state.form.value.isDisabled);
+  const isDisabled = useSelector((state) => state.form.isDisabled);
 
   return (
     <Join>
@@ -61,9 +62,7 @@ const JoinForm = ({ sendEmail, verifyEmail, onClickJoin }) => {
           />
         </div>
         <JoinTerms />
-        <Button type='submit' className='oval join_btn' disabled={isDisabled} onClick={onClickJoin}>
-          가입하기
-        </Button>
+        <PrimaryButton type='submit' disabled={isDisabled} buttonName={'가입하기'} onClickMethod={onClickJoin} />
       </Form>
     </Join>
   );
