@@ -1,24 +1,24 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { UlProdReview } from '../../styles/product/review_pagination';
 
 const ReviewPagination = ({ pageTotal, limit, page, setPage }) => {
   const numPages = Math.ceil(pageTotal / limit);
 
   return (
     <>
-      <nav>
-        <button onClick={() => setPage(page - 1)} disabled={page === 1}>
+      <UlProdReview className='horizontal_flex'>
+        <button className='prev_arrow' onClick={() => setPage(page - 1)} disabled={page === 1}>
           &lt;
         </button>
-        {[...Array(numPages)].map((_, i) => (
-          <button key={i} onClick={() => setPage(i + 1)}>
-            {i + 1}
-          </button>
+        {[...Array(numPages)].map((_, index) => (
+          <li key={index}>
+            <button onClick={() => setPage(index + 1)}>{index + 1}</button>
+          </li>
         ))}
-        <button onClick={() => setPage(page + 1)} disabled={page === numPages}>
+        <button className='next_arrow' onClick={() => setPage(page + 1)} disabled={page === numPages}>
           &gt;
         </button>
-      </nav>
+      </UlProdReview>
     </>
   );
 };

@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
 import dataProductNav from '../../assets/api/dataProductNav';
-import { SectionProduct, NavProduct, ArticleProduct } from '../../styles/product/product_nav';
+import { DivProduct, NavProduct, SectionProduct } from '../../styles/product/product_nav';
 
 const ProductNav = () => {
   const [showComponent, setShowComponent] = useState(0);
 
   return (
-    <SectionProduct>
+    <DivProduct>
       <NavProduct className='horizontal_flex'>
         {dataProductNav.map((nav, index) => (
           <button
+            key={index}
+            className={index === showComponent && 'selectedNav'}
             onClick={() => {
               setShowComponent(index);
             }}
-            key={index}
           >
             {nav.name}
           </button>
         ))}
       </NavProduct>
-      <ArticleProduct>{dataProductNav[showComponent].component}</ArticleProduct>
-    </SectionProduct>
+      <SectionProduct>{dataProductNav[showComponent].component}</SectionProduct>
+    </DivProduct>
   );
 };
 

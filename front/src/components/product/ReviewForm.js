@@ -5,7 +5,7 @@ import { onModalClose } from '../../store/features/modalSlice';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import withModal from '../withModal';
-import PrimaryButton from '../form/PrimaryButton';
+import PrimaryButton from '../reusable/PrimaryButton';
 import { BsStarFill } from 'react-icons/bs';
 import { MainReviewForm } from '../../styles/product/review_form.js';
 
@@ -13,37 +13,44 @@ const ReviewForm = () => {
   const textAreaElement = useRef();
   let { id: productId } = useParams();
   const { userId } = useSelector((state) => state.page);
-  const { score, content } = useSelector((state) => state.product.newReview);
+  const { score: newScore, content } = useSelector((state) => state.product.newReview);
   const dispatch = useDispatch();
   const createReview = () => {
-    axios.post('http://localhost:8888/product/addReview', { userId, productId, score, content }).then((res, req) => {
+    axios.post('http://localhost:8888/product/addReview', { userId, productId, newScore, content }).then((res, req) => {
       if (res.data.addReview) {
         alert('후기 남겨주셔서 감사합니다!');
       }
     });
   };
 
-  const starScore = ['1점', '2점', '3점', '4점', '5점'];
+  const starScores = ['1점', '2점', '3점', '4점', '5점'];
 
   return (
-    <MainReviewForm>
+    <MainReviewForm className='vertical_flex'>
       <section>
         <h2>제품 만족도</h2>
         <div>
-          {starScore.map((score, index) => (
-            <BsStarFill
-              key={index}
-              className={'score_icon'}
-              title={score}
-              size={40}
-              onClick={() => {
-                dispatch(onChangeScore(parseInt(score)));
-              }}
-            />
-            // #9EEC8A
-          ))}
+          <div className='star_scores horizontal_flex'>
+            {starScores.map((score, index) => (
+              <BsStarFill
+                key={index}
+                className={newScore >= parseInt(score) ? 'score_icon score_select' : 'score_icon'}
+                title={score}
+                size={40}
+                onClick={() => {
+                  dispatch(onChangeScore(parseInt(score)));
+                }}
+              />
+            ))}
+          </div>
+          {newScore !== 0 ? (
+            <h4>
+              {newScore}점<span>/ 5점</span>
+            </h4>
+          ) : (
+            <p className='score_comment'>별점을 눌러 평가해주세요</p>
+          )}
         </div>
-        <p>별점을 눌러 평가해주세요</p>
       </section>
       <section className='vertical_flex'>
         <label htmlFor='review'>
@@ -52,7 +59,7 @@ const ReviewForm = () => {
         <textarea
           id='review'
           name='review'
-          placeholder='최소 10자 이상'
+          placeholder='최소 10자 이상 입력해주세요.'
           ref={textAreaElement}
           onChange={() => dispatch(onChangeTextArea(textAreaElement.current.value))}
         ></textarea>

@@ -6,9 +6,10 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Modal from '../../Modal';
 import ReviewForm from './ReviewForm';
+import ReviewSort from './ReviewSort';
 import ReviewPagination from './ReviewPagination.js';
 import { BsStarFill } from 'react-icons/bs';
-import { HeaderProdReview } from '../../styles/product/product_review';
+import { HeaderProdReview, DivProdReview } from '../../styles/product/product_review';
 
 const ProductReview = () => {
   const dispatch = useDispatch();
@@ -35,26 +36,12 @@ const ProductReview = () => {
     );
   }
 
-  const renderedReviews = reviews.slice(offset, offset + limit).map((review, index) => (
-    <article key={index}>
-      <div>
-        {[...Array(review.score)].map((_, i) => (
-          <BsStarFill key={i} title={review.score} size={25} color='#9EEC8A' />
-        ))}
-        <span>{review.name} </span>
-        {review.date}
-      </div>
-      <h4>{review.content}</h4>
-    </article>
-  ));
-
   return (
     <>
       <HeaderProdReview className='horizontal_flex'>
-        <h1>후기 (개수) 평균 별점</h1>
+        <h1>후기 (개수)건 평균 (평균 별점)/5점</h1>
         {/* 별점 차트 */}
-        {/* 도움순 최신순 */}
-        <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>리뷰쓰기</button>
+        <ReviewSort />
       </HeaderProdReview>
 
       {isModal && (
@@ -62,10 +49,28 @@ const ProductReview = () => {
           <ReviewForm termHeader={'리뷰쓰기'} />
         </Modal>
       )}
+      <DivProdReview>
+        {reviews.slice(offset, offset + limit).map((review, index) => (
+          <article key={index}>
+            <h2>
+              {[...Array(5)].map((_, index) => (
+                <BsStarFill
+                  key={index}
+                  title={review.score + '점'}
+                  size={20}
+                  className={review.score >= index + 1 ? 'score_icon score_select' : 'score_icon'}
+                />
+              ))}
+              <span>{review.date}</span>
+              <span>{review.name}</span>
+            </h2>
+            <h4>{review.content}</h4>
+          </article>
+        ))}
 
-      {renderedReviews}
-
-      {reviews && <ReviewPagination pageTotal={pageTotal} limit={limit} page={page} setPage={setPage} />}
+        {reviews && <ReviewPagination pageTotal={pageTotal} limit={limit} page={page} setPage={setPage} />}
+        <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>리뷰쓰기</button>
+      </DivProdReview>
     </>
   );
 };
