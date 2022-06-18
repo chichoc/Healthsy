@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const Header = styled.nav`
+const NavMain = styled.nav`
   height: 100px;
   align-items: ${(props) => props.align};
   justify-content: space-between;
@@ -11,14 +11,14 @@ const Header = styled.nav`
   }
 `;
 
-const HeaderLogo = styled.span`
+const LogoMain = styled.span`
   padding-right: 40px;
   flex: 1 0 auto;
   font-size: 40px;
   font-family: 'Rokkitt', serif;
 `;
 
-const Ul = styled.ul`
+const UlMain = styled.ul`
   align-items: ${(props) => props.align};
   max-width: 700px;
   flex: 1 1 auto;
@@ -28,4 +28,4 @@ const Ul = styled.ul`
   }
 `;
 
-export { Header, HeaderLogo, Ul };
+export { NavMain, LogoMain, UlMain };

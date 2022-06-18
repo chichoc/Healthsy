@@ -24,8 +24,9 @@ const Term = styled.div`
     padding: 10px 0 10px 0;
   }
   nav h1 {
-    font-size: 20px;
+    font-size: 23px;
     font-weight: bold;
+    line-height: 38px;
   }
   nav button {
     color: #ababab;

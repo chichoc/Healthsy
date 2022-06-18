@@ -1,21 +1,18 @@
 import React from 'react';
-import { SortNav } from '../../styles/sale/sale_sort';
-import sortList from '../../assets/api/dataSaleSort';
+import { DivSaleSort } from '../../styles/sale/sale_sort';
+import dataSaleSort from '../../assets/api/dataSaleSort';
+import SortUl from '../reusable/SortUl';
 
 const SaleSort = () => {
   return (
-    <SortNav className='horizontal_flex'>
-      <ul>
-        {sortList.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
+    <DivSaleSort className='horizontal_flex'>
+      <SortUl dataToMap={dataSaleSort} />
       <select>
         <option defaultValue='9'>9개씩</option>
         <option value='16'>16개씩</option>
         <option value='25'>25개씩</option>
       </select>
-    </SortNav>
+    </DivSaleSort>
   );
 };
 

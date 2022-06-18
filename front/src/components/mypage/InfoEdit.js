@@ -4,7 +4,7 @@ import { fetchUserInfo } from '../../store/features/formSlice';
 import InputForm from '../form/InputForm';
 import JoinTerms from '../form/join/JoinTerms';
 import { Join, Title, Form } from '../../styles/mypage/info_edit';
-import PrimaryButton from '../form/PrimaryButton';
+import PrimaryButton from '../reusable/PrimaryButton';
 
 const InfoEdit = () => {
   const dispatch = useDispatch();
@@ -66,9 +66,9 @@ const InfoEdit = () => {
           </div>
           <div>
             <input type='radio' id='sexmale' name='checkSex' value='male'></input>
-            <label for='sexmale'>남자</label>
+            <label htmlFor='sexmale'>남자</label>
             <input type='radio' id='sexFemale' name='checkSex' value='female'></input>
-            <label for='sexFemale'>여자</label>
+            <label htmlFor='sexFemale'>여자</label>
           </div>
 
           <div className='horizontal_flex_button'>

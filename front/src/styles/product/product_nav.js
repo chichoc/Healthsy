@@ -24,6 +24,10 @@ const NavProduct = styled.nav`
     background-color: #ffffff;
     border: solid 0.5px #b0b0b0;
     border-bottom: none;
+    border-left: none;
+  }
+  button.selectedNav:first-of-type {
+    border-left: solid 0.5px #b0b0b0;
   }
 `;
 const SectionProduct = styled.section`

@@ -4,13 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { onLogIn } from '../store/features/pageSlice';
 import axios from 'axios';
 import MainFooter from '../components/MainFooter';
-import MainHeader from '../components/MainHeader';
+import MainNav from '../components/MainNav';
 import MainTop from '../components/MainTop';
 import { IconContext } from 'react-icons';
 
 const withPage = (WrappedComponent) => {
   const Component = () => {
-    const isLogin = useSelector((state) => state.page.value.isLogin);
+    const isLogin = useSelector((state) => state.page.isLogin);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -36,7 +36,7 @@ const withPage = (WrappedComponent) => {
       <>
         <IconContext.Provider value={{ className: 'react-icons' }}>
           <MainTop />
-          <MainHeader />
+          <MainNav />
           <WrappedComponent />
           <MainFooter />
         </IconContext.Provider>

@@ -1,18 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Header, HeaderLogo, Ul } from '../styles/main_header';
-import dataMainMenu from '../assets/api/dataMainMenu';
 import { BsSearch } from 'react-icons/bs';
+import dataMainMenu from '../assets/api/dataMainMenu';
+import { NavMain, LogoMain, UlMain } from '../styles/main_nav';
 
-const MainHeader = () => {
+const MainNav = () => {
   return (
-    <Header className='horizontal_flex' align='center'>
-      <HeaderLogo>
+    <NavMain className='horizontal_flex' align='center'>
+      <LogoMain>
         <Link to='/' className='logo'>
           Healthsy
         </Link>
-      </HeaderLogo>
-      <Ul className='horizontal_flex' align='center'>
+      </LogoMain>
+      <UlMain className='horizontal_flex' align='center'>
         {dataMainMenu.map((menu, index) => (
           <li key={index.toString()}>
             <Link to={menu.link}>{menu.name}</Link>
@@ -21,9 +21,9 @@ const MainHeader = () => {
         <li>
           <BsSearch title={'검색'} size={19} />
         </li>
-      </Ul>
-    </Header>
+      </UlMain>
+    </NavMain>
   );
 };
 
-export default MainHeader;
+export default MainNav;

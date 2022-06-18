@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import JoinTerms from './JoinTerms';
 import InputForm from '../InputForm';
 import { Join, Title, Form } from '../../../styles/form/join/join_form';
-import PrimaryButton from '../PrimaryButton';
+import PrimaryButton from '../../reusable/PrimaryButton';
 
 const JoinForm = ({ sendEmail, verifyEmail, onClickJoin }) => {
   const isDisabled = useSelector((state) => state.form.isDisabled);

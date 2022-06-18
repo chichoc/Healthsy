@@ -11,7 +11,7 @@ const ProductNav = () => {
         {dataProductNav.map((nav, index) => (
           <button
             key={index}
-            className={index === showComponent && 'selectedNav'}
+            className={index === showComponent ? 'selectedNav' : ''}
             onClick={() => {
               setShowComponent(index);
             }}
