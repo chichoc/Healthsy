@@ -15,12 +15,22 @@ const initialState = {
   //     thumbsDown: 0,
   //   },
   // },
-  status: 'idle',
+  count: { reviews: undefined, score: 0 },
+  status: { fetch: 'idle', count: 'idle' },
   error: null,
 };
 
-export const fetchReviews = createAsyncThunk('products/fetchReviews', async (productId) => {
+export const fetchReviews = createAsyncThunk('products/fetchReviews', async ({ productId, startIdx, endIdx }) => {
   const response = await axios.post('http://localhost:8888/product/getReviews', {
+    productId,
+    startIdx,
+    endIdx,
+  });
+  return response.data.result;
+});
+
+export const countReviews = createAsyncThunk('products/countReviews', async (productId) => {
+  const response = await axios.post('http://localhost:8888/product/countReviews', {
     productId,
   });
   return response.data.result;
@@ -46,19 +56,32 @@ export const productSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchReviews.pending, (state, action) => {
-        state.status = 'loading';
+        state.status.fetch = 'loading';
       })
       .addCase(fetchReviews.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.reviews = state.reviews.concat(action.payload);
+        state.status.fetch = 'succeeded';
+        state.reviews = [...action.payload];
       })
       .addCase(fetchReviews.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status.fetch = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(countReviews.pending, (state, action) => {
+        state.status.count = 'loading';
+      })
+      .addCase(countReviews.fulfilled, (state, action) => {
+        const { reviews, score } = action.payload[0];
+        state.status.count = 'succeeded';
+        state.count.reviews = reviews;
+        state.count.score = score;
+      })
+      .addCase(countReviews.rejected, (state, action) => {
+        state.status.count = 'failed';
         state.error = action.error.message;
       });
   },
 });
 
-export const { commaToPrice, onChangeTextArea, onChangeScore, getReviews } = productSlice.actions;
+export const { commaToPrice, onChangeTextArea, onChangeScore } = productSlice.actions;
 
 export default productSlice.reducer;

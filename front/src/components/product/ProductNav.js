@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import dataProductNav from '../../assets/api/dataProductNav';
 import { DivProduct, NavProduct, SectionProduct } from '../../styles/product/product_nav';
 
 const ProductNav = () => {
   const [showComponent, setShowComponent] = useState(0);
+  const { reviews: countTotalReviews } = useSelector((state) => state.product.count);
 
   return (
     <DivProduct>
@@ -17,6 +19,7 @@ const ProductNav = () => {
             }}
           >
             {nav.name}
+            {index === 1 && ` (${countTotalReviews})`}
           </button>
         ))}
       </NavProduct>

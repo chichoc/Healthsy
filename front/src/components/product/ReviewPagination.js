@@ -1,23 +1,49 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { UlProdReview } from '../../styles/product/review_pagination';
 
-const ReviewPagination = ({ pageTotal, limit, page, setPage }) => {
-  const numPages = Math.ceil(pageTotal / limit);
+const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
+  const countTotalReviews = useSelector((state) => state.product.count.reviews);
+  const maxPage = Math.ceil(countTotalReviews / pageUnit);
+  const maxPageOffset = maxPage - (maxPage % pageUnit) + 1;
+  const [pageOffset, setPageOffset] = useState(1);
 
   return (
     <>
       <UlProdReview className='horizontal_flex'>
-        <button className='prev_arrow' onClick={() => setPage(page - 1)} disabled={page === 1}>
-          &lt;
-        </button>
-        {[...Array(numPages)].map((_, index) => (
+        {pageOffset !== 1 && (
+          <button
+            className='prev_arrow'
+            onClick={() => {
+              setCurrentPage(pageOffset - 10);
+              setPageOffset(pageOffset - 10);
+            }}
+          >
+            &lt;
+          </button>
+        )}
+
+        {[...Array(pageOffset === maxPageOffset ? maxPage % pageUnit : pageUnit)].map((_, index) => (
           <li key={index}>
-            <button onClick={() => setPage(index + 1)}>{index + 1}</button>
+            <button
+              className={pageOffset + index === currentPage ? 'selectedBtn' : ''}
+              onClick={() => setCurrentPage(pageOffset + index)}
+            >
+              {pageOffset + index}
+            </button>
           </li>
         ))}
-        <button className='next_arrow' onClick={() => setPage(page + 1)} disabled={page === numPages}>
-          &gt;
-        </button>
+        {pageOffset < maxPageOffset && (
+          <button
+            className='next_arrow'
+            onClick={() => {
+              setCurrentPage(pageOffset + 10);
+              setPageOffset(pageOffset + 10);
+            }}
+          >
+            &gt;
+          </button>
+        )}
       </UlProdReview>
     </>
   );
