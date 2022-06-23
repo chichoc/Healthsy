@@ -2,6 +2,28 @@ import styled from '@emotion/styled';
 
 const HeaderProdReview = styled.section`
   margin: 20px 0px;
+  h1,
+  div {
+    margin-bottom: 20px;
+  }
+  div {
+    justify-content: flex-start;
+    font-size: 18px;
+    h2 {
+      margin-right: 5px;
+    }
+    h2,
+    span {
+      line-height: 30px;
+      margin-right: 5px;
+    }
+    span:nth-last-of-type(2) {
+      margin-right: 1px;
+    }
+    span.perfect_score {
+      color: #b8b8b8;
+    }
+  }
 `;
 
 const DivProdReview = styled.div`

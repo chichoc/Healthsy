@@ -49,13 +49,15 @@ const ProductReview = () => {
   return (
     <>
       <HeaderProdReview>
-        <h1>후기 ({countTotalReviews})</h1>
-        <h2>
-          구매만족도
+        <h1>총 {countTotalReviews}건의 후기가 있습니다.</h1>
+        <div className='horizontal_flex'>
+          <h2>구매 만족도</h2>
           <StarScore size={25} score={countAvgScore} />
-          <span>{countAvgScore}/5.0</span>
-          {/* 별점 차트 */}
-        </h2>
+          <span>{countAvgScore}</span>
+          <span className='perfect_score'>/</span>
+          <span className='perfect_score'>5.0</span>
+        </div>
+        {/* 별점 차트 */}
       </HeaderProdReview>
       <ReviewSort />
 

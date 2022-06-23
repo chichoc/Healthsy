@@ -18,6 +18,10 @@ const StarScore = ({ size = 20, score }) => {
 };
 
 const ScoreIcons = styled.span`
+  .score_icon,
+  .score_icon.score_select {
+    vertical-align: middle;
+  }
   .score_icon {
     color: #e8f3f1;
     margin-bottom: 5px;
