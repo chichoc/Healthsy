@@ -1,11 +1,21 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
 
 const SortUl = ({ dataToMap }) => {
+  const [selectedIdx, setSelectedIdx] = useState(0);
+
   return (
     <Ul className='horizontal_flex'>
       {dataToMap.map((item, index) => (
-        <li key={index}>{item} </li>
+        <li
+          key={index}
+          className={selectedIdx === index ? 'selected' : ''}
+          onClick={() => {
+            setSelectedIdx(index);
+          }}
+        >
+          {item.name}
+        </li>
       ))}
     </Ul>
   );
@@ -29,6 +39,10 @@ const Ul = styled.ul`
     font-size: 13px;
     vertical-align: top;
     margin-right: 3px;
+  }
+  li.selected {
+    color: #000000;
+    font-weight: bold;
   }
 `;
 
