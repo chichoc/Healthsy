@@ -7,6 +7,7 @@ const initialState = {
   reviews: [],
   // {
   //   id: '',
+  //   score:'',
   //   content: '',
   //   user: '',
   //   date: '',
@@ -15,16 +16,16 @@ const initialState = {
   //     thumbsDown: 0,
   //   },
   // },
+  fetch: { sort: '', type: '' },
   count: { reviews: undefined, score: 0 },
   status: { fetch: 'idle', count: 'idle' },
   error: null,
 };
 
-export const fetchReviews = createAsyncThunk('products/fetchReviews', async ({ productId, startIdx, endIdx }) => {
+export const fetchReviews = createAsyncThunk('products/fetchReviews', async ({ productId, prevIdx }) => {
   const response = await axios.post('http://localhost:8888/product/getReviews', {
     productId,
-    startIdx,
-    endIdx,
+    prevIdx,
   });
   return response.data.result;
 });

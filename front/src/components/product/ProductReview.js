@@ -9,6 +9,7 @@ import ReviewSort from './ReviewSort';
 import ReviewPagination from './ReviewPagination.js';
 import { HeaderProdReview, DivProdReview } from '../../styles/product/product_review';
 import StarScore from '../reusable/StarScore';
+import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
 
 const ProductReview = () => {
   const dispatch = useDispatch();
@@ -28,8 +29,7 @@ const ProductReview = () => {
         dispatch(
           fetchReviews({
             productId,
-            startIdx: countTotalReviews - currentPage * pageUnit,
-            endIdx: countTotalReviews - currentPage * pageUnit + pageUnit,
+            prevIdx: currentPage === 1 ? '' : reviews[9].id,
           })
         );
     }
@@ -69,13 +69,24 @@ const ProductReview = () => {
 
       <DivProdReview>
         {reviews.map((review, index) => (
-          <article key={index}>
+          <article key={index} className='horizontal_flex'>
             <h2>
               <StarScore score={review.score} />
               <span>{review.date}</span>
               <span>{review.name}</span>
+              <p>{review.content}</p>
             </h2>
-            <h4>{review.content}</h4>
+            <h4 className='horizontal_flex'>
+              <img src='' alt='사진' />
+              <div>
+                <button>
+                  <GoThumbsup /> <span>{review.thumbsUp}</span>
+                </button>
+                <button>
+                  <GoThumbsdown />
+                </button>
+              </div>
+            </h4>
           </article>
         ))}
 
