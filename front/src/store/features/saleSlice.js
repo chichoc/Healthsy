@@ -1,10 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 const initialState = {
   selectedNav: { nutrient: [], brand: [], func: [] },
-  fetchApi: { data: [], countUnit: 20, startIdx: 0 },
+  fetchApi: { data: [], countUnit: 20, startIdx: 1 },
   showApi: { data: [], countUnit: 9, pageNum: 0 },
+  status: 'idle',
 };
+
+export const fetchProduct = createAsyncThunk('products/fetchProduct', async (productId) => {
+  const response = await axios.post('http://localhost:8888/product/fetchProduct', {
+    productId,
+  });
+  return response.data;
+});
 
 export const saleSlice = createSlice({
   name: 'sale',
@@ -27,13 +36,13 @@ export const saleSlice = createSlice({
       const { selectedNav } = state;
       selectedNav[category].length !== 0 && (state.selectedNav[category] = []);
     },
-    resetFetchApi: (state = {}, action) => {
+    resetFetchApi: (state, action) => {
       state.fetchApi.data = [...action.payload];
     },
     addFetchApi: (state, action) => {
       const { data } = state.fetchApi;
       state.fetchApi.data = [...data, ...action.payload];
-      state.fetchApi.startIdx += 50;
+      state.fetchApi.startIdx += 20;
     },
     addShowApi: (state, action) => {
       const { showStartIdx, showEndIdx } = action.payload;
@@ -45,6 +54,20 @@ export const saleSlice = createSlice({
       const pageNum = state.showApi.pageNum;
       state.showApi.pageNum = pageNum + 1;
     },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(fetchProduct.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchProduct.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.showApi.data = [...action.payload];
+      })
+      .addCase(fetchProduct.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 

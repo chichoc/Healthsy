@@ -3,6 +3,19 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config-mysql');
 
+router.post('/fetchProduct', async (req, res, next) => {
+  const { productId } = await req.body;
+
+  db.execute(
+    'SELECT id, api->"$.PRDLST_NM" as PRDLST_NM, brand, price, stock FROM products where id = ?',
+    [productId],
+    (error, result) => {
+      if (error) next(error);
+      else res.send(result);
+    }
+  );
+});
+
 router.post('/addReview', async (req, res, next) => {
   const { productId, userId, newScore, content } = await req.body;
 
@@ -37,7 +50,7 @@ router.post('/getReviews', async (req, res, next) => {
   const { productId, prevIdx, sort } = await req.body;
 
   const executeSql = `SELECT reviews.id, users.name, reviews.score, reviews.content, reviews.thumbs_up as thumbsUp, date_format(reviews.reg_date,"%Y.%m.%d.") as date 
-  FROM reviews join users on reviews.user_id = users.id  WHERE prod_id = ? `;
+  FROM reviews join users on reviews.user_id = users.id WHERE prod_id = ? `;
 
   const addExecuteSql =
     executeSql +
@@ -47,6 +60,17 @@ router.post('/getReviews', async (req, res, next) => {
       : `and reviews.id < ${prevIdx} ORDER BY reviews.id DESC limit 10`);
 
   db.execute(addExecuteSql, [productId], (error, result) => {
+    if (error) next(error);
+    else res.json({ result });
+  });
+});
+
+router.post('/addReviewThumbs', async (req, res, next) => {
+  const { reviewId, thumbs } = await req.body;
+
+  const executeSql = `UPDATE reviews SET thumbs_${thumbs} = reviews.thumbs_${thumbs} + 1 WHERE id=?`;
+
+  db.execute(executeSql, [reviewId], (error, result) => {
     if (error) next(error);
     else res.json({ result });
   });
