@@ -19,7 +19,7 @@ const ProductNav = () => {
             }}
           >
             {nav.name}
-            {index === 1 && ` (${countTotalReviews})`}
+            {index === 2 && ` (${countTotalReviews})`}
           </button>
         ))}
       </NavProduct>

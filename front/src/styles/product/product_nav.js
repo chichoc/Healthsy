@@ -7,7 +7,7 @@ const DivProduct = styled.div`
 const NavProduct = styled.nav`
   align-items: center;
   button {
-    width: 25%;
+    width: 33.3%;
     height: 50px;
     background-color: #f0f0f0;
     color: #344b47;

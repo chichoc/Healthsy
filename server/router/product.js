@@ -7,7 +7,7 @@ router.post('/fetchProduct', async (req, res, next) => {
   const { productId } = await req.body;
 
   db.execute(
-    'SELECT id, api->"$.PRDLST_NM" as PRDLST_NM, brand, price, stock FROM products where id = ?',
+    'SELECT id, brand, api->"$.PRDLST_NM" as PRDLST_NM, price, api->"$.PRDT_SHAP_CD_NM" as PRDT_SHAP_CD_NM, raw_material, stock FROM products where id = ?',
     [productId],
     (error, result) => {
       if (error) next(error);
