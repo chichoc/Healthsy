@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const UlProdReview = styled.ul`
-  margin: 10px 0px;
+  margin: 40px 0px;
   text-align: center;
   justify-content: center;
   li {
@@ -18,10 +18,8 @@ const UlProdReview = styled.ul`
   }
   button.prev_arrow,
   button.next_arrow {
-    color: #b8b8b8;
-    padding: 10px;
-    margin: 0 5px;
-    width: 30px;
+    padding: 10px 0;
+    margin: 0 5px; 
   }
   button.selectedBtn {
     background-color: #f0f0f0;

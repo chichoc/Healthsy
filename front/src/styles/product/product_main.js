@@ -15,20 +15,28 @@ const MainProduct = styled.main`
   }
   div h2,
   div h3 {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 25px;
   }
   div h3.product_brand {
     font-size: 16px;
     margin-bottom: 12px;
+    color: #404040;
   }
-  h4 div {
+  div h4.product_score {
+    margin-bottom: 10px;
+  }
+  div h4.product_info {
+    margin-top: 10px;
+  }
+  div h4.product_info div {
     justify-content: flex-start;
     flex-wrap: nowrap;
-    span {
+    margin-bottom: 5px;
+    p {
       width: 250px;
       margin-left: 10px;
-      word-break: break-word;
+      white-space: normal;
     }
   }
 `;
@@ -36,8 +44,12 @@ const MainProduct = styled.main`
 const BtnProduct = styled.div`
   button {
     margin: 10px 0;
+    padding: 0;
+    align-items: center;
   }
   span {
+    font-size: 15px;
+    margin-left: 5px;
   }
 `;
 

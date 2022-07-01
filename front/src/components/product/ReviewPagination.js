@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { UlProdReview } from '../../styles/product/review_pagination';
+import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
 
 const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
   const countTotalReviews = useSelector((state) => state.product.count.reviews);
@@ -12,6 +13,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
     <>
       <UlProdReview className='horizontal_flex'>
         {pageOffset !== 1 && (
+          // 이전 페이지 블록의 첫번째
           <button
             className='prev_arrow'
             onClick={() => {
@@ -19,7 +21,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
               setPageOffset(pageOffset - 10);
             }}
           >
-            &lt;
+            <AiOutlineDoubleLeft color='#707070' />
           </button>
         )}
 
@@ -34,6 +36,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
           </li>
         ))}
         {pageOffset < maxPageOffset && (
+          // 다음 페이지 블록의 첫번째
           <button
             className='next_arrow'
             onClick={() => {
@@ -41,7 +44,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
               setPageOffset(pageOffset + 10);
             }}
           >
-            &gt;
+            <AiOutlineDoubleRight color='#707070' className='arrow_icon' />
           </button>
         )}
       </UlProdReview>

@@ -29,36 +29,52 @@ const HeaderProdReview = styled.section`
 const DivProdReview = styled.div`
   article {
     border-bottom: 1px solid #e8e8e8;
-    padding: 10px 0 10px 5px;
+    padding: 20px 0 10px 5px;
+    height: 100px;
   }
-  article h2 {
-    margin-bottom: 10px;
+  .profile_review {
+    margin-right: 10px;
+    opacity: 0.4;
   }
-  article h2 span {
+  .profile_review img {
+    width: 35px;
+  }
+  .header_review span {
     color: #585858;
     font-size: 13px;
     vertical-align: middle;
     margin-left: 6px;
   }
-  article h2 span:first-of-type {
+  .header_review p {
+    margin-top: 10px;
+    margin-left: 2px;
+  }
+  .header_review span:first-of-type {
     margin-left: 0px;
   }
-  h4 {
-    margin: 10px 0;
+
+  .thumbs_buttons {
+    margin: 0 10px 0 30px;
+    justify-content: center;
   }
-  h4 div {
-    margin: auto 0;
+  .thumbs_buttons button {
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    padding: 6px;
+    width: 60px;
   }
-  h4 div button {
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 5px;
+  .thumbs_buttons button span {
+    vertical-align: middle;
+    margin-left: 5px;
+  }
+  .thumbs_buttons button:last-of-type {
+    margin-top: 10px;
   }
   h4 img {
     background-color: grey;
     width: 80px;
     height: 80px;
-    margin: 0 10px;
+    margin: 10px;
   }
 `;
 

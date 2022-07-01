@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../store/features/modalSlice';
-import { fetchReviews } from '../../store/features/productSlice';
+import { addReviewsThumbs, fetchReviews } from '../../store/features/productSlice';
 import { useParams } from 'react-router-dom';
 import Modal from '../../Modal';
 import ReviewForm from './ReviewForm';
 import ReviewSort from './ReviewSort';
 import ReviewPagination from './ReviewPagination.js';
-import { HeaderProdReview, DivProdReview } from '../../styles/product/product_review';
 import StarScore from '../reusable/StarScore';
+import { HeaderProdReview, DivProdReview } from '../../styles/product/product_review';
 import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
+import userProfileImg from '../../assets/img/userProfile.png';
 
 const ProductReview = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,11 @@ const ProductReview = () => {
   const { fetch: fetchStatus, count: countStatus } = useSelector((state) => state.product.status);
   const { reviews: countTotalReviews, score: countAvgScore } = useSelector((state) => state.product.count);
   const reviewsError = useSelector((state) => state.product.error);
+
+  const onChangeThumbs = (id, index) => {
+    reviews[index].thumbsUp += 1;
+    dispatch(addReviewsThumbs(id));
+  };
 
   useEffect(() => {
     if (countStatus === 'succeeded') {
@@ -49,7 +55,12 @@ const ProductReview = () => {
   return (
     <>
       <HeaderProdReview>
-        <h1>총 {countTotalReviews}건의 후기가 있습니다.</h1>
+        <div className='horizontal_flex'>
+          <h1>총 {countTotalReviews}건의 후기가 있습니다.</h1>
+          <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>
+            리뷰 작성하기
+          </button>
+        </div>
         <div className='horizontal_flex'>
           <h2>구매 만족도</h2>
           <StarScore size={25} score={countAvgScore} />
@@ -70,20 +81,29 @@ const ProductReview = () => {
       <DivProdReview>
         {reviews.map((review, index) => (
           <article key={index} className='horizontal_flex'>
-            <h2>
-              <StarScore score={review.score} />
-              <span>{review.date}</span>
-              <span>{review.name}</span>
-              <p>{review.content}</p>
+            <h2 className='horizontal_flex'>
+              <div className='profile_review'>
+                <img src={userProfileImg} alt='회원 이미지' />
+                {/* <a href='https://www.flaticon.com/free-icons/user' title='user icons'>
+                  User icons created by Smashicons - Flaticon
+                </a> */}
+              </div>
+              <div className='header_review'>
+                <StarScore score={review.score} />
+                <span>{review.date}</span>
+                <span>{review.name}</span>
+                <p>{review.content}</p>
+              </div>
             </h2>
             <h4 className='horizontal_flex'>
               <img src='' alt='사진' />
-              <div>
-                <button>
-                  <GoThumbsup /> <span>{review.thumbsUp}</span>
+              <div className='thumbs_buttons vertical_flex'>
+                <button onClick={(e, index) => {}}>
+                  <GoThumbsup color='#ff3333' size={15} />
+                  <span>{review.thumbsUp}</span>
                 </button>
-                <button>
-                  <GoThumbsdown />
+                <button onClick={(e) => {}}>
+                  <GoThumbsdown color='#505050' size={15} />
                 </button>
               </div>
             </h4>
@@ -91,7 +111,6 @@ const ProductReview = () => {
         ))}
 
         {reviews && <ReviewPagination pageUnit={pageUnit} currentPage={currentPage} setCurrentPage={setCurrentPage} />}
-        <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>리뷰쓰기</button>
       </DivProdReview>
     </>
   );
