@@ -18,6 +18,8 @@ const ProductReview = () => {
   const pageUnit = 10;
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevPage, setPrevPage] = useState(0);
+
   const isModal = useSelector((state) => state.modal.isModal.productReview);
   const reviews = useSelector((state) => state.product.reviews);
   const { fetch: fetchStatus, count: countStatus } = useSelector((state) => state.product.status);
@@ -35,11 +37,12 @@ const ProductReview = () => {
         dispatch(
           fetchReviews({
             productId,
-            prevIdx: currentPage === 1 ? '' : reviews[9].id,
+            currentPage,
+            pageNumDiffer: currentPage - prevPage,
           })
         );
     }
-  }, [countStatus, productId, dispatch, countTotalReviews, currentPage]);
+  }, [countStatus, productId, dispatch, countTotalReviews, currentPage, prevPage]);
 
   if (countTotalReviews === 0) {
     return (
@@ -110,7 +113,14 @@ const ProductReview = () => {
           </article>
         ))}
 
-        {reviews && <ReviewPagination pageUnit={pageUnit} currentPage={currentPage} setCurrentPage={setCurrentPage} />}
+        {reviews && (
+          <ReviewPagination
+            pageUnit={pageUnit}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            setPrevPage={setPrevPage}
+          />
+        )}
       </DivProdReview>
     </>
   );

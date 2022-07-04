@@ -22,13 +22,21 @@ const initialState = {
   error: null,
 };
 
-export const fetchReviews = createAsyncThunk('products/fetchReviews', async ({ productId, prevIdx }) => {
-  const response = await axios.post('http://localhost:8888/product/getReviews', {
-    productId,
-    prevIdx,
-  });
-  return response.data.result;
-});
+export const fetchReviews = createAsyncThunk(
+  'products/fetchReviews',
+  async ({ productId, currentPage, pageNumDiffer }, { getState }) => {
+    let cursorIdx = '';
+    if (currentPage !== 1) {
+      cursorIdx = pageNumDiffer > 0 ? getState().product.reviews[9].id : getState().product.reviews[0].id;
+    }
+    const response = await axios.post('http://localhost:8888/product/fetchReviews', {
+      productId,
+      cursorIdx,
+      pageNumDiffer,
+    });
+    return response.data.result;
+  }
+);
 
 export const countReviews = createAsyncThunk('products/countReviews', async (productId) => {
   const response = await axios.post('http://localhost:8888/product/countReviews', {
@@ -37,14 +45,18 @@ export const countReviews = createAsyncThunk('products/countReviews', async (pro
   return response.data.result;
 });
 
+export const addReviewsThumbs = createAsyncThunk('products/addReviewsThumbs', async (reviewId, thumbs) => {
+  const response = await axios.post('http://localhost:8888/product/addReviewsThumbs', {
+    reviewId,
+    thumbs,
+  });
+  return response.data.result;
+});
+
 export const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    commaToPrice: (state, action) => {
-      if (state.price < 1000) return state.price;
-      return state.price.toLocaleString();
-    },
     onChangeTextArea: (state, action) => {
       const { newReview } = state;
       state.newReview = { ...newReview, content: action.payload };

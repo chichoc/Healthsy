@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { UlProdReview } from '../../styles/product/review_pagination';
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
 
-const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
+const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage, setPrevPage }) => {
   const countTotalReviews = useSelector((state) => state.product.count.reviews);
   const maxPage = Math.ceil(countTotalReviews / pageUnit);
   const maxPageOffset = maxPage - (maxPage % pageUnit) + 1;
@@ -17,6 +17,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
           <button
             className='prev_arrow'
             onClick={() => {
+              setPrevPage(currentPage);
               setCurrentPage(pageOffset - 10);
               setPageOffset(pageOffset - 10);
             }}
@@ -29,7 +30,10 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
           <li key={index}>
             <button
               className={pageOffset + index === currentPage ? 'selectedBtn' : ''}
-              onClick={() => setCurrentPage(pageOffset + index)}
+              onClick={() => {
+                setPrevPage(currentPage);
+                setCurrentPage(pageOffset + index);
+              }}
             >
               {pageOffset + index}
             </button>
@@ -40,6 +44,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage }) => {
           <button
             className='next_arrow'
             onClick={() => {
+              setPrevPage(currentPage);
               setCurrentPage(pageOffset + 10);
               setPageOffset(pageOffset + 10);
             }}
