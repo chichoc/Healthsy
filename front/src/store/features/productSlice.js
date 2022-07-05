@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const initialState = {
   info: { name: '', brand: '', price: 0 },
-  newReview: { score: 0, content: '' },
   reviews: [],
   // {
   //   id: '',
@@ -56,16 +55,7 @@ export const addReviewsThumbs = createAsyncThunk('products/addReviewsThumbs', as
 export const productSlice = createSlice({
   name: 'product',
   initialState,
-  reducers: {
-    onChangeTextArea: (state, action) => {
-      const { newReview } = state;
-      state.newReview = { ...newReview, content: action.payload };
-    },
-    onChangeScore: (state, action) => {
-      const { newReview } = state;
-      state.newReview = { ...newReview, score: action.payload };
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchReviews.pending, (state, action) => {
@@ -94,7 +84,5 @@ export const productSlice = createSlice({
       });
   },
 });
-
-export const { commaToPrice, onChangeTextArea, onChangeScore } = productSlice.actions;
 
 export default productSlice.reducer;

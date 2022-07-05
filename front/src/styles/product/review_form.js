@@ -1,13 +1,15 @@
 import styled from '@emotion/styled';
 
 const MainReviewForm = styled.main`
+  flex-wrap: nowrap;
   section {
     margin: 10px 0;
     textarea {
       font-size: 15px;
       height: 150px;
-      border: 1px solid #96b1ac;
-      background-color: #eef6f5;
+      border: 1px solid #e8f3f1;
+      background-color: #e8f3f1;
+      border-radius: 10px;
     }
     textarea::placeholder {
       font-size: 15px;
@@ -17,10 +19,10 @@ const MainReviewForm = styled.main`
       margin-bottom: 5px;
       font-size: 18px;
     }
-    div .star_scores {
+    // 별점
+    .star_scores {
       justify-content: center;
     }
-    // 별점
     .star_scores .score_icon {
       color: #e8f3f1;
     }
