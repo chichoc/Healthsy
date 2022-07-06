@@ -1,5 +1,5 @@
 import React from 'react';
-import { Div, Button } from '../styles/login_social';
+import { Div, Button } from '../../../styles/form/login/login_social';
 
 const LoginSocial = () => {
   return (

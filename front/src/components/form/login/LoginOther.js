@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search } from '../styles/login_other';
+import { Search } from '../../../styles/form/login/login_other';
 
 const LoginSearch = () => {
   return (
