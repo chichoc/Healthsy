@@ -10,10 +10,8 @@ const initialState = {
   //   content: '',
   //   user: '',
   //   date: '',
-  //   reactions: {
-  //     thumbsUp: 0,
-  //     thumbsDown: 0,
-  //   },
+  //   thumbsUp: 0,
+  //   thumbsDown: 0,
   // },
   fetch: { sort: '', type: '' },
   count: { reviews: undefined, score: 0 },
@@ -44,12 +42,13 @@ export const countReviews = createAsyncThunk('products/countReviews', async (pro
   return response.data.result;
 });
 
-export const addReviewsThumbs = createAsyncThunk('products/addReviewsThumbs', async (reviewId, thumbs) => {
-  const response = await axios.post('http://localhost:8888/product/addReviewsThumbs', {
+export const addReviewThumbs = createAsyncThunk('products/addReviewThumbs', async ({ reviewId, thumbs, sign }) => {
+  const response = await axios.post('http://localhost:8888/product/addReviewThumbs', {
     reviewId,
     thumbs,
+    sign,
   });
-  return response.data.result;
+  return response.data.rows;
 });
 
 export const productSlice = createSlice({
@@ -81,6 +80,13 @@ export const productSlice = createSlice({
       .addCase(countReviews.rejected, (state, action) => {
         state.status.count = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(addReviewThumbs.fulfilled, (state, action) => {
+        if (action.payload[0]) {
+          const { id, thumbsUp } = action.payload[0];
+          const updateIndex = state.reviews.findIndex((review) => review.id === id);
+          state.reviews[updateIndex].thumbsUp = thumbsUp;
+        }
       });
   },
 });

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const DivReviewSort = styled.div`
-  background-color: #f8f8f8;
+  border-bottom: 0.1px solid #989898;
   div {
     width: 100px;
     justify-content: center;

@@ -29,8 +29,11 @@ const HeaderProdReview = styled.section`
 const DivProdReview = styled.div`
   article {
     border-bottom: 1px solid #e8e8e8;
-    padding: 20px 0 10px 5px;
+    padding: 10px 0 10px 5px;
     height: 100px;
+  }
+  article h2 {
+    padding-top: 10px;
   }
   .profile_review {
     margin-right: 10px;
@@ -62,6 +65,16 @@ const DivProdReview = styled.div`
     border-radius: 20px;
     padding: 6px;
     width: 60px;
+  }
+  button.thumbs_click {
+    color: #00c9b7;
+    border: 1px solid #00c9b7;
+  }
+  .thumbs {
+    color: #606060;
+  }
+  .thumbs_click {
+    color: #00c9b7;
   }
   .thumbs_buttons button span {
     vertical-align: middle;

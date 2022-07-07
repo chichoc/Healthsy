@@ -62,6 +62,8 @@ router.post('/fetchReviews', async (req, res, next) => {
       conditionalSql = pageNumDiffer > 0 ? `and reviews.id < ${cursorIdx} ` : `and reviews.id > ${cursorIdx} `;
     }
 
+    console.log(conditionalSql);
+
     const [result, fields] = await (await db).execute(executeSql + conditionalSql + sortSql, [productId]);
 
     if (i === pageNumDiffer - 1) {
@@ -74,14 +76,20 @@ router.post('/fetchReviews', async (req, res, next) => {
 });
 
 router.post('/addReviewThumbs', async (req, res, next) => {
-  const { reviewId, thumbs } = await req.body;
+  const { reviewId, thumbs, sign } = await req.body;
 
-  const executeSql = `UPDATE reviews SET thumbs_${thumbs} = reviews.thumbs_${thumbs} + 1 WHERE id=?`;
+  const executeSql = `UPDATE reviews SET thumbs_${thumbs} = reviews.thumbs_${thumbs} ${sign} 1 WHERE id=?`;
 
-  db.execute(executeSql, [reviewId], (error, result) => {
-    if (error) next(error);
-    else res.json({ result });
-  });
+  await (await db).execute(executeSql, [reviewId]);
+
+  if (thubms === 'up') {
+    const [rows, fields] = await (
+      await db
+    ).execute('SELECT id, thumbs_up as thumbsUp FROM reviews WHERE id = ?', [reviewId]);
+    res.json({ rows });
+  } else {
+    res.json();
+  }
 });
 
 module.exports = router;

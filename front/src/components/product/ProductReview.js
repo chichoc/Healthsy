@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../store/features/modalSlice';
-import { addReviewsThumbs, fetchReviews } from '../../store/features/productSlice';
+import { addReviewThumbs, fetchReviews } from '../../store/features/productSlice';
 import { useParams } from 'react-router-dom';
 import Modal from '../../Modal';
 import ReviewForm from './ReviewForm';
@@ -19,6 +19,7 @@ const ProductReview = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [prevPage, setPrevPage] = useState(0);
+  const [thumbs, setThumbs] = useState({});
 
   const isModal = useSelector((state) => state.modal.isModal.productReview);
   const reviews = useSelector((state) => state.product.reviews);
@@ -26,9 +27,15 @@ const ProductReview = () => {
   const { reviews: countTotalReviews, score: countAvgScore } = useSelector((state) => state.product.count);
   const reviewsError = useSelector((state) => state.product.error);
 
-  const onChangeThumbs = (id, index) => {
-    reviews[index].thumbsUp += 1;
-    dispatch(addReviewsThumbs(id));
+  const onChangeThumbs = (id, index, name) => {
+    if (thumbs[id] === name) {
+      const { [id]: name, ...rest } = thumbs;
+      setThumbs(rest);
+      dispatch(addReviewThumbs({ reviewId: id, thumbs: name, sign: '-' }));
+    } else {
+      setThumbs({ ...thumbs, [id]: name });
+      dispatch(addReviewThumbs({ reviewId: id, thumbs: name, sign: '+' }));
+    }
   };
 
   useEffect(() => {
@@ -101,12 +108,26 @@ const ProductReview = () => {
             <h4 className='horizontal_flex'>
               <img src='' alt='사진' />
               <div className='thumbs_buttons vertical_flex'>
-                <button onClick={(e, index) => {}}>
-                  <GoThumbsup color='#ff3333' size={15} />
+                <button
+                  className={thumbs[review.id] === 'up' ? 'thumbs_click' : ''}
+                  name='up'
+                  onClick={(e) => {
+                    const { name } = e.target;
+                    onChangeThumbs(review.id, index, name);
+                  }}
+                >
+                  <GoThumbsup className={thumbs[review.id] === 'up' ? 'thumbs_click' : 'thumbs'} size={15} />
                   <span>{review.thumbsUp}</span>
                 </button>
-                <button onClick={(e) => {}}>
-                  <GoThumbsdown color='#505050' size={15} />
+                <button
+                  className={thumbs[review.id] === 'down' ? 'thumbs_click' : ''}
+                  name='down'
+                  onClick={(e) => {
+                    const { name } = e.target;
+                    onChangeThumbs(review.id, index, name);
+                  }}
+                >
+                  <GoThumbsdown className={thumbs[review.id] === 'down' ? 'thumbs_click' : 'thumbs'} size={15} />
                 </button>
               </div>
             </h4>
