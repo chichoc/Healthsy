@@ -11,6 +11,7 @@ const ReviewForm = () => {
   let { id: productId } = useParams();
   const [selectedScore, setSelectedScore] = useState('');
   const [content, setContent] = useState('');
+  const [photo, setPhoto] = useState({});
 
   const { userId } = useSelector((state) => state.page);
 
@@ -27,8 +28,14 @@ const ReviewForm = () => {
   };
 
   const createReview = () => {
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('productId', productId);
+    formData.append('selectedScore', selectedScore);
+    formData.append('content', content);
+    formData.append('file', photo.file);
     axios
-      .post('http://localhost:8888/product/addReview', { userId, productId, selectedScore, content })
+      .post('http://localhost:8888/product/addReview', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then((res, req) => {
         if (res.data.addReview) {
           alert('후기 남겨주셔서 감사합니다!');
@@ -77,9 +84,23 @@ const ReviewForm = () => {
         ></textarea>
       </section>
       <section>
-        <button>사진 첨부하기</button>
+        <label for='reviewPhoto'>사진 첨부하기</label>
+        <input
+          type='file'
+          name='reviewPhoto'
+          id='reviewPhoto'
+          multiple
+          onChange={(e) => {
+            setPhoto({
+              preview: URL.createObjectURL(e.target.files[0]),
+              file: e.target.files[0],
+              path: e.target.value,
+            });
+          }}
+        />
+        {photo.preview && <img src={photo.preview} alt='미리보기' style={{ width: '100px' }} />}
       </section>
-      <div className='horizontal_flex_button '>
+      <div className='horizontal_flex_button'>
         <PrimaryButton buttonName={'초기화하기'} onClickMethod={onResetInput} />
         <PrimaryButton buttonName={'등록하기'} disabled={!onAbled} type={'submit'} onClickMethod={createReview} />
       </div>
