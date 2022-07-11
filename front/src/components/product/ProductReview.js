@@ -106,7 +106,7 @@ const ProductReview = () => {
               </div>
             </h2>
             <h4 className='horizontal_flex'>
-              <img src='' alt='사진' />
+              <img src={review.photo} alt='사진' />
               <div className='thumbs_buttons vertical_flex'>
                 <button
                   className={thumbs[review.id] === 'up' ? 'thumbs_click' : ''}
