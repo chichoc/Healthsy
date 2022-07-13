@@ -3,7 +3,16 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config-mysql');
 const multer = require('multer');
-const upload = multer({ dest: './uploads' });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.post('/fetchProduct', async (req, res, next) => {
   const { productId } = await req.body;
@@ -18,18 +27,19 @@ router.post('/fetchProduct', async (req, res, next) => {
   res.send(rows);
 });
 
-router.use('/file', express.static('./uploads'));
+router.use('/photo', express.static('./uploads'));
 router.post('/addReview', upload.single('file'), async (req, res, next) => {
   const { userId, productId, selectedScore, content } = await req.body;
-  let photo;
+  let photoPath;
 
   if (req.file) {
-    photo = 'http://localhost:8888/file/' + req.file.filename;
+    photoPath = 'http://localhost:8888/photo/' + req.file.filename;
   }
 
   let executeSql = `INSERT INTO reviews (prod_id, user_id, score, content` + (!req.file ? `) ` : `, photo) `);
 
-  executeSql += `VALUES (${productId}, UNHEX(?), ${selectedScore}, '${content}'` + (!req.file ? `)` : `, '${photo}')`);
+  executeSql +=
+    `VALUES (${productId}, UNHEX(?), ${selectedScore}, '${content}'` + (!req.file ? `)` : `, '${photoPath}')`);
 
   const [rows, fields] = await (await db).execute(executeSql, [userId]);
   if (rows.affectedRows === 1) {
@@ -68,13 +78,13 @@ router.post('/fetchReviews', async (req, res, next) => {
       conditionalSql = pageNumDiffer > 0 ? `and reviews.id < ${cursorIdx} ` : `and reviews.id > ${cursorIdx} `;
     }
 
-    const [result, fields] = await (await db).execute(executeSql + conditionalSql + sortSql, [productId]);
+    const [rows, fields] = await (await db).execute(executeSql + conditionalSql + sortSql, [productId]);
 
     if (i === pageNumDiffer - 1) {
-      res.json({ result });
+      res.json({ rows });
     } else {
       const lastReviewIndex = result.length - 1;
-      cursorIdx = pageNumDiffer > 0 ? result[lastReviewIndex].id : result[0].id;
+      cursorIdx = pageNumDiffer > 0 ? rows[lastReviewIndex].id : rows[0].id;
     }
   }
 });

@@ -27,14 +27,15 @@ const ReviewForm = () => {
     setContent('');
   };
 
-  const createReview = () => {
+  const createReview = async () => {
     const formData = new FormData();
     formData.append('userId', userId);
     formData.append('productId', productId);
     formData.append('selectedScore', selectedScore);
     formData.append('content', content);
     formData.append('file', photo.file);
-    axios
+
+    await axios
       .post('http://localhost:8888/product/addReview', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then((res, req) => {
         if (res.data.addReview) {
@@ -84,12 +85,11 @@ const ReviewForm = () => {
         ></textarea>
       </section>
       <section>
-        <label for='reviewPhoto'>사진 첨부하기</label>
+        <label htmlFor='reviewPhoto'>사진 첨부하기</label>
         <input
           type='file'
           name='reviewPhoto'
           id='reviewPhoto'
-          multiple
           onChange={(e) => {
             setPhoto({
               preview: URL.createObjectURL(e.target.files[0]),
