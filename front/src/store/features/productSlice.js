@@ -6,9 +6,10 @@ const initialState = {
   reviews: [],
   // {
   //   id: '',
+  //   user: '',
   //   score:'',
   //   content: '',
-  //   user: '',
+  //   photo:'',
   //   date: '',
   //   thumbsUp: 0,
   //   thumbsDown: 0,
@@ -31,7 +32,7 @@ export const fetchReviews = createAsyncThunk(
       cursorIdx,
       pageNumDiffer,
     });
-    return response.data.result;
+    return response.data;
   }
 );
 

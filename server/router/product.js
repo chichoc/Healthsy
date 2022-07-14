@@ -63,30 +63,26 @@ router.post('/countReviews', async (req, res, next) => {
 });
 
 router.post('/fetchReviews', async (req, res, next) => {
-  const { productId, pageNumDiffer, sort } = await req.body;
-  let { cursorIdx } = await req.body;
+  const { productId, pageNumDiffer, sort, cursorIdx } = await req.body;
 
   const executeSql = `SELECT reviews.id, users.name, reviews.score, reviews.content, reviews.photo, reviews.thumbs_up as thumbsUp, date_format(reviews.reg_date,"%Y.%m.%d.") as date 
-  FROM reviews join users on reviews.user_id = users.id WHERE prod_id = ? `;
+  FROM reviews join users on reviews.user_id = users.id 
+  WHERE prod_id = ? `;
 
-  const sortSql = 'ORDER BY reviews.id DESC limit 10';
-
-  for await (const i of [...Array(Math.abs(pageNumDiffer)).keys()]) {
-    let conditionalSql = '';
-
-    if (cursorIdx) {
-      conditionalSql = pageNumDiffer > 0 ? `and reviews.id < ${cursorIdx} ` : `and reviews.id > ${cursorIdx} `;
-    }
-
-    const [rows, fields] = await (await db).execute(executeSql + conditionalSql + sortSql, [productId]);
-
-    if (i === pageNumDiffer - 1) {
-      res.json({ rows });
-    } else {
-      const lastReviewIndex = result.length - 1;
-      cursorIdx = pageNumDiffer > 0 ? rows[lastReviewIndex].id : rows[0].id;
-    }
+  let conditionalSql = 'ORDER BY reviews.id DESC ';
+  if (cursorIdx) {
+    conditionalSql =
+      pageNumDiffer > 0
+        ? `and reviews.id < ${cursorIdx} ORDER BY reviews.id DESC `
+        : `and reviews.id > ${cursorIdx} ORDER BY reviews.id ASC `;
   }
+
+  const firstIdx = (Math.abs(pageNumDiffer) - 1) * 10;
+  const limitSql = `limit ${firstIdx}, 10`;
+
+  const [rows, fields] = await (await db).execute(executeSql + conditionalSql + limitSql, [productId]);
+
+  res.json(pageNumDiffer > 0 ? rows : rows.reverse());
 });
 
 router.post('/addReviewThumbs', async (req, res, next) => {
