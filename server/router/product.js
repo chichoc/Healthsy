@@ -32,26 +32,29 @@ router.post('/countReviews', async (req, res, next) => {
 router.post('/fetchProduct', async (req, res, next) => {
   const { productId } = await req.body;
 
-  const [rows, fields] = await (
-    await db
-  ).execute(
-    'SELECT id, brand, api->"$.PRDLST_NM" as PRDLST_NM, price, api->"$.PRDT_SHAP_CD_NM" as PRDT_SHAP_CD_NM, raw_material, api->"$.POG_DAYCNT" as POG_DAYCNT, api->"$.IFTKN_ATNT_MATR_CN" as IFTKN_ATNT_MATR_CN, api->"$.NTK_MTHD" as NTK_MTHD, api->"$.CSTDY_MTHD" as CSTDY_MTHD FROM products where id = ?',
-    [productId]
-  );
+  const columnName = [
+    'LCNS_NO',
+    'BSSH_NM',
+    'PRDLST_REPORT_NO',
+    'PRDLST_NM',
+    'PRMS_DT',
+    'POG_DAYCNT',
+    'DISPOS',
+    'NTK_MTHD',
+    'PRIMARY_FNCLTY',
+    'IFTKN_ATNT_MATR_CN',
+    'CSTDY_MTHD',
+    'STDR_STND',
+    'CRAWMTRL_NM',
+    'CRET_DTM',
+    'LAST_UPDT_DTM',
+    'PRDT_SHAP_CD_NM',
+  ];
+  let executeSql = 'SELECT id, brand, price, raw_material, stock';
+  columnName.map((column) => (executeSql += `, api->"$.${column}" as ${column} `));
+  executeSql += 'FROM products where id = ?';
 
-  res.send(rows);
-});
-
-router.post('/fetcDetail', async (req, res, next) => {
-  const { productId } = await req.body;
-
-  const [rows, fields] = await (
-    await db
-  ).execute(
-    'SELECT id, brand, api->"$.PRDLST_NM" as PRDLST_NM, price, api->"$.PRDT_SHAP_CD_NM" as PRDT_SHAP_CD_NM, raw_material, stock FROM products where id = ?',
-    [productId]
-  );
-
+  const [rows, fields] = await (await db).execute(executeSql, [productId]);
   res.send(rows);
 });
 

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const initialState = {
-  info: { name: '', brand: '', price: 0 },
+  info: {},
   reviews: [],
   // {
   //   id: '',
@@ -16,9 +16,15 @@ const initialState = {
   // },
   fetch: { sort: '', type: '' },
   count: { reviews: undefined, score: 0 },
-  status: { fetch: 'idle', count: 'idle' },
+  status: { product: 'idle', reviews: 'idle', count: 'idle' },
   error: null,
 };
+export const fetchProduct = createAsyncThunk('products/fetchProduct', async (productId) => {
+  const response = await axios.post('http://localhost:8888/product/fetchProduct', {
+    productId,
+  });
+  return response.data[0];
+});
 
 export const fetchReviews = createAsyncThunk(
   'products/fetchReviews',
@@ -59,14 +65,14 @@ export const productSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchReviews.pending, (state, action) => {
-        state.status.fetch = 'loading';
+        state.status.reviews = 'loading';
       })
       .addCase(fetchReviews.fulfilled, (state, action) => {
-        state.status.fetch = 'succeeded';
+        state.status.reviews = 'succeeded';
         state.reviews = [...action.payload];
       })
       .addCase(fetchReviews.rejected, (state, action) => {
-        state.status.fetch = 'failed';
+        state.status.reviews = 'failed';
         state.error = action.error.message;
       })
       .addCase(countReviews.pending, (state, action) => {
@@ -88,6 +94,17 @@ export const productSlice = createSlice({
           const updateIndex = state.reviews.findIndex((review) => review.id === id);
           state.reviews[updateIndex].thumbsUp = thumbsUp;
         }
+      })
+      .addCase(fetchProduct.pending, (state, action) => {
+        state.status.product = 'loading';
+      })
+      .addCase(fetchProduct.fulfilled, (state, action) => {
+        state.status.product = 'succeeded';
+        state.info = { ...action.payload };
+      })
+      .addCase(fetchProduct.rejected, (state, action) => {
+        state.status.product = 'failed';
+        state.error = action.error.message;
       });
   },
 });
