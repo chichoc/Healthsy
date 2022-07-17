@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../store/features/modalSlice';
 import { addReviewThumbs, fetchReviews } from '../../store/features/productSlice';
@@ -12,7 +12,7 @@ import { HeaderProdReview, DivProdReview } from '../../styles/product/product_re
 import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
 import userProfileImg from '../../assets/img/userProfile.png';
 
-const ProductReview = () => {
+const ProductReview = forwardRef((props, reviewSection) => {
   const dispatch = useDispatch();
   let { id: productId } = useParams();
   const pageUnit = 10;
@@ -39,17 +39,14 @@ const ProductReview = () => {
   };
 
   useEffect(() => {
-    if (countStatus === 'succeeded') {
-      if (countTotalReviews !== undefined)
-        dispatch(
-          fetchReviews({
-            productId,
-            currentPage,
-            pageNumDiffer: currentPage - prevPage,
-          })
-        );
-    }
-  }, [countStatus, productId, dispatch, countTotalReviews, currentPage, prevPage]);
+    dispatch(
+      fetchReviews({
+        productId,
+        currentPage,
+        pageNumDiffer: currentPage - prevPage,
+      })
+    );
+  }, [productId, dispatch, currentPage, prevPage]);
 
   if (countTotalReviews === 0) {
     return (
@@ -66,7 +63,7 @@ const ProductReview = () => {
     <>
       <HeaderProdReview>
         <div className='horizontal_flex'>
-          <h1>총 {countTotalReviews}건의 후기가 있습니다.</h1>
+          <h1 ref={reviewSection}>총 {countTotalReviews}건의 후기가 있습니다.</h1>
           <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>
             리뷰 작성하기
           </button>
@@ -145,6 +142,6 @@ const ProductReview = () => {
       </DivProdReview>
     </>
   );
-};
+});
 
 export default ProductReview;
