@@ -2,6 +2,18 @@ import styled from '@emotion/styled';
 
 const DivProduct = styled.div`
   margin: 10px 100px 0px;
+  .sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 1;
+    margin: 0px 100px;
+  }
+  .sticky + section {
+    padding-top: 50px;
+  }
 `;
 
 const NavProduct = styled.nav`
@@ -34,7 +46,7 @@ const SectionProduct = styled.section`
   h1 {
     font-weight: bold;
     font-size: 20px;
-    margin: 10px 0;
+    margin: 40px 0 20px;
   }
 `;
 

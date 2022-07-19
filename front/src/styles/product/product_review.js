@@ -1,14 +1,10 @@
 import styled from '@emotion/styled';
 
 const HeaderProdReview = styled.section`
-  margin: 20px 0px;
-  h1,
-  div {
-    margin-bottom: 20px;
-  }
-  div {
+  div.countStar {
     justify-content: flex-start;
     font-size: 18px;
+    margin-bottom: 10px;
     h2 {
       margin-right: 5px;
     }
