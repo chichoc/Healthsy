@@ -1,28 +1,23 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProduct } from '../../store/features/saleSlice';
+import { fetchProduct } from '../../store/features/productSlice';
 import { RiHeartAddLine, RiHeartFill } from 'react-icons/ri';
 import { BsPlusSquareDotted, BsCheckSquareFill } from 'react-icons/bs';
 import { FiShare } from 'react-icons/fi';
 import productImg from '../../assets/img/testSale.jpeg';
-import { MainProduct, BtnProduct } from '../../styles/product/product_main';
 import StarScore from '../reusable/StarScore';
+import { MainProduct, BtnProduct } from '../../styles/product/product_main';
 
 const ProductMain = () => {
   let { id } = useParams();
   const dispatch = useDispatch();
-  const showApiData = useSelector((state) => state.sale.showApi.data);
-  const selectedProductIndex = showApiData.findIndex((prod) => prod.id === parseInt(id));
+  const selectedProduct = useSelector((state) => state.product.info);
   const { reviews: countTotalReviews, score: countAvgScore } = useSelector((state) => state.product.count);
 
-  const selectedProduct = showApiData[selectedProductIndex];
   useEffect(() => {
-    if (selectedProduct) {
-      return;
-    }
     dispatch(fetchProduct(id));
-  }, []);
+  }, [dispatch, id]);
 
   const commaToPrice = (price) => {
     if (price < 1000) return price;
@@ -30,7 +25,7 @@ const ProductMain = () => {
   };
 
   const addCommaNextSpace = (string) => {
-    return string.split(',').join(', ');
+    return string ? string.split(',').join(', ') : string;
   };
 
   return (
@@ -44,7 +39,7 @@ const ProductMain = () => {
             <h4 className='product_score'>
               <StarScore size={20} score={countAvgScore} /> <span> ({countTotalReviews}건)</span>
             </h4>
-            <h3>{commaToPrice(selectedProduct.price)}원</h3>
+            <h3>{selectedProduct.price && commaToPrice(selectedProduct.price)}원</h3>
 
             <h4 className='product_info'>
               <div className='horizontal_flex'>

@@ -63,12 +63,14 @@ const ProductReview = forwardRef((props, reviewSection) => {
     <>
       <HeaderProdReview>
         <div className='horizontal_flex'>
-          <h1 ref={reviewSection}>총 {countTotalReviews}건의 후기가 있습니다.</h1>
-          <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>
-            리뷰 작성하기
-          </button>
+          <h1 ref={reviewSection}>
+            총 {countTotalReviews}건의 후기가 있습니다.{' '}
+            <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>
+              리뷰 작성하기
+            </button>
+          </h1>
         </div>
-        <div className='horizontal_flex'>
+        <div className='horizontal_flex countStar'>
           <h2>구매 만족도</h2>
           <StarScore size={25} score={countAvgScore} />
           <span>{countAvgScore}</span>
