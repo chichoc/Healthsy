@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isModal: { joinTerm: undefined, productReview: false },
+  isModal: { joinTerm: undefined, productReview: false, searchAddress: false },
 };
 
 export const modalSlice = createSlice({

@@ -9,17 +9,14 @@ router.post('/fetchUserInfo', async (req, res, next) => {
   const { userId } = await req.body;
   console.log(userId);
 
-  db.execute(
-    'SELECT email, password, name, phone, marketing, sex, zip_code, address FROM users WHERE id = UNHEX(?)',
-    [userId],
-    async (dbError, dbResult) => {
-      if (dbError) next(dbError);
-      else if (dbResult.length === 1) {
-        res.json({ result: true, content: dbResult.result });
-        // db에서 조회되지 않는 경우
-      } else res.json({ result: false });
-    }
+  const [rows, fields] = await (
+    await db
+  ).execute(
+    'SELECT email, password, name, phone, sex, zip_code as zipCode, address, detailed_address as detailedAddress, marketing as checkMarketing FROM users WHERE id = UNHEX(?)',
+    [userId]
   );
+
+  res.json(rows);
 });
 
 module.exports = router;

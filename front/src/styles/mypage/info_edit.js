@@ -1,25 +1,36 @@
 import styled from '@emotion/styled';
 
 const Join = styled.section`
-  width: 420px;
-  padding: 20px 0;
+  width: 450px;
   margin: 0 auto;
   text-align: left;
 `;
 
-const Title = styled.h1`
-  font-size: 30px;
-  margin: 10px 0 25px 0;
-  font-weight: bold;
-`;
-
 const Form = styled.form`
-  div .row_form {
-    margin-bottom: 40px;
+  .row_form,
+  fieldset {
+    margin-bottom: 30px;
+  }
+  .row_set {
+    margin-bottom: 20px;
   }
 
-  & > div:first-of-type {
-    margin-bottom: -20px;
+  fieldset {
+    border: solid 1px #dcdcdc;
+    border-radius: 20px;
+    padding: 15px 20px;
+    font-size: 15px;
+  }
+  fieldset legend {
+    padding: 0 5px;
+    color: #616161;
+  }
+  fieldset input {
+    margin-right: 5px;
+  }
+  fieldset label {
+    margin-right: 5px;
+    vertical-align: text-top;
   }
 
   button {
@@ -27,4 +38,4 @@ const Form = styled.form`
   }
 `;
 
-export { Join, Title, Form };
+export { Join, Form };

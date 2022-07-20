@@ -15,7 +15,7 @@ const Title = styled.h1`
 
 const Form = styled.form`
   div .row_form {
-    margin-bottom: 40px;
+    margin-bottom: 35px;
   }
 
   & > div:first-of-type {

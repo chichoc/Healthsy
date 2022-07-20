@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const Div = styled.div`
+const DivInputForm = styled.div`
   position: relative;
   font-size: 15px;
   margin-bottom: 20px;
@@ -77,4 +77,4 @@ const Div = styled.div`
     flex: 1;
   }
 `;
-export { Div };
+export { DivInputForm };
