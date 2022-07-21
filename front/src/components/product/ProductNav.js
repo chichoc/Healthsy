@@ -18,7 +18,9 @@ const ProductNav = () => {
   const ref = [infoSection, detailSection, reviewSection];
 
   const scrollToSection = (ref) => {
-    ref.current.scrollIntoView({ behavior: 'smooth' });
+    const navHeight = -50;
+    const moveToScrollY = navHeight + ref.current.offsetTop;
+    window.scrollTo({ top: moveToScrollY, behavior: 'smooth' });
   };
 
   return (

@@ -13,7 +13,7 @@ const useSticky = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (!stickyRef.current) return;
-      setSticky(window.scrollY > offset);
+      setSticky(window.pageYOffset > offset);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);

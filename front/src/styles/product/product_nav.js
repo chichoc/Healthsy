@@ -46,7 +46,8 @@ const SectionProduct = styled.section`
   h1 {
     font-weight: bold;
     font-size: 20px;
-    margin: 40px 0 20px;
+    margin: 20px 0;
+    padding-top: 20px;
   }
 `;
 
