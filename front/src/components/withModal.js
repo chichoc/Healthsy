@@ -4,7 +4,7 @@ import { onModalClose } from '../store/features/modalSlice';
 import { PopUp, Term } from '../styles/with_modal';
 
 const withModal = (WrappedComponent) => {
-  const Component = ({ termHeader }) => {
+  const Component = ({ termHeader, ...props }) => {
     const dispatch = useDispatch();
 
     return (
@@ -14,7 +14,7 @@ const withModal = (WrappedComponent) => {
             <h1>{termHeader}</h1>
             <button onClick={() => dispatch(onModalClose())}>&#x2715;</button>
           </nav>
-          <WrappedComponent />
+          <WrappedComponent props={props} />
         </Term>
       </PopUp>
     );

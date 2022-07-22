@@ -1,8 +1,12 @@
 import React from 'react';
 import DaumPostcodeEmbed from 'react-daum-postcode';
+import { useDispatch } from 'react-redux';
+import { onModalClose } from '../../store/features/modalSlice';
 import withModal from '../withModal';
 
-const DaumPostcode = ({ inputEdit, setInputEdit }) => {
+const DaumPostcode = ({ props }) => {
+  const dispatch = useDispatch();
+  const { inputEdit, setInputEdit } = props;
   const handleComplete = (data) => {
     let fullAddress = data.address;
     let extraAddress = '';
@@ -17,13 +21,12 @@ const DaumPostcode = ({ inputEdit, setInputEdit }) => {
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
 
-    console.log(fullAddress);
-    setInputEdit({ ...inputEdit, address: fullAddress });
+    setInputEdit({ ...inputEdit, zipCode: data.zonecode, address: fullAddress });
   };
 
   return (
     <>
-      <DaumPostcodeEmbed onComplete={handleComplete} />
+      <DaumPostcodeEmbed onComplete={handleComplete} onClose={() => dispatch(onModalClose())} />
     </>
   );
 };

@@ -1,12 +1,12 @@
 import React from 'react';
+import MyNav from '../components/mypage/MyNav';
 import MyMain from '../components/mypage/MyMain';
-import MyMenu from '../components/mypage/MyMenu';
 import withPage from './withPage';
 
 const MyPage = () => {
   return (
     <div className='horizontal_flex'>
-      <MyMenu />
+      <MyNav />
       <MyMain />
     </div>
   );

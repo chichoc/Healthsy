@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   inputValue: {
@@ -9,49 +8,13 @@ const initialState = {
   },
   focusedInputName: {},
   isCheckAll: false,
-  isDisabled: true,
-  status: 'idle',
 };
 // join: email, emailVerifyCode, password, passwordCheck, userName, phoneNumber
-
-export const fetchUserInfo = createAsyncThunk('mypage/fetchUserInfo', async (userId) => {
-  const response = await axios.post('http://localhost:8888/mypage/fetchUserInfo', {
-    userId,
-  });
-  return response.data.result;
-});
 
 export const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    enableClick: (state) => {
-      state.isDisabled = false;
-    },
-    disableClick: (state) => {
-      state.isDisabled = true;
-    },
-    onChangeInput: (state, action) => {
-      const { inputValue } = state;
-      const { name, value } = action.payload;
-      state.inputValue = { ...inputValue, [name]: value };
-      if (name === 'email' && value.includes('@')) {
-        let emailIdIndex = value.indexOf('@');
-        state.inputValue.inputEmailId = value.substr(0, emailIdIndex);
-        action.payload.setAttribute('list', 'email-domain');
-      }
-      if (
-        state.inputValue.email &&
-        state.inputValue.verifyEmail &&
-        state.inputValue.password &&
-        state.inputValue.passwordCheck &&
-        state.inputValue.username &&
-        state.inputValue.phoneNumber
-      )
-        state.isDisabled = false;
-      else state.isDisabled = true;
-    },
-
     onFocusInput: (state, action) => {
       const { focusedInputName } = state;
       state.focusedInputName = { ...focusedInputName, [action.payload]: true };
@@ -88,26 +51,9 @@ export const formSlice = createSlice({
       state.inputValue = { ...inputValue, verifyEmail: true };
     },
   },
-  extraReducers(builder) {
-    builder
-      .addCase(fetchUserInfo.pending, (state, action) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchUserInfo.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.reviews = state.inputValue.concat(action.payload);
-      })
-      .addCase(fetchUserInfo.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      });
-  },
 });
 
 export const {
-  enableClick,
-  disableClick,
-  onChangeInput,
   onFocusInput,
   onBlurInput,
   onCheck,

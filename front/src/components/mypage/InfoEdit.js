@@ -35,6 +35,7 @@ const InfoEdit = () => {
       const response = await axios.post('http://localhost:8888/mypage/fetchUserInfo', {
         userId,
       });
+      if (!response.data[0]) return;
       const marketingChecked = response.data[0].checkMarketing === 'Y' ? true : false;
       setInputEdit({ ...response.data[0], checkMarketing: marketingChecked });
     };
@@ -53,7 +54,7 @@ const InfoEdit = () => {
               name='email'
               placeHolder='이메일'
               button='수정'
-              value={inputEdit.email && inputEdit.email}
+              value={inputEdit.email || undefined}
             />
           </div>
           <div>
@@ -76,14 +77,20 @@ const InfoEdit = () => {
             /> */}
 
           <div className='horizontal_flex'>
-            <InputForm label='이름' className='oval' name='userName' placeHolder='이름' value={inputEdit.name} />
+            <InputForm
+              label='이름'
+              className='oval'
+              name='userName'
+              placeHolder='이름'
+              value={inputEdit.name || undefined}
+            />
             <InputForm
               label='연락처'
               className='oval'
               name='phone'
               placeHolder='연락처'
               condition=' - 제외하고 번호 입력'
-              value={inputEdit.phone && inputEdit.phone}
+              value={inputEdit.phone || undefined}
             />
           </div>
           <div>
@@ -91,26 +98,26 @@ const InfoEdit = () => {
               label='우편번호'
               className='ovalInputWithButton'
               row_set='true'
-              name='email'
+              name='zipCode'
               placeHolder='우편번호'
               button='검색'
               btnClickMethod={onSearchAddress}
-              value={inputEdit.zip_code && inputEdit.zip_code}
+              value={inputEdit.zipCode || undefined}
             />
             <div className='horizontal_flex'>
               <InputForm
                 label='기본주소'
                 className='oval'
-                name='phoneNumber'
+                name='address'
                 placeHolder='기본주소'
-                value={inputEdit.address && inputEdit.address}
+                value={inputEdit.address || undefined}
               />
               <InputForm
                 label='상세주소'
                 className='oval'
-                name='userName'
+                name='detailedAddress'
                 placeHolder='상세주소'
-                value={inputEdit.detailedAddress && inputEdit.detailedAddress}
+                value={inputEdit.detailedAddress || undefined}
               />
             </div>
           </div>
