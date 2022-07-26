@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../store/features/modalSlice';
@@ -13,9 +13,17 @@ import { Terms } from '../../styles/form/join/join_terms';
 
 const InfoEdit = () => {
   const [inputEdit, setInputEdit] = useState({});
+  const [inputAble, setInputAble] = useState({});
+  const inputRef = useRef();
+
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.page.userId);
   const isModal = useSelector((state) => state.modal.isModal.searchAddress);
+
+  const onInputEditChanged = (e) => {
+    const { name, value } = e.target;
+    setInputEdit({ ...inputEdit, [name]: value });
+  };
 
   const onCheckEdit = (e) => {
     const { name } = e.target;
@@ -23,6 +31,11 @@ const InfoEdit = () => {
       ...inputEdit,
       [name]: !inputEdit[name],
     });
+  };
+
+  const onEditPrimary = (name, e) => {
+    e.preventDefault();
+    setInputAble({ ...inputAble, [name]: !inputAble[name] });
   };
 
   const onSearchAddress = (e) => {
@@ -54,9 +67,24 @@ const InfoEdit = () => {
               name='email'
               placeHolder='이메일'
               button='수정'
-              value={inputEdit.email || undefined}
+              value={inputEdit.email || ''}
+              disabled={inputAble.email ? false : true}
+              btnClickMethod={(e) => onEditPrimary('email', e)}
+              outerRef={inputRef}
             />
           </div>
+          {inputAble.email && (
+            <div>
+              <InputForm
+                label='인증번호'
+                className='ovalInputWithButton'
+                name='emailVerifyCode'
+                placeHolder='인증번호 입력'
+                condition='제한 시간 내로 입력해주세요'
+                button='확인'
+              />
+            </div>
+          )}
           <div>
             <InputForm
               label='비밀번호'
@@ -65,16 +93,30 @@ const InfoEdit = () => {
               name='password'
               placeHolder='비밀번호'
               button='수정'
+              value='12345678'
+              disabled={inputAble.password ? false : true}
+              btnClickMethod={(e) => onEditPrimary('password', e)}
             />
           </div>
-
-          {/* <InputForm
-              label='비밀번호 확인'
-              className='oval pw_check'
-              type='password'
-              name='passwordCheck'
-              placeHolder='비밀번호 확인'
-            /> */}
+          {inputAble.password && (
+            <div className='horizontal_flex'>
+              <InputForm
+                label='새 비밀번호'
+                className='oval pw_check'
+                type='password'
+                name='newPassword'
+                placeHolder='새 비밀번호'
+                condition='영문과 숫자 포함하여 8~20자'
+              />
+              <InputForm
+                label='새 비밀번호 확인'
+                className='oval pw_check'
+                type='password'
+                name='newPasswordCheck'
+                placeHolder='새 비밀번호 확인'
+              />
+            </div>
+          )}
 
           <div className='horizontal_flex'>
             <InputForm
@@ -82,7 +124,8 @@ const InfoEdit = () => {
               className='oval'
               name='userName'
               placeHolder='이름'
-              value={inputEdit.name || undefined}
+              value={inputEdit.userName || ''}
+              changeMethod={onInputEditChanged}
             />
             <InputForm
               label='연락처'
@@ -90,7 +133,8 @@ const InfoEdit = () => {
               name='phone'
               placeHolder='연락처'
               condition=' - 제외하고 번호 입력'
-              value={inputEdit.phone || undefined}
+              value={inputEdit.phone || ''}
+              changeMethod={onInputEditChanged}
             />
           </div>
           <div>
@@ -102,7 +146,7 @@ const InfoEdit = () => {
               placeHolder='우편번호'
               button='검색'
               btnClickMethod={onSearchAddress}
-              value={inputEdit.zipCode || undefined}
+              value={inputEdit.zipCode || ''}
             />
             <div className='horizontal_flex'>
               <InputForm
@@ -110,20 +154,26 @@ const InfoEdit = () => {
                 className='oval'
                 name='address'
                 placeHolder='기본주소'
-                value={inputEdit.address || undefined}
+                value={inputEdit.address || ''}
               />
               <InputForm
                 label='상세주소'
                 className='oval'
                 name='detailedAddress'
                 placeHolder='상세주소'
-                value={inputEdit.detailedAddress || undefined}
+                value={inputEdit.detailedAddress || ''}
+                changeMethod={onInputEditChanged}
               />
             </div>
           </div>
           {isModal && (
             <Modal>
-              <DaumPostcode termHeader={'우편번호 찾기'} inputEdit={inputEdit} setInputEdit={setInputEdit} />
+              <DaumPostcode
+                termHeader={'우편번호 찾기'}
+                inputEdit={inputEdit}
+                setInputEdit={setInputEdit}
+                inputRef={inputRef}
+              />
             </Modal>
           )}
 
