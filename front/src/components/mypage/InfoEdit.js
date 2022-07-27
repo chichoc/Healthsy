@@ -8,13 +8,13 @@ import TermMarketing from '../form/join/TermMarketing';
 import Modal from '../../Modal';
 import DaumPostcode from './DaumPostcode';
 import dataJoinTerms from '../../assets/api/dataJoinTerms';
-import { Join, Form } from '../../styles/mypage/info_edit';
+import { Join, Form, DivInfoEdit } from '../../styles/mypage/info_edit';
 import { Terms } from '../../styles/form/join/join_terms';
 
 const InfoEdit = () => {
   const [inputEdit, setInputEdit] = useState({});
   const [inputAble, setInputAble] = useState({});
-  const inputRef = useRef();
+  const detailedAddressRef = useRef();
 
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.page.userId);
@@ -62,19 +62,27 @@ const InfoEdit = () => {
         <Form className='vertical_flex' align='start'>
           <div>
             <InputForm
-              label='이메일'
+              label='현재 이메일'
               className='ovalInputWithButton'
+              row_set={inputAble.email ? true : false}
               name='email'
-              placeHolder='이메일'
-              button='수정'
+              placeHolder='현재 이메일'
+              button={inputAble.email ? '수정 취소' : '수정'}
               value={inputEdit.email || ''}
-              disabled={inputAble.email ? false : true}
+              disabled={true}
               btnClickMethod={(e) => onEditPrimary('email', e)}
-              outerRef={inputRef}
             />
           </div>
           {inputAble.email && (
             <div>
+              <InputForm
+                label='새 이메일'
+                className='ovalInputWithButton'
+                row_set='true'
+                name='newEmail'
+                placeHolder='새 이메일'
+                button='중복 확인'
+              />
               <InputForm
                 label='인증번호'
                 className='ovalInputWithButton'
@@ -118,7 +126,7 @@ const InfoEdit = () => {
             </div>
           )}
 
-          <div className='horizontal_flex'>
+          <DivInfoEdit className='horizontal_flex' basis={'40%'}>
             <InputForm
               label='이름'
               className='oval'
@@ -136,35 +144,38 @@ const InfoEdit = () => {
               value={inputEdit.phone || ''}
               changeMethod={onInputEditChanged}
             />
-          </div>
+          </DivInfoEdit>
           <div>
-            <InputForm
-              label='우편번호'
-              className='ovalInputWithButton'
-              row_set='true'
-              name='zipCode'
-              placeHolder='우편번호'
-              button='검색'
-              btnClickMethod={onSearchAddress}
-              value={inputEdit.zipCode || ''}
-            />
-            <div className='horizontal_flex'>
+            <DivInfoEdit className='horizontal_flex' basis={'20%'}>
+              <InputForm
+                label='우편번호'
+                className='ovalInputWithButton'
+                row_set='true'
+                name='zipCode'
+                placeHolder='우편번호'
+                disabled={true}
+                button='검색'
+                btnClickMethod={onSearchAddress}
+                value={inputEdit.zipCode || ''}
+              />
               <InputForm
                 label='기본주소'
                 className='oval'
                 name='address'
                 placeHolder='기본주소'
+                disabled={true}
                 value={inputEdit.address || ''}
               />
-              <InputForm
-                label='상세주소'
-                className='oval'
-                name='detailedAddress'
-                placeHolder='상세주소'
-                value={inputEdit.detailedAddress || ''}
-                changeMethod={onInputEditChanged}
-              />
-            </div>
+            </DivInfoEdit>
+            <InputForm
+              label='상세주소'
+              className='oval'
+              name='detailedAddress'
+              placeHolder='상세주소'
+              value={inputEdit.detailedAddress || ''}
+              changeMethod={onInputEditChanged}
+              outerRef={detailedAddressRef}
+            />
           </div>
           {isModal && (
             <Modal>
@@ -172,7 +183,7 @@ const InfoEdit = () => {
                 termHeader={'우편번호 찾기'}
                 inputEdit={inputEdit}
                 setInputEdit={setInputEdit}
-                inputRef={inputRef}
+                detailedAddressRef={detailedAddressRef}
               />
             </Modal>
           )}

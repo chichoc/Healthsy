@@ -32,7 +32,6 @@ const DaumPostcode = ({ props }) => {
         onComplete={handleComplete}
         onClose={() => {
           dispatch(onModalClose());
-          dispatch(onFocusInput('detailedAddress'));
           inputRef.current.focus();
         }}
       />

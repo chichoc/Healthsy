@@ -18,8 +18,11 @@ const InputForm = ({
   changeMethod,
   btnClickMethod,
   disabled = false,
+  outerRef,
 }) => {
-  const inputElement = useRef();
+  const innerRef = useRef();
+  const inputRef = outerRef || innerRef;
+
   const form = useSelector((state) => state.form);
   const dispatch = useDispatch();
 
@@ -35,9 +38,9 @@ const InputForm = ({
           placeholder={placeHolder}
           value={value}
           onChange={changeMethod}
-          onFocus={() => dispatch(onFocusInput(inputElement.current.name))}
-          onBlur={() => dispatch(onBlurInput(inputElement.current.name))}
-          ref={inputElement}
+          onFocus={() => dispatch(onFocusInput(inputRef.current.name))}
+          onBlur={() => dispatch(onBlurInput(inputRef.current.name))}
+          ref={inputRef}
         />
 
         <datalist id='email-domain' className='oval'>
@@ -46,12 +49,10 @@ const InputForm = ({
           ))}
         </datalist>
 
-        {button ? (
+        {button && (
           <button className='ovalButtonWithInput' onClick={btnClickMethod}>
             {button}
           </button>
-        ) : (
-          ''
         )}
       </div>
       {condition ? <h5>{`ⓘ ${condition}`}</h5> : ''}
