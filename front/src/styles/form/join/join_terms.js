@@ -18,7 +18,7 @@ const Terms = styled.ul`
     border-bottom: none;
   }
 
-  input {
+  input[type='checkbox'] {
     margin-right: 10px;
   }
 
@@ -34,8 +34,10 @@ const Terms = styled.ul`
 
   .termBtn {
     position: absolute;
-    right: 10px;
-    font-weight: lighter;
+    right: 40px;
+    padding: 0px;
+    cursor: pointer;
+    color: #ababab;
   }
 `;
 

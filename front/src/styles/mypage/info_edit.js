@@ -33,8 +33,10 @@ const Form = styled.form`
     vertical-align: text-top;
   }
 
-  button {
+  div button {
     width: 200px;
+    padding: 13px 20px;
+    border-radius: 40px;
   }
 `;
 

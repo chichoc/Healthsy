@@ -15,7 +15,7 @@ const Button = styled.button`
   width: 100%;
   border-radius: 20px;
   padding: 10px 20px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   color: ${(props) => (props.type === 'submit' ? '#ffff' : '#00c9b7')};
   background-color: ${(props) => (props.type === 'submit' ? '#00c9b7' : '#ffff')};

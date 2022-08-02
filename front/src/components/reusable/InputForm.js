@@ -18,6 +18,7 @@ const InputForm = ({
   changeMethod,
   btnClickMethod,
   disabled = false,
+  readOnly = false,
   outerRef,
 }) => {
   const innerRef = useRef();
@@ -32,6 +33,7 @@ const InputForm = ({
       <div className={button ? 'horizontal_flex' : ''}>
         <input
           disabled={disabled}
+          readOnly={readOnly}
           className={className}
           type={type}
           name={name}

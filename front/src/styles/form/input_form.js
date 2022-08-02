@@ -23,10 +23,12 @@ const DivInputForm = styled.div`
     background-color: white;
     color: #616161;
   }
+
   input {
     font-size: inherit;
     box-sizing: border-box;
     border: 1px solid #dcdcdc;
+    width: 100%;
   }
   input::placeholder {
     color: #616161;
@@ -37,6 +39,12 @@ const DivInputForm = styled.div`
   input[type='password']::placeholder {
     letter-spacing: 0px;
   }
+  input[disabled],
+  input[readOnly] {
+    color: #a0a0a0;
+    background-color: rgba(239, 239, 239, 0.3);
+  }
+
   input:focus {
     border: 2px solid #ababab;
   }
@@ -66,14 +74,12 @@ const DivInputForm = styled.div`
     border-right: none;
     flex: 2;
   }
-  .ovalInputWithButton:focus {
-    border-right: #00c9b7 1px solid;
-  }
+
   .ovalButtonWithInput {
     border-radius: 0 20px 20px 0;
     padding: 10px 20px;
-    border: 1px solid #00c9b7;
-    color: #00c9b7;
+    border: 1px solid #dcdcdc;
+    background-color: #f2f2f2;
     flex: 1;
   }
 `;

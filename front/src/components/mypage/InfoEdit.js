@@ -8,17 +8,20 @@ import TermMarketing from '../form/join/TermMarketing';
 import Modal from '../../Modal';
 import DaumPostcode from './DaumPostcode';
 import dataJoinTerms from '../../assets/api/dataJoinTerms';
-import { Join, Form, DivInfoEdit } from '../../styles/mypage/info_edit';
+import { IoIosArrowForward } from 'react-icons/io';
+import { Join, Form } from '../../styles/mypage/info_edit';
 import { Terms } from '../../styles/form/join/join_terms';
 
 const InfoEdit = () => {
   const [inputEdit, setInputEdit] = useState({});
   const [inputAble, setInputAble] = useState({});
   const detailedAddressRef = useRef();
+  const newEmailRef = useRef();
+  const newPasswordRef = useRef();
 
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.page.userId);
-  const isModal = useSelector((state) => state.modal.isModal.searchAddress);
+  const isModal = useSelector((state) => state.modal.isModal);
 
   const onInputEditChanged = (e) => {
     const { name, value } = e.target;
@@ -53,35 +56,40 @@ const InfoEdit = () => {
       setInputEdit({ ...response.data[0], checkMarketing: marketingChecked });
     };
     fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (newPasswordRef.current && inputAble.password) newPasswordRef.current.focus();
+    if (newEmailRef.current && inputAble.email) newEmailRef.current.focus();
+  }, [inputAble]);
 
   return (
     <>
       <Join>
         <h1>회원 정보</h1>
         <Form className='vertical_flex' align='start'>
-          <div>
-            <InputForm
-              label='현재 이메일'
-              className='ovalInputWithButton'
-              row_set={inputAble.email ? true : false}
-              name='email'
-              placeHolder='현재 이메일'
-              button={inputAble.email ? '수정 취소' : '수정'}
-              value={inputEdit.email || ''}
-              disabled={true}
-              btnClickMethod={(e) => onEditPrimary('email', e)}
-            />
-          </div>
+          <InputForm
+            label='현재 이메일'
+            className='ovalInputWithButton'
+            row_set={inputAble.email ? true : false}
+            name='email'
+            placeHolder='현재 이메일'
+            button={inputAble.email ? '수정 취소' : '수정'}
+            value={inputEdit.email || ''}
+            disabled={true}
+            btnClickMethod={(e) => onEditPrimary('email', e)}
+          />
           {inputAble.email && (
-            <div>
+            <>
               <InputForm
                 label='새 이메일'
                 className='ovalInputWithButton'
                 row_set='true'
                 name='newEmail'
                 placeHolder='새 이메일'
-                button='중복 확인'
+                button='인증 요청'
+                outerRef={newEmailRef}
               />
               <InputForm
                 label='인증번호'
@@ -91,21 +99,22 @@ const InfoEdit = () => {
                 condition='제한 시간 내로 입력해주세요'
                 button='확인'
               />
-            </div>
+            </>
           )}
-          <div>
-            <InputForm
-              label='비밀번호'
-              className='ovalInputWithButton'
-              type='password'
-              name='password'
-              placeHolder='비밀번호'
-              button='수정'
-              value='12345678'
-              disabled={inputAble.password ? false : true}
-              btnClickMethod={(e) => onEditPrimary('password', e)}
-            />
-          </div>
+
+          <InputForm
+            label='비밀번호'
+            className='ovalInputWithButton'
+            row_set={inputAble.password ? true : false}
+            type='password'
+            name='password'
+            placeHolder='비밀번호'
+            button={inputAble.password ? '수정 취소' : '수정'}
+            value='12345678'
+            disabled={inputAble.password ? false : true}
+            btnClickMethod={(e) => onEditPrimary('password', e)}
+          />
+
           {inputAble.password && (
             <div className='horizontal_flex'>
               <InputForm
@@ -115,6 +124,7 @@ const InfoEdit = () => {
                 name='newPassword'
                 placeHolder='새 비밀번호'
                 condition='영문과 숫자 포함하여 8~20자'
+                outerRef={newPasswordRef}
               />
               <InputForm
                 label='새 비밀번호 확인'
@@ -126,7 +136,7 @@ const InfoEdit = () => {
             </div>
           )}
 
-          <DivInfoEdit className='horizontal_flex' basis={'40%'}>
+          <div className='horizontal_flex'>
             <InputForm
               label='이름'
               className='oval'
@@ -144,40 +154,39 @@ const InfoEdit = () => {
               value={inputEdit.phone || ''}
               changeMethod={onInputEditChanged}
             />
-          </DivInfoEdit>
-          <div>
-            <DivInfoEdit className='horizontal_flex' basis={'20%'}>
-              <InputForm
-                label='우편번호'
-                className='ovalInputWithButton'
-                row_set='true'
-                name='zipCode'
-                placeHolder='우편번호'
-                disabled={true}
-                button='검색'
-                btnClickMethod={onSearchAddress}
-                value={inputEdit.zipCode || ''}
-              />
-              <InputForm
-                label='기본주소'
-                className='oval'
-                name='address'
-                placeHolder='기본주소'
-                disabled={true}
-                value={inputEdit.address || ''}
-              />
-            </DivInfoEdit>
-            <InputForm
-              label='상세주소'
-              className='oval'
-              name='detailedAddress'
-              placeHolder='상세주소'
-              value={inputEdit.detailedAddress || ''}
-              changeMethod={onInputEditChanged}
-              outerRef={detailedAddressRef}
-            />
           </div>
-          {isModal && (
+
+          <InputForm
+            label='우편번호'
+            className='ovalInputWithButton'
+            row_set={true}
+            name='zipCode'
+            placeHolder='우편번호'
+            readOnly={true}
+            button='검색'
+            btnClickMethod={onSearchAddress}
+            value={inputEdit.zipCode || ''}
+          />
+          <InputForm
+            label='기본주소'
+            className='oval'
+            row_set={true}
+            name='address'
+            placeHolder='기본주소'
+            readOnly={true}
+            value={inputEdit.address || ''}
+          />
+          <InputForm
+            label='상세주소'
+            className='oval'
+            name='detailedAddress'
+            placeHolder='상세주소'
+            value={inputEdit.detailedAddress || ''}
+            changeMethod={onInputEditChanged}
+            outerRef={detailedAddressRef}
+          />
+
+          {isModal.searchAddress && (
             <Modal>
               <DaumPostcode
                 termHeader={'우편번호 찾기'}
@@ -207,24 +216,21 @@ const InfoEdit = () => {
                 checked={inputEdit.checkMarketing}
                 onChange={() => onCheckEdit('checkMarketing')}
               />
+
               <label htmlFor={'checkMarketing'}>{dataJoinTerms[4].header}</label>
-              {dataJoinTerms[4].detail ? (
+              {dataJoinTerms[4].detail && (
                 <span className={dataJoinTerms[4].detailClassName}>&nbsp;{dataJoinTerms[4].detail}</span>
-              ) : (
-                ''
               )}
-              {dataJoinTerms[4].button && (
-                <button
-                  className='termBtn'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    dispatch(onModalOpen({ component: 'joinTerm', isModal: 4 }));
-                  }}
-                >
-                  &#10095;
-                </button>
-              )}
-              {isModal === 4 && (
+
+              <IoIosArrowForward
+                className='termBtn'
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(onModalOpen({ component: 'joinTerm', isModal: 4 }));
+                }}
+              />
+
+              {isModal.joinTerm === 4 && (
                 <Modal>
                   <TermMarketing termHeader={dataJoinTerms[4].header.slice(0, -3)} />
                 </Modal>

@@ -7,7 +7,7 @@ import withModal from '../withModal';
 
 const DaumPostcode = ({ props }) => {
   const dispatch = useDispatch();
-  const { inputEdit, setInputEdit, inputRef } = props;
+  const { inputEdit, setInputEdit, detailedAddressRef } = props;
 
   const handleComplete = (data) => {
     let fullAddress = data.address;
@@ -32,7 +32,7 @@ const DaumPostcode = ({ props }) => {
         onComplete={handleComplete}
         onClose={() => {
           dispatch(onModalClose());
-          inputRef.current.focus();
+          detailedAddressRef.current.focus();
         }}
       />
     </>
