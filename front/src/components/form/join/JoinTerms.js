@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { onCheck, onCheckAll } from '../../../store/features/formSlice';
 import { onModalOpen } from '../../../store/features/modalSlice';
 import Modal from '../../../Modal';
 import TermService from './TermService';
@@ -9,14 +8,31 @@ import TermMarketing from './TermMarketing';
 import dataJoinTerms from '../../../assets/api/dataJoinTerms';
 import { Terms } from '../../../styles/form/join/join_terms';
 
-const JoinTerms = () => {
-  const isCheckAll = useSelector((state) => state.form.isCheckAll);
   const isModal = useSelector((state) => state.modal.isModal.joinTerm);
-  const formInputValueCheck = useSelector((state) => state.form.inputValue.check);
-  const { checkAge, checkService, checkInfo, checkMarketing } = formInputValueCheck;
+const JoinTerms = ({ inputJoin, setInputJoin }) => {
   const dispatch = useDispatch();
+  const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
 
-  const checkedValues = [isCheckAll, checkAge, checkService, checkInfo, checkMarketing];
+  useEffect(() => {
+    const inputToCheck = [checkAge, checkService, checkInfo, checkMarketing];
+    // 약관 일일이 모두 체크하면 전체 선택 버튼 체크
+    // 하나라도 체크 해제되면 전체 선택 버튼 해제
+    const checkValueToChange = inputToCheck.every((checkValue) => checkValue) ? true : false;
+    setInputJoin({ ...inputJoin, check: { ...inputJoin.check, checkAll: checkValueToChange } });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkAge, checkService, checkInfo, checkMarketing]);
+
+  const onCheck = (id) => {
+    setInputJoin({ ...inputJoin, check: { ...inputJoin.check, [id]: !inputJoin.check[id] } });
+  };
+  const onCheckAll = (id) => {
+    const checkValueToChange = !inputJoin.check[id];
+    setInputJoin((prev) => {
+      const changedAllCheckValues = {};
+      Object.keys(prev.check).forEach((key) => (changedAllCheckValues[key] = checkValueToChange));
+      return { ...inputJoin, check: changedAllCheckValues };
+    });
+  };
 
   const setTermModal = (index, termProps) => {
     const mapIndexToComponent = {
@@ -35,7 +51,6 @@ const JoinTerms = () => {
           id={id}
           name={id}
           checked={checkedValues[index]}
-          onChange={id === 'checkAll' ? () => dispatch(onCheckAll()) : () => dispatch(onCheck(id))}
         ></input>
         <label htmlFor={id}>{termData.header}</label>
         {termData.detail ? <span className={termData.detailClassName}>&nbsp;{termData.detail}</span> : ''}

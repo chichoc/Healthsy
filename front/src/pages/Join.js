@@ -3,20 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import JoinForm from '../components/form/join/JoinForm';
 import withPage from './withPage';
-import { enableClick, disableClick, successVerifyEmail } from '../store/features/formSlice';
-import { useDispatch, useSelector } from 'react-redux';
 
 const Join = () => {
-  const [sendVerifyCode, setSendVerifyCode] = useState('');
   const navigate = useNavigate();
+  const [inputJoin, setInputJoin] = useState({
+    check: { checkAll: false, checkAge: false, checkService: false, checkInfo: false, checkMarketing: false },
+  });
 
-  const formInputValue = useSelector((state) => state.form.value.inputValue);
-  const dispatch = useDispatch();
+  const [emailVerificationJoin, setEmailVerificationJoin] = useState({ sendedCode: '', isVerificated: false });
 
   const duplicateEmail = () => {
     axios
       .post('http://localhost:8888/join/duplicateEmail', {
         email: formInputValue.email,
+        email: inputJoin.email,
       })
       .then((response) => console.log(response.data))
       .catch((error) => console.log(error));
@@ -30,7 +30,7 @@ const Join = () => {
     if (validateEmailResult && duplicateEmailResult) {
       axios
         .post('http://localhost:8888/join/sendEmail', {
-          email: formInputValue.email,
+          email: inputJoin.email,
         })
         .then((response) => {
           setSendVerifyCode(response.data.sendVerifyCode);
@@ -84,11 +84,11 @@ const Join = () => {
   const joinDB = () => {
     axios
       .post('http://localhost:8888/join/dataInsert', {
-        email: formInputValue.email,
-        password: formInputValue.password,
-        name: formInputValue.userName,
-        phone: formInputValue.phoneNumber,
-        checkMarketing: formInputValue.check.checkMarketing,
+        email: inputJoin.email,
+        password: inputJoin.password,
+        name: inputJoin.userName,
+        phone: inputJoin.phoneNumber,
+        checkMarketing: inputJoin.check.checkMarketing,
       })
       .then((response) => {
         if (response.data === 'success') {
@@ -112,7 +112,12 @@ const Join = () => {
 
   return (
     <>
-      <JoinForm sendEmail={sendEmail} verifyEmail={verifyEmail} onClickJoin={onClickJoin} />
+      <JoinForm
+        inputJoin={inputJoin}
+        setInputJoin={setInputJoin}
+        emailVerificationJoin={emailVerificationJoin}
+        setEmailVerificationJoin={setEmailVerificationJoin}
+      />
     </>
   );
 };
