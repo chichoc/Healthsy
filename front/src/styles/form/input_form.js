@@ -40,6 +40,10 @@ const DivInputForm = styled.div`
     letter-spacing: 0px;
   }
   input[disabled],
+  input.password {
+    padding-right: 35px;
+    max-width: 198px;
+  }
   input[readOnly] {
     color: #a0a0a0;
     background-color: rgba(239, 239, 239, 0.3);
@@ -51,6 +55,16 @@ const DivInputForm = styled.div`
   input:focus::placeholder {
     color: transparent;
   }
+
+  .handle_input_type {
+    cursor: pointer;
+    position: absolute;
+    margin: auto 0;
+    top: 0;
+    bottom: 0;
+    right: 15px;
+  }
+
   button {
     font-size: inherit;
     border-radius: 0 20px 20px 0;

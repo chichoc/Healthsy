@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { onFocusInput, onBlurInput } from '../../store/features/formSlice';
 import { DivInputForm } from '../../styles/form/input_form';
+import { BsEyeSlash } from 'react-icons/bs';
 import emailDomains from '../../assets/api/dataEmailDomain';
 
 const InputForm = ({
@@ -27,6 +28,10 @@ const InputForm = ({
   const form = useSelector((state) => state.form);
   const dispatch = useDispatch();
 
+  const onHandleTypeAttribute = () => {
+    inputRef.current.type = inputRef.current.type === 'password' ? 'text' : 'password';
+  };
+
   return (
     <DivInputForm className={row_set ? 'row_set' : 'row_form'}>
       <span className={form.focusedInputName[name] ? 'focus' : ''}>{label}</span>
@@ -44,6 +49,10 @@ const InputForm = ({
           onBlur={() => dispatch(onBlurInput(inputRef.current.name))}
           ref={inputRef}
         />
+        {/* 비밀번호 타입만 입력값 볼 수 있는 아이콘 추가 */}
+        {name.includes('password') && inputRef.current?.value && (
+          <BsEyeSlash className='handle_input_type' color='#616161' onClick={onHandleTypeAttribute} />
+        )}
 
         <datalist id='email-domain' className='oval'>
           {emailDomains.map((elem, index) => (
@@ -58,7 +67,6 @@ const InputForm = ({
         )}
       </div>
       {condition ? <h5>{`ⓘ ${condition}`}</h5> : ''}
-      {/* {condition ? <h5>형식에 맞지 않습니다.</h5> : ''} */}
     </DivInputForm>
   );
 };
