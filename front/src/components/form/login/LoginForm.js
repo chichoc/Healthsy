@@ -2,10 +2,11 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { DivLogin, FormLogin, InputCheck } from '../../../styles/form/login/login_form';
 import InputForm from '../../reusable/InputForm';
+import CircleCheck from '../../reusable/CircleCheck';
 import PrimaryButton from '../../reusable/PrimaryButton';
 import { onLogIn } from '../../../store/features/pageSlice';
+import { DivLogin, FormLogin } from '../../../styles/form/login/login_form';
 
 const LoginForm = () => {
   const [inputLogin, setInputLogin] = useState({});
@@ -88,10 +89,7 @@ const LoginForm = () => {
           placeHolder='비밀번호'
           changeMethod={onInputLoginChanged}
         />
-        <InputCheck>
-          <input type='checkbox' id='loginCheck' />
-          <span>로그인 상태 유지</span>
-        </InputCheck>
+        <CircleCheck id={'loginCheck'} headerSpan={'로그인 상태 유지'} />
 
         <PrimaryButton
           type={'submit'}

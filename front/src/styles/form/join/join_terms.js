@@ -9,27 +9,13 @@ const Terms = styled.ul`
   li {
     border-bottom: 1px solid #dddd;
     margin: 0;
-    padding: 15px 10px 15px 15px;
+    padding: 15px 10px 15px 20px;
     font-size: 15px;
     position: relative;
   }
 
   li:last-child {
     border-bottom: none;
-  }
-
-  input[type='checkbox'] {
-    margin-right: 10px;
-  }
-
-  span {
-    font-size: 12px;
-  }
-  span.required {
-    color: red;
-  }
-  span.optional {
-    color: #ababab;
   }
 
   .termBtn {

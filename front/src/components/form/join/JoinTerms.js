@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../../store/features/modalSlice';
 import Modal from '../../../Modal';
 import TermService from './TermService';
 import TermInfo from './TermInfo';
 import TermMarketing from './TermMarketing';
+import CircleCheck from '../../reusable/CircleCheck';
 import dataJoinTerms from '../../../assets/api/dataJoinTerms';
 import { Terms } from '../../../styles/form/join/join_terms';
 
@@ -46,14 +47,14 @@ const JoinTerms = ({ inputJoin, setInputJoin }) => {
   const setTermComponent = (id, termData, index) => {
     return (
       <li key={id}>
-        <input
-          type='checkbox'
+        <CircleCheck
           id={id}
-          name={id}
-          checked={checkedValues[index]}
-        ></input>
-        <label htmlFor={id}>{termData.header}</label>
-        {termData.detail ? <span className={termData.detailClassName}>&nbsp;{termData.detail}</span> : ''}
+          headerSpan={termData.header}
+          checked={inputJoin.check[id]}
+          onChangeMethod={id === 'checkAll' ? onCheckAll : onCheck}
+          detailSpan={termData.detail}
+        />
+
         {termData.button && (
           <button
             className='termBtn'
