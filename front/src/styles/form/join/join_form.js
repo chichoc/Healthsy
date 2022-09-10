@@ -5,12 +5,13 @@ const Join = styled.section`
   padding: 20px 0;
   margin: 0 auto;
   text-align: left;
-`;
 
-const Title = styled.h1`
-  font-size: 30px;
-  margin: 10px 0 25px 0;
-  font-weight: bold;
+  h1 {
+    font-size: 25px;
+    margin: 10px 0 30px 0;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
 `;
 
 const Form = styled.form`
@@ -27,4 +28,4 @@ const Form = styled.form`
   }
 `;
 
-export { Join, Title, Form };
+export { Join, Form };

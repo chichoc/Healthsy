@@ -1,87 +1,47 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import JoinForm from '../components/form/join/JoinForm';
 import withPage from './withPage';
 
 const Join = () => {
-  const navigate = useNavigate();
   const [inputJoin, setInputJoin] = useState({
     check: { checkAll: false, checkAge: false, checkService: false, checkInfo: false, checkMarketing: false },
   });
 
   const [emailVerificationJoin, setEmailVerificationJoin] = useState({ sendedCode: '', isVerificated: false });
 
-  const duplicateEmail = () => {
-    axios
+  const navigate = useNavigate();
+
+  const checkEmailDuplication = async () => {
+    return await axios
       .post('http://localhost:8888/join/duplicateEmail', {
-        email: formInputValue.email,
         email: inputJoin.email,
       })
-      .then((response) => console.log(response.data))
+      .then((res) => {
+        if (!res.data.joinDate) return false;
+        else return res.data.joinDate;
+      })
       .catch((error) => console.log(error));
   };
 
-  const sendEmail = (e) => {
+  const sendCodeToEmail = async (e) => {
     e.preventDefault();
-    const validateEmailResult = validateEmail();
-    const duplicateEmailResult = duplicateEmail();
-
-    if (validateEmailResult && duplicateEmailResult) {
+    // 인증 후 다른 이메일로 요청할 경우
+    setEmailVerificationJoin({ ...emailVerificationJoin, isVerificated: false });
+    const dateOfDuplicatedEmail = await checkEmailDuplication();
+    if (!dateOfDuplicatedEmail) {
       axios
         .post('http://localhost:8888/join/sendEmail', {
           email: inputJoin.email,
         })
-        .then((response) => {
-          setSendVerifyCode(response.data.sendVerifyCode);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+        .then((res) => setEmailVerificationJoin({ ...emailVerificationJoin, ...res.data }))
+        .catch((error) => console.log(error));
+    } else alert(`${dateOfDuplicatedEmail}에 이미 가입한 이메일 입니다.`);
   };
 
-  const verifyEmail = (e) => {
+  const onClickJoin = (e) => {
     e.preventDefault();
-    if (sendVerifyCode === +formInputValue.emailVerifyCode) {
-      alert('인증 완료!');
-      dispatch(successVerifyEmail);
-    } else {
-      alert('인증 실패');
-    }
-  };
-
-  const validateEmail = () => {
-    const regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    if (!regEmail.test(formInputValue.email)) {
-      alert('이메일 형식에 맞게 다시 입력해주세요');
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const validatePassword = () => {
-    const regPw = /^[0-9a-zA-Z]{8,20}$/;
-    if (!regPw.test(formInputValue.password)) {
-      alert('비밀번호 형식에 맞게 다시 입력해주세요');
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const validatePhoneNumber = () => {
-    const regPhone = /^\d{3}-\d{3,4}-\d{4}$/;
-    if (!regPhone.test(formInputValue.phoneNumber)) {
-      alert('연락처 형식에 맞게 다시 입력해주세요');
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const joinDB = () => {
     axios
       .post('http://localhost:8888/join/dataInsert', {
         email: inputJoin.email,
@@ -102,14 +62,6 @@ const Join = () => {
       });
   };
 
-  const onClickJoin = (e) => {
-    e.preventDefault();
-    if (!formInputValue.verifyEmail) {
-      alert('이메일 인증을 진행해주세요');
-    }
-    validateEmail() && validatePassword() && validatePhoneNumber() ? joinDB() : alert('형식에 맞게 입력해주세요');
-  };
-
   return (
     <>
       <JoinForm
@@ -117,6 +69,8 @@ const Join = () => {
         setInputJoin={setInputJoin}
         emailVerificationJoin={emailVerificationJoin}
         setEmailVerificationJoin={setEmailVerificationJoin}
+        sendCodeToEmail={sendCodeToEmail}
+        onClickJoin={onClickJoin}
       />
     </>
   );

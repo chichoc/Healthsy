@@ -8,20 +8,17 @@ export const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    onFocusInput: (state, action) => {
+    showInputLabel: (state, action) => {
       const { focusedInputName } = state;
       state.focusedInputName = { ...focusedInputName, [action.payload]: true };
     },
-    onBlurInput: (state, action) => {
+    hideInputLabel: (state, action) => {
       const { focusedInputName } = state;
       state.focusedInputName = { ...focusedInputName, [action.payload]: false };
     },
   },
 });
 
-export const {
-  onFocusInput,
-  onBlurInput,
-} = formSlice.actions;
+export const { showInputLabel, hideInputLabel } = formSlice.actions;
 
 export default formSlice.reducer;

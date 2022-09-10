@@ -9,9 +9,9 @@ import CircleCheck from '../../reusable/CircleCheck';
 import dataJoinTerms from '../../../assets/api/dataJoinTerms';
 import { Terms } from '../../../styles/form/join/join_terms';
 
-  const isModal = useSelector((state) => state.modal.isModal.joinTerm);
 const JoinTerms = ({ inputJoin, setInputJoin }) => {
   const dispatch = useDispatch();
+  const isModal = useSelector((state) => state.modal.isModal.joinTerm);
   const { checkAge, checkService, checkInfo, checkMarketing } = inputJoin.check;
 
   useEffect(() => {
