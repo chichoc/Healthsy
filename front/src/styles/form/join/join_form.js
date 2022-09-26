@@ -5,7 +5,6 @@ const Join = styled.section`
   padding: 20px 0;
   margin: 0 auto;
   text-align: left;
-
   h1 {
     font-size: 25px;
     margin: 10px 0 30px 0;
@@ -18,11 +17,13 @@ const Form = styled.form`
   div .row_form {
     margin-bottom: 35px;
   }
-
-  & > div:first-of-type {
-    margin-bottom: -20px;
+  div .row_set {
+    margin-bottom: 20px;
   }
 
+  input.password {
+    max-width: 198px;
+  }
   button {
     padding: 15px 20px;
   }

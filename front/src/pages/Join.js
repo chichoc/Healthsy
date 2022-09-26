@@ -8,7 +8,6 @@ const Join = () => {
   const [inputJoin, setInputJoin] = useState({
     check: { checkAll: false, checkAge: false, checkService: false, checkInfo: false, checkMarketing: false },
   });
-
   const [emailVerificationJoin, setEmailVerificationJoin] = useState({ sendedCode: '', isVerificated: false });
 
   const navigate = useNavigate();
@@ -40,8 +39,7 @@ const Join = () => {
     } else alert(`${dateOfDuplicatedEmail}에 이미 가입한 이메일 입니다.`);
   };
 
-  const onClickJoin = (e) => {
-    e.preventDefault();
+  const joinDB = () => {
     axios
       .post('http://localhost:8888/join/dataInsert', {
         email: inputJoin.email,
@@ -54,12 +52,9 @@ const Join = () => {
         if (response.data === 'success') {
           alert('회원가입되셨습니다!');
           navigate('/login');
-          // + 스크롤바 최상단으로 이동
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -70,7 +65,7 @@ const Join = () => {
         emailVerificationJoin={emailVerificationJoin}
         setEmailVerificationJoin={setEmailVerificationJoin}
         sendCodeToEmail={sendCodeToEmail}
-        onClickJoin={onClickJoin}
+        joinDB={joinDB}
       />
     </>
   );

@@ -52,27 +52,30 @@ const deleteRedisValue = async (key) => {
     });
 };
 
-router.post('/authentication', (req, res, next) => {
-  const { email, password } = req.body;
+router.post('/authentication', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-  db.execute('SELECT id, password, name FROM users WHERE email = ?', [email], async (dbError, dbResult) => {
-    if (dbError) next(dbError);
-    else if (dbResult.length === 1) {
-      bcrypt.compare(password, dbResult[0].password, async (bcryptError, bcryptResult) => {
+    const [rows, fields] = await (await db).execute('SELECT id, password, name FROM users WHERE email = ?', [email]);
+
+    if (rows.length === 1) {
+      bcrypt.compare(password, rows[0].password, async (bcryptError, bcryptResult) => {
         if (bcryptError) next(bcryptError);
         else if (bcryptResult) {
-          const userId = dbResult[0].id.toString('hex');
+          const userId = rows[0].id.toString('hex');
           const accessToken = await createToken(userId);
           const resultRedis = await tokenToRedis(userId, accessToken);
           if (resultRedis) {
             res.cookie(`accessToken=${accessToken}; HttpOnly;`);
-            res.json({ userId: userId, userName: dbResult[0].name, result: true, content: accessToken });
+            res.json({ result: true, userId: userId, userName: rows[0].name, content: accessToken });
           }
         } // 비밀번호가 db에서 조회된 것과 같지 않는 경우
         else res.json({ result: false, content: 'password' });
       }); // 이메일이 db에서 조회되지 않는 경우
     } else res.json({ result: false, content: 'email' });
-  });
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post('/authorization', authMiddleware, async (req, res) => {

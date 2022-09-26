@@ -10,16 +10,17 @@ const JoinForm = ({
   emailVerificationJoin,
   setEmailVerificationJoin,
   sendCodeToEmail,
-  onClickJoin,
+  joinDB,
 }) => {
   const [isValidatedJoin, setIsValidatedJoin] = useState({});
+  const [isSubmitJoin, setIsSubmitJoin] = useState(false); // 중복 누름 방지
 
   let isCheckRequired = ['checkAge', 'checkService', 'checkInfo'].every((name) => inputJoin.check[name]);
 
-  let isValidateAll =
+  let isValidatedAllJoin =
     Object.keys(isValidatedJoin).length === 6 && Object.values(isValidatedJoin).every((value) => !!value);
 
-  let enableJoin = isValidateAll && emailVerificationJoin.isVerificated && isCheckRequired;
+  let enableJoin = isValidatedAllJoin && emailVerificationJoin.isVerificated && isCheckRequired;
 
   const onInputJoinChanged = (e) => {
     const { name, value } = e.target;
@@ -38,6 +39,13 @@ const JoinForm = ({
     return inputJoin.password === valueToCompare ? true : false;
   };
 
+  const onClickJoin = (e) => {
+    setIsSubmitJoin(true);
+    e.preventDefault();
+    joinDB();
+    setIsSubmitJoin(false);
+  };
+
   return (
     <Join>
       <h1>회원가입</h1>
@@ -46,6 +54,7 @@ const JoinForm = ({
           <InputForm
             label='이메일'
             className='ovalInputWithButton'
+            rowSet={true}
             name='email'
             placeHolder='이메일'
             changeMethod={onInputJoinChanged}
@@ -77,7 +86,6 @@ const JoinForm = ({
         <div className='horizontal_flex'>
           <InputForm
             label='비밀번호'
-            className='oval'
             type='password'
             name='password'
             placeHolder='비밀번호'
@@ -89,7 +97,6 @@ const JoinForm = ({
           />
           <InputForm
             label='비밀번호 확인'
-            className='oval'
             type='password'
             name='passwordCheck'
             placeHolder='비밀번호 확인'
@@ -103,7 +110,6 @@ const JoinForm = ({
         <div className='horizontal_flex'>
           <InputForm
             label='이름'
-            className='oval'
             name='userName'
             placeHolder='이름'
             isValidated={isValidatedJoin}
@@ -112,7 +118,6 @@ const JoinForm = ({
           />
           <InputForm
             label='연락처'
-            className='oval'
             type='tel'
             name='phoneNumber'
             placeHolder='연락처'
@@ -125,7 +130,12 @@ const JoinForm = ({
           />
         </div>
         <JoinTerms inputJoin={inputJoin} setInputJoin={setInputJoin} />
-        <PrimaryButton type='submit' disabled={!enableJoin} buttonName={'가입하기'} onClickMethod={onClickJoin} />
+        <PrimaryButton
+          type='submit'
+          disabled={!enableJoin || isSubmitJoin}
+          buttonName={'가입하기'}
+          onClickMethod={onClickJoin}
+        />
       </Form>
     </Join>
   );

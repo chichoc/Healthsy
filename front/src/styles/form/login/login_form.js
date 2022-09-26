@@ -1,23 +1,21 @@
 import styled from '@emotion/styled';
 
-const Div = styled.div`
+const DivLogin = styled.div`
   text-align: center;
-  width: 400px;
-  margin: 30px auto 0;
-  font-size: 20px;
   p {
-    padding: 10px;
+    margin: 30px 0 20px;
+    font-size: 20px;
     line-height: 1.5;
   }
 `;
-const Form = styled.form`
+const FormLogin = styled.form`
   width: 250px;
   margin: 0 auto;
-  label {
-    text-align: left;
-    margin: -10px 0 10px;
+
+  .row_set {
+    margin-bottom: 15px;
   }
-  label span {
+  .login_check span {
     color: #616161;
     font-size: 15px;
   }

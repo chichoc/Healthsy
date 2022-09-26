@@ -43,7 +43,6 @@ const DivInputForm = styled.div`
   }
   input.password {
     padding-right: 35px;
-    max-width: 198px;
   }
   input:disabled,
   input[readOnly] {
@@ -64,6 +63,7 @@ const DivInputForm = styled.div`
     top: 0;
     bottom: 0;
     right: 15px;
+    color: #616161;
   }
 
   button {
@@ -78,18 +78,17 @@ const DivInputForm = styled.div`
     position: absolute;
     color: #616161;
   }
+
   .oval {
     border-radius: 20px;
     padding: 10px 20px;
   }
-
   .ovalInputWithButton {
     border-radius: 20px 0 0 20px;
     padding: 10px 20px;
     ${(props) => props.wrong || 'border-right: none;'};
     flex: 2;
   }
-
   .ovalButtonWithInput {
     border-radius: 0 20px 20px 0;
     padding: 10px 20px;

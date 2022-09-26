@@ -3,11 +3,9 @@ import styled from '@emotion/styled';
 
 const PrimaryButton = ({ buttonName, disabled = false, type = 'button', onClickMethod }) => {
   return (
-    <>
-      <Button type={type} disabled={disabled} onClick={onClickMethod}>
-        {buttonName}
-      </Button>
-    </>
+    <Button type={type} disabled={disabled} onClick={onClickMethod}>
+      {buttonName}
+    </Button>
   );
 };
 
@@ -15,7 +13,7 @@ const Button = styled.button`
   width: 100%;
   border-radius: 20px;
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   color: ${(props) => (props.type === 'submit' ? '#ffff' : '#00c9b7')};
   background-color: ${(props) => (props.type === 'submit' ? '#00c9b7' : '#ffff')};

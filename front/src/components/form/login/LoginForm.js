@@ -1,66 +1,26 @@
-import axios from 'axios';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import InputForm from '../../reusable/InputForm';
 import CircleCheck from '../../reusable/CircleCheck';
 import PrimaryButton from '../../reusable/PrimaryButton';
-import { onLogIn } from '../../../store/features/pageSlice';
 import { DivLogin, FormLogin } from '../../../styles/form/login/login_form';
 
-const LoginForm = () => {
-  const [inputLogin, setInputLogin] = useState({});
-  const [inputFocus, setInputFocus] = useState({});
-  const { email, password } = inputFocus;
+const LoginForm = ({ inputLogin, setInputLogin, loginDB }) => {
+  const [isValidatedLogin, setIsValidatedLogin] = useState({});
+  const [isSubmitLogin, setIsSubmitLogin] = useState(false); // 중복 누름 방지
 
-  const [isSubmit, setIsSubmit] = useState(false);
-  const isEnterAll = Boolean(inputLogin.email) && Boolean(inputLogin.password);
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const isValidatedAllLogin =
+    Object.keys(isValidatedLogin).length === 2 && Object.values(isValidatedLogin).every((value) => !!value);
 
   const onInputLoginChanged = (e) => {
     const { name, value } = e.target;
     setInputLogin({ ...inputLogin, [name]: value });
-    if (name === 'email' && value.includes('@')) {
-      let emailIdIndex = value.indexOf('@');
-      setInputLogin({ ...inputLogin, emailId: value.substr(0, emailIdIndex) });
-      e.target.setAttribute('list', 'email-domain');
-    }
   };
 
   const onClickLogin = (e) => {
-    setIsSubmit(true);
+    setIsSubmitLogin(true);
     e.preventDefault();
-    // 이메일 형식 체크
     loginDB();
-    setIsSubmit(false);
-  };
-
-  const loginDB = () => {
-    axios
-      .post(
-        'http://localhost:8888/login/authentication',
-        {
-          email: inputLogin.email,
-          password: inputLogin.password,
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        const { userId, userName, result } = res.data;
-        if (result === true) {
-          dispatch(onLogIn({ userId, userName }));
-          navigate('/');
-        } else if (res.data.content === 'password') {
-          alert('비밀번호를 다시 입력해주세요');
-        } else if (res.data.content === 'email') {
-          alert('이메일을 다시 입력해주세요');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setIsSubmitLogin(false);
   };
 
   return (
@@ -72,28 +32,29 @@ const LoginForm = () => {
       <FormLogin className='vertical_flex' align='center'>
         <InputForm
           label='이메일'
-          focusState={email}
-          className='oval'
-          type='text'
+          rowSet={true}
+          typeToValidate={'email'}
           name='email'
+          isValidated={isValidatedLogin}
+          setIsValidated={setIsValidatedLogin}
           placeHolder='이메일'
-          inputEmailId={inputLogin.emailId ? inputLogin.emailId : ''}
           changeMethod={onInputLoginChanged}
         />
         <InputForm
           label='비밀번호'
-          focusState={password}
-          className='oval'
           type='password'
           name='password'
+          isValidated={isValidatedLogin}
+          setIsValidated={setIsValidatedLogin}
           placeHolder='비밀번호'
           changeMethod={onInputLoginChanged}
         />
-        <CircleCheck id={'loginCheck'} headerSpan={'로그인 상태 유지'} />
+
+        <CircleCheck id={'loginCheck'} headerSpan={'로그인 상태 유지'} className={'login_check'} />
 
         <PrimaryButton
           type={'submit'}
-          disabled={!isEnterAll || isSubmit}
+          disabled={!isValidatedAllLogin || isSubmitLogin}
           buttonName={'로그인'}
           onClickMethod={onClickLogin}
         />

@@ -1,24 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  focusedInputName: {},
-};
+const initialState = {};
 
 export const formSlice = createSlice({
   name: 'form',
   initialState,
-  reducers: {
-    showInputLabel: (state, action) => {
-      const { focusedInputName } = state;
-      state.focusedInputName = { ...focusedInputName, [action.payload]: true };
-    },
-    hideInputLabel: (state, action) => {
-      const { focusedInputName } = state;
-      state.focusedInputName = { ...focusedInputName, [action.payload]: false };
-    },
-  },
+  reducers: {},
 });
 
-export const { showInputLabel, hideInputLabel } = formSlice.actions;
+export const {} = formSlice.actions;
 
 export default formSlice.reducer;
