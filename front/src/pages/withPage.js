@@ -18,13 +18,15 @@ const withPage = (WrappedComponent) => {
     useLayoutEffect(() => {
       if (!isLogin) {
         axios.post('http://localhost:8888/login/authorization', {}, { withCredentials: true }).then((res, req) => {
+          const { userId, userName } = res.data;
+          // 로그인한 적 없는 경우
           if (!res.data.token) return;
           if (res.data.updated) {
+            dispatch(onLogIn({ userId, userName }));
             // 로그인 상태에서 회원가입 못하도록 설정
-            if (location.pathname === '/join') navigate('/');
-            dispatch(onLogIn());
+            location.pathname === '/join' && navigate('/');
           } else {
-            if (location.pathname !== '/login') alert('로그인이 만료되어 다시 로그인 부탁드립니다');
+            location.pathname !== '/login' && alert('로그인이 만료되어 다시 로그인 부탁드립니다');
             res.error && console.log(res.error);
             navigate('/login');
           }

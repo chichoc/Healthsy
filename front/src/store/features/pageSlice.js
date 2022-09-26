@@ -7,16 +7,9 @@ export const pageSlice = createSlice({
   initialState,
   reducers: {
     onLogIn: (state, action) => {
-      state.isLogin = true;
-      if (!action.payload) return;
-      const { userId, userName } = action.payload;
-      state.userId = userId;
-      state.userName = userName;
-      // state = { isLogin: true, userId: userId, userName: userName };
+      return { isLogin: true, ...action.payload };
     },
-    onLogOut: (state) => {
-      state.isLogin = false;
-    },
+    onLogOut: () => initialState,
   },
 });
 

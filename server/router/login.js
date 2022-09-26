@@ -79,8 +79,15 @@ router.post('/authentication', async (req, res, next) => {
 });
 
 router.post('/authorization', authMiddleware, async (req, res) => {
-  // 유효한 토큰이 존재하는 경우
-  res.json({ token: true, updated: true });
+  try {
+    // 유효한 토큰이 존재하는 경우
+    const [rows, fields] = await (
+      await db
+    ).execute('SELECT name FROM users WHERE id = UNHEX(?)', [req.verifyTokenResult.userId]);
+    res.json({ token: true, updated: true, userId: req.verifyTokenResult.userId, userName: rows[0].name });
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post('/logout', authMiddleware, async (req, res, next) => {
@@ -89,8 +96,8 @@ router.post('/logout', authMiddleware, async (req, res, next) => {
     await deleteRedisValue(req.verifyTokenResult.userId);
     res.clearCookie('accessToken');
     res.end();
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 });
 

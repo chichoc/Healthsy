@@ -4,10 +4,8 @@ const redisClient = require('../config-redis');
 const getCookie = (cookie, name) => {
   if (cookie) {
     const cookieValue = cookie.split('; ').find((row) => row.startsWith(name));
-    if (cookieValue) {
-      // access token인 경우
-      return cookieValue.split('=')[1];
-    }
+    // access token인 경우
+    if (cookieValue) return cookieValue.split('=')[1];
     // token이 있지만 access token이 아닌 경우
     return cookieValue;
   } // 어떠한 token도 없는 경우
@@ -37,10 +35,8 @@ const getRedisValue = async (key) => {
 const auth = async (req, res, next) => {
   try {
     const reqToken = getCookie(req.headers.cookie, 'accessToken');
-    if (!reqToken) {
-      // 토큰이 존재하지 않는 경우
-      return res.json({ token: false });
-    }
+    // 토큰이 존재하지 않는 경우
+    if (!reqToken) return res.json({ token: false });
     req.verifyTokenResult = await verifyToken(reqToken);
     const redisToken = await getRedisValue(req.verifyTokenResult.userId);
     if (redisToken === reqToken) next();
