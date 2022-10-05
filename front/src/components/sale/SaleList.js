@@ -1,19 +1,23 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import SaleProduct from './SaleProduct';
-import { Main, Ul } from '../../styles/sale/sale_list';
+import { MainSale, UlSale } from '../../styles/sale/sale_list';
 
-const SaleList = ({ apiLoading, apiError, apiDataBottom }) => {
-  const showApiData = useSelector((state) => state.sale.value.showApi.data);
+const SaleList = ({ apiLoading, apiError, apiDataBottom, showApi, showCountUnit }) => {
+  const changeCountUnit = (num) => {
+    if (num < 16) return 'small_unit';
+    else if (num > 16) return 'big_unit';
+    else return 'medium_unit';
+  };
 
   return (
-    <Main>
-      <Ul className='horizontal_flex'>
-        {showApiData &&
-          showApiData.map(
+    <MainSale>
+      <UlSale className={`horizontal_flex`}>
+        {showApi &&
+          showApi.map(
             (sale, index) =>
               sale && (
                 <SaleProduct
+                  className={changeCountUnit(showCountUnit)}
                   key={index}
                   prodId={'id' in sale ? sale.id : ''}
                   brandName={'brand' in sale ? sale.brand : ''}
@@ -23,10 +27,10 @@ const SaleList = ({ apiLoading, apiError, apiDataBottom }) => {
               )
           )}
         <span className='observerTarget' ref={apiDataBottom}></span>
-      </Ul>
+      </UlSale>
       {apiLoading && <div>Loading..</div>}
       {apiError && <div>Error!</div>}
-    </Main>
+    </MainSale>
   );
 };
 

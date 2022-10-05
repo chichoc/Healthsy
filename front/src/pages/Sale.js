@@ -12,6 +12,7 @@ const Sale = () => {
   // request state
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const [showCountUnit, setShowCountUnit] = useState(9);
   const apiDataBottom = useRef(null);
 
   let { category } = useParams();
@@ -65,8 +66,14 @@ const Sale = () => {
   return (
     <>
       <SaleNav />
-      <SaleSort />
-      <SaleList apiLoading={apiLoading} apiError={apiError} apiDataBottom={apiDataBottom} />
+      <SaleSort setShowCountUnit={setShowCountUnit} />
+      <SaleList
+        apiLoading={apiLoading}
+        apiError={apiError}
+        apiDataBottom={apiDataBottom}
+        showApi={showApi}
+        showCountUnit={showCountUnit}
+      />
     </>
   );
 };
