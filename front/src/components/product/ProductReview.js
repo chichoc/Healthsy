@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../store/features/modalSlice';
 import { addReviewThumbs, fetchReviews } from '../../store/features/productSlice';
 import { useParams } from 'react-router-dom';
-import Modal from '../../Modal';
+import Portal from '../../Portal';
 import ReviewForm from './ReviewForm';
 import ReviewSort from './ReviewSort';
 import ReviewPagination from './ReviewPagination.js';
@@ -82,9 +82,9 @@ const ProductReview = forwardRef((props, reviewSection) => {
       <ReviewSort />
 
       {isModal && (
-        <Modal>
+        <Portal>
           <ReviewForm termHeader={'리뷰쓰기'} />
-        </Modal>
+        </Portal>
       )}
 
       <DivProdReview>

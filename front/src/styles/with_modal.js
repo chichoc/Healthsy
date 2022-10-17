@@ -1,17 +1,6 @@
 import styled from '@emotion/styled';
-const PopUp = styled.article`
-  background: rgba(0, 0, 0, 0.2);
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
-const Term = styled.div`
+const ArticleModal = styled.article`
   background: white;
   padding: 20px 30px 40px 40px;
   width: 100%;
@@ -19,16 +8,16 @@ const Term = styled.div`
   height: 500px;
   border-radius: 30px;
 
-  nav {
+  header {
     height: 40px;
     padding: 10px 0 10px 0;
   }
-  nav h1 {
+  header h1 {
     font-size: 23px;
     font-weight: bold;
     line-height: 38px;
   }
-  nav button {
+  header button {
     color: #ababab;
     font-size: 25px;
   }
@@ -64,4 +53,4 @@ const Term = styled.div`
   }
 `;
 
-export { PopUp, Term };
+export { ArticleModal };

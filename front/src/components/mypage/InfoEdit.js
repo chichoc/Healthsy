@@ -5,7 +5,7 @@ import { onModalOpen } from '../../store/features/modalSlice';
 import InputForm from '../reusable/InputForm';
 import PrimaryButton from '../reusable/PrimaryButton';
 import TermMarketing from '../form/join/TermMarketing';
-import Modal from '../../Modal';
+import Portal from '../../Portal';
 import DaumPostcode from './DaumPostcode';
 import dataJoinTerms from '../../assets/api/dataJoinTerms';
 import { IoIosArrowForward } from 'react-icons/io';
@@ -187,14 +187,14 @@ const InfoEdit = () => {
           />
 
           {isModal.searchAddress && (
-            <Modal>
+            <Portal>
               <DaumPostcode
                 termHeader={'우편번호 찾기'}
                 inputEdit={inputEdit}
                 setInputEdit={setInputEdit}
                 detailedAddressRef={detailedAddressRef}
               />
-            </Modal>
+            </Portal>
           )}
 
           <div>
@@ -231,9 +231,9 @@ const InfoEdit = () => {
               />
 
               {isModal.joinTerm === 4 && (
-                <Modal>
+                <Portal>
                   <TermMarketing termHeader={dataJoinTerms[4].header.slice(0, -3)} />
-                </Modal>
+                </Portal>
               )}
             </li>
           </Terms>

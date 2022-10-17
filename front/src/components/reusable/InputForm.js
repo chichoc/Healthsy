@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BsEyeSlash } from 'react-icons/bs';
-import { BsEye } from 'react-icons/bs';
+import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import emailDomains from '../../assets/api/dataEmailDomain';
 import { DivInputForm } from '../../styles/form/input_form';
 
@@ -101,9 +100,9 @@ const InputForm = ({
         {name.includes('password') &&
           inputRef.current?.value &&
           (inputType === 'password' ? (
-            <BsEyeSlash className='handle_input_type' onClick={onHandleTypeAttribute} />
+            <BsEyeSlash className='inner_button_right' onClick={onHandleTypeAttribute} />
           ) : (
-            <BsEye className='handle_input_type' onClick={onHandleTypeAttribute} />
+            <BsEye className='inner_button_right' onClick={onHandleTypeAttribute} />
           ))}
 
         {button && (

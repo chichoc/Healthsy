@@ -41,9 +41,14 @@ const DivInputForm = styled.div`
   input[type='password']::placeholder {
     letter-spacing: 1px;
   }
+  input.oval {
+    border-radius: 20px;
+    padding: 10px 20px;
+  }
   input.password {
     padding-right: 35px;
   }
+
   input:disabled,
   input[readOnly] {
     color: #a0a0a0;
@@ -56,7 +61,7 @@ const DivInputForm = styled.div`
     color: transparent;
   }
 
-  .handle_input_type {
+  svg.inner_button_right {
     cursor: pointer;
     position: absolute;
     margin: auto 0;
@@ -79,10 +84,6 @@ const DivInputForm = styled.div`
     color: #616161;
   }
 
-  .oval {
-    border-radius: 20px;
-    padding: 10px 20px;
-  }
   .ovalInputWithButton {
     border-radius: 20px 0 0 20px;
     padding: 10px 20px;

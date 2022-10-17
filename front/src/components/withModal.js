@@ -1,25 +1,23 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { onModalClose } from '../store/features/modalSlice';
-import { PopUp, Term } from '../styles/with_modal';
+import { ArticleModal } from '../styles/with_modal';
 
 const withModal = (WrappedComponent) => {
-  const Component = ({ termHeader, ...props }) => {
+  const Modal = ({ termHeader, ...props }) => {
     const dispatch = useDispatch();
 
     return (
-      <PopUp>
-        <Term>
-          <nav className='horizontal_flex'>
-            <h1>{termHeader}</h1>
-            <button onClick={() => dispatch(onModalClose())}>&#x2715;</button>
-          </nav>
-          <WrappedComponent props={props} />
-        </Term>
-      </PopUp>
+      <ArticleModal>
+        <header className='horizontal_flex'>
+          <h1>{termHeader}</h1>
+          <button onClick={() => dispatch(onModalClose())}>&#x2715;</button>
+        </header>
+        <WrappedComponent props={props} />
+      </ArticleModal>
     );
   };
-  return Component;
+  return Modal;
 };
 
 export default withModal;

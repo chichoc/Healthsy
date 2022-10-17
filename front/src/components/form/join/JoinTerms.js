@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../../store/features/modalSlice';
-import Modal from '../../../Modal';
+import Portal from '../../../Portal';
 import TermService from './TermService';
 import TermInfo from './TermInfo';
 import TermMarketing from './TermMarketing';
@@ -66,7 +66,7 @@ const JoinTerms = ({ inputJoin, setInputJoin }) => {
             &#10095;
           </button>
         )}
-        {isModal === index && <Modal>{setTermModal(index, { termHeader: termData.header.slice(0, -3) })}</Modal>}
+        {isModal === index && <Portal>{setTermModal(index, { termHeader: termData.header.slice(0, -3) })}</Portal>}
       </li>
     );
   };
