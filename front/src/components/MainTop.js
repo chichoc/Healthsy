@@ -30,17 +30,13 @@ const MainTop = () => {
 
       <Ul className='horizontal_flex' align='center'>
         <li>
-          <Link to='/login'>
+          <Link to='/mypage/like'>
             <BsHeart title={'찜'} size={20} />
           </Link>
         </li>
         {page.isLogin ? (
           // 로그인한 상태
-          <li
-            onClick={() => {
-              setOpenMenu(!openMenu);
-            }}
-          >
+          <li onClick={() => setOpenMenu(!openMenu)}>
             <BsPerson title={'마이페이지'} size={24} />
             <ClickMenu open={openMenu}>
               <li>

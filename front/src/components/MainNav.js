@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
 import Portal from '../Portal';
 import SearchForm from './reusable/SearchForm';
@@ -10,6 +10,10 @@ const MainNav = () => {
   const [openSearchForm, setOpenSearchForm] = useState(false);
   const handleSearchForm = () => {
     setOpenSearchForm(!openSearchForm);
+  };
+
+  const selectedNavStyle = {
+    color: '#000000',
   };
 
   return (
@@ -30,7 +34,9 @@ const MainNav = () => {
         <UlMain className='horizontal_flex'>
           {dataMainMenu.map((menu, index) => (
             <li key={index}>
-              <Link to={menu.link}>{menu.name}</Link>
+              <NavLink to={menu.link} style={({ isActive }) => (isActive ? selectedNavStyle : undefined)}>
+                {menu.name}
+              </NavLink>
             </li>
           ))}
           <li onClick={handleSearchForm}>

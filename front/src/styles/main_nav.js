@@ -42,7 +42,7 @@ const UlMain = styled.ul`
     padding: 0 10px;
     flex: 0 1 auto;
     cursor: pointer;
-    color: #505050;
+    color: #686868;
   }
   li:hover {
     color: #000000;
