@@ -6,6 +6,7 @@ const NavMain = styled.nav`
   justify-content: center;
   padding: 0 100px;
   margin-bottom: 10px;
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.3);
   ${(props) => props.searchForm && 'visibility: hidden;'};
   .logo {
     margin-right: 10%;
@@ -45,7 +46,7 @@ const UlMain = styled.ul`
     color: #686868;
   }
   li:hover {
-    color: #000000;
+    color: #282828;
   }
 `;
 

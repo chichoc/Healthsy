@@ -4,7 +4,9 @@ const DivSaleSort = styled.div`
   flex: 0 1 auto;
   margin: 0 100px;
   select {
-    flex: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
   }
 `;
 

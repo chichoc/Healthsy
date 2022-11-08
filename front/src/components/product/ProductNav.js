@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import dataProductNav from '../../assets/api/dataProductNav';
-import { DivProduct, NavProduct, SectionProduct } from '../../styles/product/product_nav';
 import ProductDetail from './ProductDetail';
 import ProductInfo from './ProductInfo';
 import ProductReview from './ProductReview';
 import useSticky from '../customHook/useSticky';
+import dataProductNav from '../../assets/api/dataProductNav';
+import { DivProduct, NavProduct, SectionProduct } from '../../styles/product/product_nav';
 
 const ProductNav = () => {
   const [showComponent, setShowComponent] = useState(0);
@@ -25,7 +25,7 @@ const ProductNav = () => {
 
   return (
     <DivProduct>
-      <NavProduct className={sticky ? 'horizontal_flex sticky' : 'horizontal_flex'} ref={stickyRef}>
+      <NavProduct className={`horizontal_flex ${sticky && 'sticky'}`} ref={stickyRef}>
         {dataProductNav.map((nav, index) => (
           <button
             key={index}

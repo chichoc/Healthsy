@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../store/features/modalSlice';
 import { addReviewThumbs, fetchReviews } from '../../store/features/productSlice';
 import { useParams } from 'react-router-dom';
+import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
 import Portal from '../../Portal';
 import ReviewForm from './ReviewForm';
 import ReviewSort from './ReviewSort';
 import ReviewPagination from './ReviewPagination.js';
 import StarScore from '../reusable/StarScore';
-import { HeaderProdReview, DivProdReview } from '../../styles/product/product_review';
-import { GoThumbsup, GoThumbsdown } from 'react-icons/go';
 import userProfileImg from '../../assets/img/userProfile.png';
+import { HeaderProdReview, DivProdReview } from '../../styles/product/product_review';
 
 const ProductReview = forwardRef((props, reviewSection) => {
   const dispatch = useDispatch();
@@ -51,9 +51,9 @@ const ProductReview = forwardRef((props, reviewSection) => {
   if (countTotalReviews === 0) {
     return (
       <>
-        <h1>후기</h1>
+        <h2>후기</h2>
         <section>
-          <h2>아직 후기가 없습니다.</h2>
+          <p>아직 후기가 없습니다.</p>
         </section>
       </>
     );
@@ -63,12 +63,12 @@ const ProductReview = forwardRef((props, reviewSection) => {
     <>
       <HeaderProdReview>
         <div className='horizontal_flex'>
-          <h1 ref={reviewSection}>
+          <h2 ref={reviewSection}>
             총 {countTotalReviews}건의 후기가 있습니다.{' '}
             <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>
               리뷰 작성하기
             </button>
-          </h1>
+          </h2>
         </div>
         <div className='horizontal_flex countStar'>
           <h2>구매 만족도</h2>

@@ -8,10 +8,8 @@ const ProductDetail = forwardRef((props, detailSection) => {
 
   return (
     <>
-      <h1 ref={detailSection}>상세 정보</h1>
-      {dataProductDetail.map((detail) => (
-        <TableList data={selectedProduct[detail.columnName]} header={detail.header} />
-      ))}
+      <h2 ref={detailSection}>상세 정보</h2>
+      <TableList columns={dataProductDetail} datas={selectedProduct} />
     </>
   );
 });

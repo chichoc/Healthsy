@@ -43,7 +43,7 @@ const NavProduct = styled.nav`
   }
 `;
 const SectionProduct = styled.section`
-  h1 {
+  h2 {
     font-weight: bold;
     font-size: 20px;
     margin: 20px 0;

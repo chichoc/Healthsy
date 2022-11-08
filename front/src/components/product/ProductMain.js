@@ -5,9 +5,11 @@ import { fetchProduct } from '../../store/features/productSlice';
 import { RiHeartAddLine, RiHeartFill } from 'react-icons/ri';
 import { BsPlusSquareDotted, BsCheckSquareFill } from 'react-icons/bs';
 import { FiShare } from 'react-icons/fi';
-import productImg from '../../assets/img/testSale.jpeg';
 import StarScore from '../reusable/StarScore';
-import { MainProduct, BtnProduct } from '../../styles/product/product_main';
+import TableList from '../reusable/TableList';
+import productImg from '../../assets/img/testSale.jpeg';
+import dataProductMain from '../../assets/api/dataProductMain';
+import { MainProduct, DivProductBtns } from '../../styles/product/product_main';
 
 const ProductMain = () => {
   let { id } = useParams();
@@ -24,33 +26,28 @@ const ProductMain = () => {
     return price.toLocaleString();
   };
 
-  const addCommaNextSpace = (string) => {
-    return string ? string.split(',').join(', ') : string;
-  };
-
   return (
     <MainProduct className='horizontal_flex'>
       {selectedProduct ? (
         <>
           <img src={productImg} alt='제품 이미지' />
           <div className='vertical_flex product_primary'>
-            <h3 className='product_brand'>{selectedProduct.brand}</h3>
-            <h2>{selectedProduct.PRDLST_NM}</h2>
+            <h2 className='product_brand'>{selectedProduct.brand}</h2>
+            <div className='horizontal_flex product_header'>
+              <h1>{selectedProduct.PRDLST_NM}</h1>
+              <button>
+                <FiShare title={'공유하기'} size={25} color='#acacac' />
+              </button>
+            </div>
             <h4 className='product_score'>
-              <StarScore size={20} score={countAvgScore} /> <span> ({countTotalReviews}건)</span>
+              <StarScore size={20} score={countAvgScore} />
+              <span>({countTotalReviews}건)</span>
             </h4>
             <h3>{selectedProduct.price && commaToPrice(selectedProduct.price)}원</h3>
-
-            <h4 className='product_info'>
-              <div className='horizontal_flex'>
-                형태 <p>{selectedProduct.PRDT_SHAP_CD_NM}</p>
-              </div>
-              <div className='horizontal_flex'>
-                원료 <p>{addCommaNextSpace(selectedProduct.raw_material)}</p>
-              </div>
-            </h4>
+            <TableList columns={dataProductMain} datas={selectedProduct} />
             {/* 기능성 키워드 */}
-            <BtnProduct className='horizontal_flex'>
+
+            <DivProductBtns className='horizontal_flex'>
               <button className='horizontal_flex'>
                 <RiHeartAddLine size={35} color='#00C9B7' />
                 <span>찜하기</span>
@@ -62,10 +59,8 @@ const ProductMain = () => {
                 <span>비교하기</span>
               </button>
               <button className='horizontal_flex'>
-                <FiShare size={35} color='#00C9B7' />
-                <span>공유하기</span>
               </button>
-            </BtnProduct>
+            </DivProductBtns>
           </div>
         </>
       ) : (
