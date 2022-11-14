@@ -50,23 +50,35 @@ const UlSale = styled.ul`
 const ArticleSale = styled.article`
   margin: 0 auto;
   text-align: left;
-  .productBrand,
-  .productName {
+  .brand_prod,
+  .name_prod {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
   }
-  .productBrand {
+  .brand_prod {
     margin-top: 7px;
-    margin-bottom: 5px;
-    color: grey;
+    color: #787878;
     font-size: 14px;
   }
-  .productName {
-    margin-bottom: 9px;
+  .name_prod {
+    margin-top: 6px;
+    font-size: 15px;
   }
-  .productPrice {
+  .price_prod {
     font-weight: bold;
+    margin-top: 8px;
+  }
+  .price_prod::after {
+    content: '원';
+    font-weight: normal;
+    margin-left: 1px;
+  }
+  h4 {
+    margin-top: 6px;
+    ${(props) => !props.isScored && 'visibility: hidden;'};
+    span {
+    }
   }
 `;
 

@@ -1,78 +1,90 @@
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addFetchApi, addPageNum, showApiData } from '../store/features/saleSlice';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import withPage from './withPage';
+import useIntersect from '../components/customHook/useIntersect';
 import SaleList from '../components/sale/SaleList';
 import SaleNav from '../components/sale/SaleNav';
 import SaleSort from '../components/sale/SaleSort';
-import withPage from './withPage';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
 
 const Sale = () => {
+  const [sales, setSales] = useState([]);
+  const [salesToDisplay, setSalesToDisplay] = useState([]);
+  const bottomOfSalesToDisplay = useRef(null);
+
+  const currentPageToFetch = useRef(0);
+
   // request state
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
-  const [showCountUnit, setShowCountUnit] = useState(9);
-  const apiDataBottom = useRef(null);
 
   let { category } = useParams();
-  const selectedNav = useSelector((state) => state.sale.value.selectedNav[category]);
-  const fetchApi = useSelector((state) => state.sale.value.fetchApi);
-  const dispatch = useDispatch();
+  const selectedNav = useSelector((state) => state.sale.selectedNav[category]);
+  const countUnitToDisplay = useSelector((state) => state.sale.countUnit);
+  const fetchSort = useSelector((state) => state.sale.sort);
 
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.5,
+  const addSales = async () => {
+    try {
+      setApiLoading(true);
+      const { data } = await axios.post('http://localhost:8888/sale/getApiData', {
+        startIdx: currentPageToFetch.current * 100,
+        countUnit: 100,
+        category,
+        selectedNav,
+        sort: fetchSort,
+      });
+      if (currentPageToFetch.current === 0) {
+        // 카테고리, 특정 성분/브랜드/기능 버튼, 정렬방식 변경하여 새로이 fetch하는 경우
+        setSales([...data.splice(countUnitToDisplay)]);
+        setSalesToDisplay([...data]);
+      } else {
+        // IntersectionObserver에 의해 감지 & display할 sales가 countUnit보다 적은 경우
+        const countToAdd = countUnitToDisplay - sales.length;
+        setSalesToDisplay((prev) => [...prev, ...data.splice(0, countToAdd)]);
+        setSales([...data]);
+      }
+    } catch (error) {
+      setApiError(error);
+      console.log(error);
+    } finally {
+      setApiLoading(false);
+    }
   };
 
-  useLayoutEffect(() => {
-    const getApiData = async () => {
-      try {
-        setApiLoading(true);
-        const { data } = await axios.post('http://localhost:8888/sale/getApiData', {
-          startIdx: 0,
-          endIdx: 100,
-          category,
-          selectedNav,
-        });
-        dispatch(addFetchApi(data));
-      } catch (error) {
-        setApiError(error);
-        console.log(error);
-      } finally {
-        setApiLoading(false);
-      }
-    };
-    getApiData();
-  }, [selectedNav, category, dispatch]);
+  const handleIntersection = async ([{ isIntersecting }]) => {
+    if (apiLoading || apiError || !isIntersecting) return;
+    if (sales.length <= countUnitToDisplay) {
+      currentPageToFetch.current++;
+      await addSales();
+    } else {
+      const salesToAdd = sales.slice(0, countUnitToDisplay);
+      setSales((prev) => prev.filter((_, index) => index >= countUnitToDisplay));
+      setSalesToDisplay((prev) => [...prev, ...salesToAdd]);
+    }
+  };
 
+  useIntersect(bottomOfSalesToDisplay, {
+    onIntersect: handleIntersection,
+    rootMargin: '0px 100px',
+    threshold: 0.3,
+  });
+
+  // 카테고리, 특정 성분/브랜드/기능 버튼, 정렬방식 변경시에만 새로이 fetch
   useEffect(() => {
-    if (fetchApi.data.length === 0) return;
-
-    const handleIntersection = async (entries) => {
-      if (!entries[0].isIntersecting) return;
-      if (!apiLoading) {
-        dispatch(showApiData());
-        dispatch(addPageNum());
-      }
-    };
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
-    if (apiDataBottom.current) observer.observe(apiDataBottom.current);
-
-    return () => observer.disconnect();
-  }, [apiLoading, fetchApi.data, dispatch]);
+    currentPageToFetch.current = 0;
+    addSales();
+  }, [category, fetchSort, selectedNav]);
 
   return (
     <>
       <SaleNav />
-      <SaleSort setShowCountUnit={setShowCountUnit} />
+      <SaleSort />
       <SaleList
         apiLoading={apiLoading}
         apiError={apiError}
-        apiDataBottom={apiDataBottom}
-        showApi={showApi}
-        showCountUnit={showCountUnit}
+        bottomOfSalesToDisplay={bottomOfSalesToDisplay}
+        salesToDisplay={salesToDisplay}
       />
     </>
   );

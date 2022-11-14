@@ -1,16 +1,24 @@
 import React from 'react';
-import { DivSaleSort } from '../../styles/sale/sale_sort';
-import dataSaleSort from '../../assets/api/dataSaleSort';
+import { useDispatch, useSelector } from 'react-redux';
+import { onSelectCountUnit } from '../../store/features/saleSlice';
 import SortUl from '../reusable/SortUl';
+import dataSaleSort from '../../assets/api/dataSaleSort';
+import { DivSaleSort } from '../../styles/sale/sale_sort';
 
-const SaleSort = ({ setShowCountUnit }) => {
+const SaleSort = () => {
+  const countUnitToDisplay = useSelector((state) => state.sale.countUnit);
+  const dispatch = useDispatch();
+  const countUnits = [9, 16, 25];
+
   return (
     <DivSaleSort className='horizontal_flex'>
       <SortUl dataToMap={dataSaleSort} />
-      <select onChange={(e) => setShowCountUnit(e.target.value)}>
-        <option value={9}>9개씩</option>
-        <option value={16}>16개씩</option>
-        <option value={25}>25개씩</option>
+      <select value={countUnitToDisplay} onChange={(e) => dispatch(onSelectCountUnit(e.target.value))}>
+        {countUnits.map((unit) => (
+          <option key={unit} value={unit}>
+            {unit}개씩 보기
+          </option>
+        ))}
       </select>
     </DivSaleSort>
   );

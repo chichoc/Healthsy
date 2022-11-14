@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useLayoutEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import SaleProduct from './SaleProduct';
 import { MainSale, UlSale } from '../../styles/sale/sale_list';
 
-const SaleList = ({ apiLoading, apiError, apiDataBottom, showApi, showCountUnit }) => {
+const SaleList = ({ apiLoading, apiError, salesToDisplay, bottomOfSalesToDisplay }) => {
+  const countUnitToDisplay = useSelector((state) => state.sale.countUnit);
   const changeCountUnit = (num) => {
     if (num < 16) return 'small_unit';
     else if (num > 16) return 'big_unit';
@@ -12,22 +14,21 @@ const SaleList = ({ apiLoading, apiError, apiDataBottom, showApi, showCountUnit 
   return (
     <MainSale>
       <UlSale className={`horizontal_flex`}>
-        {showApi &&
-          showApi.map(
-            (sale, index) =>
-              sale && (
-                <SaleProduct
-                  className={changeCountUnit(showCountUnit)}
-                  key={index}
-                  prodId={'id' in sale ? sale.id : ''}
-                  brandName={'brand' in sale ? sale.brand : ''}
-                  productName={'PRDLST_NM' in sale ? sale.PRDLST_NM : ''}
-                  productPrice={'price' in sale ? sale.price : ''}
-                />
-              )
-          )}
-        <span className='observerTarget' ref={apiDataBottom}></span>
+        {salesToDisplay &&
+          salesToDisplay.map((sale) => (
+            <SaleProduct
+              className={changeCountUnit(countUnitToDisplay)}
+              key={sale.id}
+              id={'id' in sale ? sale.id : ''}
+              brand={'brand' in sale ? sale.brand : ''}
+              name={'PRDLST_NM' in sale ? sale.PRDLST_NM : ''}
+              price={'price' in sale ? sale.price : ''}
+              score={'score' in sale ? sale.score : 0}
+              count={'count' in sale ? sale.count : 0}
+            />
+          ))}
       </UlSale>
+      <span className='observerTarget' ref={bottomOfSalesToDisplay}></span>
       {apiLoading && <div>Loading..</div>}
       {apiError && <div>Error!</div>}
     </MainSale>

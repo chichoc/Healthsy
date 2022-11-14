@@ -1,7 +1,10 @@
-import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { onSelectSort } from '../../store/features/saleSlice';
+import styled from '@emotion/styled';
 
 const SortUl = ({ dataToMap }) => {
+  const dispatch = useDispatch();
   const [selectedIdx, setSelectedIdx] = useState(0);
 
   return (
@@ -12,6 +15,7 @@ const SortUl = ({ dataToMap }) => {
           className={selectedIdx === index ? 'selected' : ''}
           onClick={() => {
             setSelectedIdx(index);
+            dispatch(onSelectSort(item.sortName));
           }}
         >
           {item.name}
@@ -42,7 +46,7 @@ const Ul = styled.ul`
   }
   li.selected {
     color: #000000;
-    font-weight: bold;
+    font-weight: 600;
   }
 `;
 

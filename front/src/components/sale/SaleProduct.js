@@ -1,31 +1,37 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Description } from '../../styles/sale/sale_list';
+import { useDispatch } from 'react-redux';
+import { storeScroll } from '../../store/features/saleSlice';
+import StarScore from '../reusable/StarScore';
+import useScrollY from '../customHook/useScrollY';
 import productImg from '../../assets/img/testSale.jpeg';
+import { ArticleSale } from '../../styles/sale/sale_list';
 
-const SaleProduct = ({ prodId, brandName, productName, productPrice = '20000' }) => {
-  const commaPrice = (price) => {
-    if (price < 1000) return price;
-    return price.toLocaleString();
-  };
+const SaleProduct = ({ className, id, brand, name, price = '20000', score, count }) => {
   const navigate = useNavigate();
+  const { storeScroll } = useScrollY();
+  const commaPrice = (price) => (price < 1000 ? price : price.toLocaleString());
 
   return (
     <li
+      className={className}
       onClick={() => {
-        navigate(`/product/${prodId}`, { replace: true });
+        storeScroll();
+        navigate(`/product/${id}`);
       }}
     >
       <img src={productImg} alt='제품 이미지' />
-      <Description>
-        <h1 className='productBrand'>{brandName}</h1>
-        <h1 className='productName'>{productName}</h1>
-        <h2 className='productPrice'> {`${commaPrice(productPrice)}원`}</h2>
-        {/* 별점 (리뷰개수), 리뷰가 없다면 아예 안뜨도록 */}
-        {/* 헬씨 배송 여부 */}
-      </Description>
+      <ArticleSale isScored={score}>
+        <h2 className='brandOfProduct'>{brand}</h2>
+        <h1 className='nameOfProduct'>{name}</h1>
+        <h3 className='priceOfProduct'> {commaPrice(price)}</h3>
+        <h4>
+          <StarScore score={score} size={15} count={count} />
+        </h4>
+      </ArticleSale>
     </li>
   );
 };
 
 export default SaleProduct;
+// export default React.memo(SaleProduct);

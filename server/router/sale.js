@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const db = require('../config-mysql');
 const fs = require('fs');
+const db = require('../config-mysql');
 
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -31,18 +31,18 @@ const getApiData = async (startNum, endNum, item) => {
     const reqCount = Math.ceil((endNum - startNum + 1) / 1000);
     for (let count = 0; count < reqCount; count++) {
       const reqStartNum = startNum + 1000 * count;
-      let reqEndNum;
-      count === reqCount - 1
-        ? (reqEndNum = startNum + 1000 * count + ((endNum - startNum) % 1000))
-        : (reqEndNum = startNum + 1000 * (count + 1) - 1);
-      const requestApiUrl = setApiUrl('C003', reqStartNum, reqEndNum);
+      let reqEndNum =
+        count === reqCount - 1
+          ? startNum + 1000 * count + ((endNum - startNum) % 1000)
+          : startNum + 1000 * (count + 1) - 1;
       // 현재 진행 중인 요청 url
+      const requestApiUrl = setApiUrl('C003', reqStartNum, reqEndNum);
       console.log(requestApiUrl);
       const apiResponse = await axios.get(requestApiUrl);
       // 원하는 항목이 있으면 해당하는 데이터만 배열로
       if (item) {
         await apiResponse.data.C003.row.map((product) => {
-          // 주식회사 또는 주) 또는 (주) 제거
+          // 회사명 간소화
           if (item === 'BSSH_NM') {
             const replacedStr = removeStr(product[item], /\(.*?\)/g, ['주)', '주식회사', '농업회사법인', '법인']);
             array.push(replacedStr);
@@ -51,7 +51,6 @@ const getApiData = async (startNum, endNum, item) => {
           }
         });
       }
-
       // 아니면 전체 데이터를 합침
       else apiData = [...apiResponse.data.C003.row];
       await sleep(2000);
@@ -64,17 +63,19 @@ const getApiData = async (startNum, endNum, item) => {
 
 const DataToDb = async (startIdx, endIdx) => {
   const apiData = await getApiData(startIdx, endIdx);
-  apiData.map((product) => {
+  apiData.forEach(async (product) => {
     const keyWordBrand = removeStr(product.BSSH_NM, /\(.*?\)/g, ['주)', '주식회사', '농업회사법인', '법인']);
     const keyWordRaw = product.RAWMTRL_NM.replace(/\(.*?\)/g, '');
     // null 또는 undefined가 있으면 값 넣어줘야 함
-    db.execute(
-      'INSERT INTO products (id, api, brand, raw_material) VALUES (?,?,?,?)',
-      [Number(product.PRDLST_REPORT_NO), product, keyWordBrand, keyWordRaw],
-      (error, result) => {
-        if (error) console.log(error);
-      }
-    );
+
+    await (
+      await db
+    ).execute('INSERT INTO products (id, api, brand, raw_material) VALUES (?,?,?,?)', [
+      +product.PRDLST_REPORT_NO,
+      product,
+      keyWordBrand,
+      keyWordRaw,
+    ]);
   });
   console.log('DataToDb: success');
 };
@@ -131,29 +132,53 @@ const sortLarge = async (array) => {
 // checkRaw();
 
 router.post('/getApiData', async (req, res, next) => {
-  const { startIdx, countUnit, category, selectedNav } = await req.body;
-  // await DataToDb(startIdx + 1, startIdx + 1000);
-  const executeSql = 'SELECT id, api->"$.PRDLST_NM" as PRDLST_NM, brand, price, stock FROM products';
+  try {
+    const { startIdx, countUnit, category, selectedNav, sort } = await req.body;
+    // API는 1부터 (10/18 기준 30,286건이라는데 30,298건)
+    // await DataToDb(startIdx + 2, startIdx + 1000);
+    const executeSql = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score 
+      FROM products p 
+      left outer join reviews r 
+      on p.id = r.prod_id 
+      group by p.id`;
 
-  const whereColumn =
-    {
-      nutrient: 'raw_material',
-      brand: 'brand',
-      func: 'api->"$.PRIMARY_FNCLTY"',
-    }[category] ?? undefined;
+    const whereColumn =
+      {
+        nutrient: 'raw_material',
+        brand: 'brand',
+        func: 'api->"$.PRIMARY_FNCLTY"',
+      }[category] ?? undefined;
 
-  const reqexpString = !selectedNav
-    ? "'" + selectedNav.map((nav) => (whereColumn === 'brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
-    : undefined;
+    const reqexpString = !selectedNav
+      ? "'" + selectedNav.map((nav) => (whereColumn === 'brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
+      : undefined;
 
-  const addExecuteSql = !selectedNav
-    ? executeSql + ` WHERE ${whereColumn} REGEXP (${reqexpString}) limit ?,?`
-    : executeSql + ' limit ?,?';
+    const addExecuteSql = !selectedNav
+      ? executeSql + ` WHERE ${whereColumn} REGEXP (${reqexpString}) limit ?,?`
+      : executeSql;
 
-  db.execute(addExecuteSql, [startIdx, countUnit], (error, result) => {
-    if (error) next(error);
-    else res.send(result);
-  });
+    let orderSql = ' ORDER BY';
+    switch (sort) {
+      case 'highScores':
+        orderSql += ' score DESC,';
+        break;
+      case 'manyReviews':
+        orderSql += ' count DESC,';
+        break;
+      case 'lowPrice':
+        orderSql += ' p.price,';
+        break;
+      case 'highPrice':
+        orderSql += ' p.price DESC,';
+    }
+    orderSql += ' p.api->"$.CRET_DTM" DESC limit ?,?';
+
+
+    const [rows, fiedls] = await (await db).execute(addExecuteSql + orderSql, [startIdx, countUnit]);
+    res.send(rows);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

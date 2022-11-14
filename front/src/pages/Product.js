@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useLayoutEffect } from 'react';
+import { useNavigationType, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { countReviews } from '../store/features/productSlice';
 import ProductMain from '../components/product/ProductMain';
@@ -8,19 +8,18 @@ import withPage from './withPage';
 
 const Product = () => {
   const dispatch = useDispatch();
+  const navType = useNavigationType();
   let { id: productId } = useParams();
   const { count: countStatus } = useSelector((state) => state.product.status);
 
-  useEffect(() => {
-    if (countStatus === 'idle') {
-      dispatch(countReviews(productId));
-    }
+  useLayoutEffect(() => {
+    if (countStatus === 'idle') dispatch(countReviews(productId));
+    if (navType === 'PUSH') window.scrollTo(0, 0);
   });
   return (
     <>
       <ProductMain />
       <ProductNav />
-      <h1>다른 상품 추천</h1>
     </>
   );
 };

@@ -40,8 +40,7 @@ const ProductMain = () => {
               </button>
             </div>
             <h4 className='product_score'>
-              <StarScore size={20} score={countAvgScore} />
-              <span>({countTotalReviews}건)</span>
+              <StarScore size={20} score={countAvgScore} count={countTotalReviews} />
             </h4>
             <h3>{selectedProduct.price && commaToPrice(selectedProduct.price)}원</h3>
             <TableList columns={dataProductMain} datas={selectedProduct} />
