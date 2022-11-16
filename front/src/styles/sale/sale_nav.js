@@ -6,6 +6,9 @@ const Nav = styled.nav`
     font-size: 12px;
     padding: 0 0 5px 10px;
     color: #acacac;
+    span {
+      letter-spacing: 1px;
+    }
   }
   ul {
     text-align: center;

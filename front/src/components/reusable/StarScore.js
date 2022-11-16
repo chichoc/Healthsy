@@ -29,7 +29,7 @@ const ScoreIcons = styled.span`
   }
   span {
     font-size: ${(props) => props.size - 3}px;
-    color: #909090;
+    color: #808080;
     margin-left: 3px;
   }
 `;

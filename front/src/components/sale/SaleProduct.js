@@ -22,9 +22,9 @@ const SaleProduct = ({ className, id, brand, name, price = '20000', score, count
     >
       <img src={productImg} alt='제품 이미지' />
       <ArticleSale isScored={score}>
-        <h2 className='brandOfProduct'>{brand}</h2>
-        <h1 className='nameOfProduct'>{name}</h1>
-        <h3 className='priceOfProduct'> {commaPrice(price)}</h3>
+        <h2 className='brand_prod'>{brand}</h2>
+        <h1 className='name_prod'>{name}</h1>
+        <h3 className='price_prod'> {commaPrice(price)}</h3>
         <h4>
           <StarScore score={score} size={15} count={count} />
         </h4>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const useIntersect = (target, { onIntersect, root = null, rootMargin = '0px', threshold = 1 }) => {
+const useIntersect = (target, { isIntersecting, onIntersect, root = null, rootMargin = '0px', threshold = 1 }) => {
   const observerOptions = {
     root,
     rootMargin,
@@ -8,11 +8,11 @@ const useIntersect = (target, { onIntersect, root = null, rootMargin = '0px', th
   };
 
   useEffect(() => {
+    if (!target.current || !isIntersecting) return;
     const observer = new IntersectionObserver(onIntersect, observerOptions);
-    if (!target.current) return;
     observer.observe(target.current);
     return () => observer.disconnect();
-  }, [target, onIntersect]);
+  }, [target, onIntersect, isIntersecting]);
 };
 
 export default useIntersect;

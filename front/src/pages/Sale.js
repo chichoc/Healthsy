@@ -11,6 +11,7 @@ import SaleSort from '../components/sale/SaleSort';
 const Sale = () => {
   const [sales, setSales] = useState([]);
   const [salesToDisplay, setSalesToDisplay] = useState([]);
+  const [isIntersecting, setIsIntersecting] = useState(false);
   const bottomOfSalesToDisplay = useRef(null);
 
   const currentPageToFetch = useRef(0);
@@ -34,6 +35,7 @@ const Sale = () => {
         selectedNav,
         sort: fetchSort,
       });
+      if (data.length === 100) setIsIntersecting(true);
       if (currentPageToFetch.current === 0) {
         // 카테고리, 특정 성분/브랜드/기능 버튼, 정렬방식 변경하여 새로이 fetch하는 경우
         setSales([...data.splice(countUnitToDisplay)]);
@@ -57,6 +59,7 @@ const Sale = () => {
     if (sales.length <= countUnitToDisplay) {
       currentPageToFetch.current++;
       await addSales();
+      if (sales.length === 0) setIsIntersecting(false);
     } else {
       const salesToAdd = sales.slice(0, countUnitToDisplay);
       setSales((prev) => prev.filter((_, index) => index >= countUnitToDisplay));
@@ -65,6 +68,7 @@ const Sale = () => {
   };
 
   useIntersect(bottomOfSalesToDisplay, {
+    isIntersecting,
     onIntersect: handleIntersection,
     rootMargin: '0px 100px',
     threshold: 0.3,
@@ -79,7 +83,7 @@ const Sale = () => {
   return (
     <>
       <SaleNav />
-      <SaleSort />
+      {salesToDisplay.length > 0 && <SaleSort />}
       <SaleList
         apiLoading={apiLoading}
         apiError={apiError}

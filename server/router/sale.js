@@ -136,45 +136,47 @@ router.post('/getApiData', async (req, res, next) => {
     const { startIdx, countUnit, category, selectedNav, sort } = await req.body;
     // API는 1부터 (10/18 기준 30,286건이라는데 30,298건)
     // await DataToDb(startIdx + 2, startIdx + 1000);
-    const executeSql = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score 
+    const joinSql = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score 
       FROM products p 
       left outer join reviews r 
-      on p.id = r.prod_id 
-      group by p.id`;
+      on p.id = r.prod_id`;
 
     const whereColumn =
-      {
-        nutrient: 'raw_material',
-        brand: 'brand',
-        func: 'api->"$.PRIMARY_FNCLTY"',
-      }[category] ?? undefined;
+      selectedNav.length > 0
+        ? {
+            nutrient: 'raw_material',
+            brand: 'brand',
+            func: 'api->"$.PRIMARY_FNCLTY"',
+          }[category]
+        : undefined;
 
-    const reqexpString = !selectedNav
-      ? "'" + selectedNav.map((nav) => (whereColumn === 'brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
-      : undefined;
+    const reqexpString =
+      selectedNav.length > 0
+        ? "'" + selectedNav.map((nav) => (whereColumn === 'brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
+        : undefined;
 
-    const addExecuteSql = !selectedNav
-      ? executeSql + ` WHERE ${whereColumn} REGEXP (${reqexpString}) limit ?,?`
-      : executeSql;
+    const conditionalSql =
+      (selectedNav.length > 0 ? ` WHERE ${whereColumn} REGEXP (${reqexpString})` : '') + ' GROUP BY p.id ';
 
-    let orderSql = ' ORDER BY';
+    let orderSql = 'ORDER BY ';
     switch (sort) {
       case 'highScores':
-        orderSql += ' score DESC,';
+        orderSql += 'score DESC,';
         break;
       case 'manyReviews':
-        orderSql += ' count DESC,';
+        orderSql += 'count DESC,';
         break;
       case 'lowPrice':
-        orderSql += ' p.price,';
+        orderSql += 'p.price,';
         break;
       case 'highPrice':
-        orderSql += ' p.price DESC,';
+        orderSql += 'p.price DESC,';
     }
-    orderSql += ' p.api->"$.CRET_DTM" DESC limit ?,?';
+    orderSql += 'p.api->"$.CRET_DTM" DESC limit ?,?';
 
 
-    const [rows, fiedls] = await (await db).execute(addExecuteSql + orderSql, [startIdx, countUnit]);
+    const [rows, fiedls] = await (await db).execute(joinSql + conditionalSql + orderSql, [startIdx, countUnit]);
+
     res.send(rows);
   } catch (err) {
     next(err);

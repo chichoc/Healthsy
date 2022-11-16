@@ -10,22 +10,17 @@ export const saleSlice = createSlice({
   name: 'sale',
   initialState,
   reducers: {
-    onSelectNav: (state, action) => {
+    handleNav: (state, action) => {
       const { navName, category } = action.payload;
       const { selectedNav } = state;
-
-      const removeOrAddNavName = selectedNav[category].includes(navName)
+      const navNamesChanged = selectedNav[category].includes(navName)
         ? selectedNav[category].filter((name) => name !== navName)
-        : selectedNav[category].length < 4
-        ? [...selectedNav[category], navName]
-        : [...selectedNav[category]];
+        : [...selectedNav[category], navName];
 
-      state.selectedNav[category] = removeOrAddNavName;
+      selectedNav[category] = navNamesChanged;
     },
-    onSelectAllNav: (state, action) => {
-      const { category } = action.payload;
-      const { selectedNav } = state;
-      selectedNav[category].length !== 0 && (state.selectedNav[category] = []);
+    removeNav: (state, action) => {
+      state.selectedNav[action.payload] = [];
     },
     onSelectCountUnit: (state, action) => {
       state.countUnit = action.payload;
@@ -38,6 +33,6 @@ export const saleSlice = createSlice({
   },
 });
 
-export const { onSelectNav, onSelectAllNav, onSelectCountUnit, onSelectSort } = saleSlice.actions;
+export const { handleNav, removeNav, onSelectCountUnit, onSelectSort } = saleSlice.actions;
 
 export default saleSlice.reducer;
