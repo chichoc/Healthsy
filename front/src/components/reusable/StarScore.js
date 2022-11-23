@@ -13,7 +13,7 @@ const StarScore = ({ size = 20, score, count = '' }) => {
           className={score >= index + 1 ? 'score_select' : 'score_icon'}
         />
       ))}
-      {count && <span>({count})</span>}
+      {typeof count === 'number' && <span>({count})</span>}
     </ScoreIcons>
   );
 };

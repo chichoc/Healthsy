@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import SaleProduct from './SaleProduct';
-import notFoundImg from '../../assets/img/notFound.svg';
+import NotFound from '../reusable/NotFound';
 import { MainSale, UlSale } from '../../styles/sale/sale_list';
 
 const SaleList = ({ apiLoading, apiError, salesToDisplay, bottomOfSalesToDisplay }) => {
@@ -12,28 +12,7 @@ const SaleList = ({ apiLoading, apiError, salesToDisplay, bottomOfSalesToDisplay
     else return 'medium_unit';
   };
 
-  if (salesToDisplay.length === 0)
-    return (
-      <MainSale className='vertical_flex not_found'>
-        <figure>
-          <img src={notFoundImg} alt='notfound' />
-          <figcaption>
-            by Anggah Wahyu from{' '}
-            <a
-              href='https://thenounproject.com/browse/icons/term/not-found/'
-              target='_blank'
-              rel='noopener noreferrer'
-              title='not found Icons'
-            >
-              Noun Project
-            </a>
-          </figcaption>
-        </figure>
-        <p>
-          해당되는 상품이 없습니다. <br /> 다른 조건을 선택해주세요!
-        </p>
-      </MainSale>
-    );
+  if (salesToDisplay.length === 0) return <NotFound text={'해당되는 상품이 없습니다. \n 다른 조건을 선택해주세요!'} />;
   return (
     <MainSale>
       <UlSale className={`horizontal_flex`}>

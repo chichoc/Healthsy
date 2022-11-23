@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { onSelectCountUnit } from '../../store/features/saleSlice';
+import { onSelectCountUnit, onSelectSort } from '../../store/features/saleSlice';
 import SortUl from '../reusable/SortUl';
 import dataSaleSort from '../../assets/api/dataSaleSort';
 import { DivSaleSort } from '../../styles/sale/sale_sort';
@@ -12,7 +12,7 @@ const SaleSort = () => {
 
   return (
     <DivSaleSort className='horizontal_flex'>
-      <SortUl dataToMap={dataSaleSort} />
+      <SortUl dataToMap={dataSaleSort} handleClick={onSelectSort} />
       <select value={countUnitToDisplay} onChange={(e) => dispatch(onSelectCountUnit(e.target.value))}>
         {countUnits.map((unit) => (
           <option key={unit} value={unit}>

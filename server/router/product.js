@@ -14,25 +14,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post('/countReviews', async (req, res, next) => {
-  const { productId } = await req.body;
-
-  const [result, fields] = await (
-    await db
-  ).execute(
-    `SELECT count(*) as reviews, truncate(avg(reviews.score),1) as score 
-    FROM reviews 
-    WHERE prod_id = ?`,
-    [productId]
-  );
-
-  res.json({ result });
-});
-
 router.post('/fetchProduct', async (req, res, next) => {
   const { productId } = await req.body;
 
-  const columnName = [
+  const columnNames = [
     'LCNS_NO',
     'BSSH_NM',
     'PRDLST_REPORT_NO',
@@ -50,9 +35,10 @@ router.post('/fetchProduct', async (req, res, next) => {
     'LAST_UPDT_DTM',
     'PRDT_SHAP_CD_NM',
   ];
-  let executeSql = 'SELECT id, brand, price, raw_material, stock';
-  columnName.map((column) => (executeSql += `, api->"$.${column}" as ${column} `));
-  executeSql += 'FROM products where id = ?';
+  let executeSql =
+    'SELECT p.id, p.brand, p.price, p.raw_material, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score';
+  columnNames.forEach((column) => (executeSql += `, api->"$.${column}" as ${column} `));
+  executeSql += 'FROM products p LEFT OUTER JOIN reviews r ON p.id = r.prod_id WHERE p.id = ? GROUP BY p.id';
 
   const [rows, fields] = await (await db).execute(executeSql, [productId]);
   res.send(rows);
@@ -61,23 +47,32 @@ router.post('/fetchProduct', async (req, res, next) => {
 router.post('/fetchReviews', async (req, res, next) => {
   const { productId, pageNumDiffer, sort, cursorIdx } = await req.body;
 
-  const executeSql = `SELECT reviews.id, users.name, reviews.score, reviews.content, reviews.photo, reviews.thumbs_up as thumbsUp, date_format(reviews.reg_date,"%Y.%m.%d.") as date 
-  FROM reviews join users on reviews.user_id = users.id WHERE prod_id = ? `;
+  const joinSql = `SELECT reviews.id, users.name, reviews.score, reviews.content, reviews.image, reviews.thumbs_up as thumbsUp, reviews.thumbs_down as thumbsDown, date_format(reviews.reg_date,"%Y.%m.%d.") as date 
+  FROM reviews join users 
+  ON reviews.user_id = users.id `;
 
-  let conditionalSql = 'ORDER BY reviews.id DESC ';
+  let conditionalSql = 'WHERE prod_id = ? ';
   if (cursorIdx) {
-    conditionalSql =
-      pageNumDiffer > 0
-        ? `and reviews.id < ${cursorIdx} ORDER BY reviews.id DESC `
-        : `and reviews.id > ${cursorIdx} ORDER BY reviews.id ASC `;
+    conditionalSql += pageNumDiffer > 0 ? `and reviews.id < ${cursorIdx} ` : `and reviews.id > ${cursorIdx} `;
   }
-
   const firstIdx = (Math.abs(pageNumDiffer) - 1) * 10;
-  const limitSql = `limit ${firstIdx}, 10`;
+  let orderSql = 'ORDER BY ';
+  switch (sort) {
+    case 'thumbsUp':
+      orderSql += 'thumbsUp DESC,';
+      break;
+    case 'highScores':
+      orderSql += 'reviews.score DESC,';
+      break;
+    case 'lowScores':
+      orderSql += 'reviews.score ASC,';
+      break;
+  }
+  orderSql += `reviews.id ${cursorIdx && pageNumDiffer < 0 ? 'ASC' : 'DESC'} limit ${firstIdx}, 10`;
 
-  const [rows, fields] = await (await db).execute(executeSql + conditionalSql + limitSql, [productId]);
+  const [rows, fields] = await (await db).execute(joinSql + conditionalSql + orderSql, [productId]);
 
-  res.json(pageNumDiffer > 0 ? rows : rows.reverse());
+  res.json(cursorIdx && pageNumDiffer < 0 ? rows.reverse() : rows);
 });
 
 router.use('/photo', express.static('./uploads'));
@@ -101,21 +96,18 @@ router.post('/addReview', upload.single('file'), async (req, res, next) => {
 });
 
 router.post('/addReviewThumbs', async (req, res, next) => {
-  const { reviewId, thumbs, sign } = await req.body;
-  console.log(reviewId, thumbs, sign);
+  const { reviewId, typeOfThumbs, capitalizedTypeOfThumbs, sign } = await req.body;
 
-  const executeSql = `UPDATE reviews SET thumbs_${thumbs} = reviews.thumbs_${thumbs} ${sign} 1 WHERE id=?`;
+  const updateSql = `UPDATE reviews SET thumbs_${typeOfThumbs} = reviews.thumbs_${typeOfThumbs} ${sign} 1 WHERE id=?`;
 
-  await (await db).execute(executeSql, [reviewId]);
+  await (await db).execute(updateSql, [reviewId]);
 
-  if (thumbs === 'up') {
-    const [rows, fields] = await (
-      await db
-    ).execute('SELECT id, thumbs_up as thumbsUp FROM reviews WHERE id = ?', [reviewId]);
-    res.json({ rows });
-  } else {
-    res.json();
-  }
+  const [rows, fields] = await (
+    await db
+  ).execute(`SELECT id, thumbs_${typeOfThumbs} as thumbs${capitalizedTypeOfThumbs} FROM reviews WHERE id = ?`, [
+    reviewId,
+  ]);
+  res.json({ ...rows });
 });
 
 module.exports = router;

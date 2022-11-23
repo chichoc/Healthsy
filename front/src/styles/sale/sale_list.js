@@ -2,34 +2,6 @@ import styled from '@emotion/styled';
 
 const MainSale = styled.main`
   padding: 0px 100px;
-  &.not_found {
-    align-items: center;
-  }
-  &.not_found p {
-    margin: 20px 0;
-    color: #989898;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 1.8;
-    letter-spacing: 1.2px;
-    white-space: pre-wrap;
-  }
-  figure {
-    img {
-      width: 300px;
-      opacity: 0.3;
-      margin: 30px 0 -70px 0;
-    }
-    figcaption {
-      font-size: 6px;
-      width: 200px;
-      margin: 0 auto;
-      text-align: right;
-      color: #c0c0c0;
-    }
-  }
-
   .observerTarget {
     width: 100px;
   }

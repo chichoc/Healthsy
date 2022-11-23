@@ -45,9 +45,8 @@ const NavProduct = styled.nav`
 const SectionProduct = styled.section`
   h2 {
     font-weight: bold;
-    font-size: 20px;
-    margin: 20px 0;
-    padding-top: 20px;
+    font-size: 22px;
+    margin: 40px 0 30px;
   }
 `;
 

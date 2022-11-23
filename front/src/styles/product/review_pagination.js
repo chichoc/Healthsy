@@ -15,16 +15,19 @@ const UlProdReview = styled.ul`
     display: flex;
     align-items: : center;
     justify-content: center;
+    color: #686868;
   }
   button.prev_arrow,
   button.next_arrow {
     padding: 10px 0;
     margin: 0 5px; 
+    color: #686868;
   }
   button.selectedBtn {
     background-color: #f0f0f0;
     width: 30px;
     border-radius: 30px;
+    color: #505050;
   }
   button:hover {
     background-color: #f8f8f8;

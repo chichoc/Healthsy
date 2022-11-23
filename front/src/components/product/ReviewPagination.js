@@ -1,13 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { UlProdReview } from '../../styles/product/review_pagination';
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
+import { UlProdReview } from '../../styles/product/review_pagination';
 
-const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage, setPrevPage }) => {
-  const countTotalReviews = useSelector((state) => state.product.count.reviews);
-  const maxPage = Math.ceil(countTotalReviews / pageUnit);
+const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage, setPrevPage, pageOffset, setPageOffset }) => {
+  const numberOfReviews = useSelector((state) => state.product.count.numberOfReviews);
+  const maxPage = Math.ceil(numberOfReviews / pageUnit);
   const maxPageOffset = maxPage - (maxPage % pageUnit) + 1;
-  const [pageOffset, setPageOffset] = useState(1);
 
   return (
     <>
@@ -49,7 +48,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage, setPrevPage }
               setPageOffset(pageOffset + 10);
             }}
           >
-            <AiOutlineDoubleRight color='#707070' className='arrow_icon' />
+            <AiOutlineDoubleRight color='#707070' />
           </button>
         )}
       </UlProdReview>

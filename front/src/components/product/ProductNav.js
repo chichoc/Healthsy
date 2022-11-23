@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import ProductDetail from './ProductDetail';
 import ProductInfo from './ProductInfo';
+import ProductDetail from './ProductDetail';
 import ProductReview from './ProductReview';
 import useSticky from '../customHook/useSticky';
 import dataProductNav from '../../assets/api/dataProductNav';
@@ -10,7 +10,7 @@ import { DivProduct, NavProduct, SectionProduct } from '../../styles/product/pro
 const ProductNav = () => {
   const [showComponent, setShowComponent] = useState(0);
   const { sticky, stickyRef } = useSticky();
-  const { reviews: countTotalReviews } = useSelector((state) => state.product.count);
+  const { numberOfReviews } = useSelector((state) => state.product.count);
   const infoSection = useRef(null);
   const detailSection = useRef(null);
   const reviewSection = useRef(null);
@@ -18,7 +18,7 @@ const ProductNav = () => {
   const ref = [infoSection, detailSection, reviewSection];
 
   const scrollToSection = (ref) => {
-    const navHeight = -50;
+    const navHeight = -70;
     const moveToScrollY = navHeight + ref.current.offsetTop;
     window.scrollTo({ top: moveToScrollY, behavior: 'smooth' });
   };
@@ -36,7 +36,7 @@ const ProductNav = () => {
             }}
           >
             {nav.name}
-            {index === 2 && ` (${countTotalReviews})`}
+            {index === 2 && ` (${numberOfReviews})`}
           </button>
         ))}
       </NavProduct>
