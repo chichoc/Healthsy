@@ -21,13 +21,8 @@ const NavMain = styled.nav`
   }
 `;
 const AsideMain = styled.aside`
-  margin: 68px auto 0 auto; // 30 + 50 - 10
-  max-width: 70%;
-  input,
-  button {
+  button.form_close {
     font-size: 20px;
-  }
-  button {
     color: #dcdcdc;
     position: absolute;
     top: 68px;
@@ -45,8 +40,12 @@ const UlMain = styled.ul`
     cursor: pointer;
     color: #686868;
   }
+
   li:hover {
     color: #282828;
+  }
+  li svg:hover {
+    fill: #282828;
   }
 `;
 

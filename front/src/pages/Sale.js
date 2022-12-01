@@ -7,20 +7,20 @@ import useIntersect from '../components/customHook/useIntersect';
 import SaleList from '../components/sale/SaleList';
 import SaleNav from '../components/sale/SaleNav';
 import SaleSort from '../components/sale/SaleSort';
+import SaleSearch from '../components/sale/SaleSearch';
 
 const Sale = () => {
   const [sales, setSales] = useState([]);
   const [salesToDisplay, setSalesToDisplay] = useState([]);
   const [isIntersecting, setIsIntersecting] = useState(false);
-  const bottomOfSalesToDisplay = useRef(null);
-
-  const currentPageToFetch = useRef(0);
-
   // request state
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
+  const bottomOfSalesToDisplay = useRef(null);
+  const currentPageToFetch = useRef(0);
   let { category } = useParams();
+  const isShowedSearchBar = useSelector((state) => state.sale.search.bar);
   const selectedNav = useSelector((state) => state.sale.selectedNav[category]);
   const countUnitToDisplay = useSelector((state) => state.sale.countUnit);
   const fetchSort = useSelector((state) => state.sale.sort);
@@ -82,6 +82,7 @@ const Sale = () => {
 
   return (
     <>
+      {isShowedSearchBar && <SaleSearch />}
       <SaleNav />
       {salesToDisplay.length > 0 && <SaleSort />}
       <SaleList

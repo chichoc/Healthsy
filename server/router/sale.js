@@ -182,5 +182,24 @@ router.post('/getApiData', async (req, res, next) => {
     next(err);
   }
 });
+router.post('/searchSales', async (req, res, next) => {
+  try {
+    const { input } = await req.body;
+    const joinSql = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score 
+      FROM products p 
+      left outer join reviews r 
+      on p.id = r.prod_id `;
+
+    const conditionalSql = `WHERE p.api->"$.PRDLST_NM" LIKE '%${input}%' GROUP BY p.id limit ?,?`;
+
+    console.log(joinSql + conditionalSql);
+
+    const [rows, fiedls] = await (await db).execute(joinSql + conditionalSql, [0, 100]);
+
+    res.send(rows);
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;

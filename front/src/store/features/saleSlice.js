@@ -4,6 +4,7 @@ const initialState = {
   selectedNav: { nutrient: [], brand: [], func: [] },
   sort: 'latest',
   countUnit: 9,
+  search: { bar: false, keyword: '' },
 };
 
 export const saleSlice = createSlice({
@@ -28,11 +29,13 @@ export const saleSlice = createSlice({
     onSelectSort: (state, action) => {
       state.sort = action.payload;
     },
+    handleSearchBar: (state, action) => {
+      state.search.bar = !state.search.bar;
     },
     },
   },
 });
 
-export const { handleNav, removeNav, onSelectCountUnit, onSelectSort } = saleSlice.actions;
+export const { handleNav, removeNav, onSelectCountUnit, onSelectSort, handleSearchBar } = saleSlice.actions;
 
 export default saleSlice.reducer;
