@@ -131,17 +131,17 @@ const sortLarge = async (array) => {
 // checkBrand();
 // checkRaw();
 
-router.post('/getApiData', async (req, res, next) => {
+router.post('/fetchSales', async (req, res, next) => {
   try {
-    const { startIdx, countUnit, category, selectedNav, sort } = await req.body;
+    const { startIdx, countUnit, category, selectedNav, sort, searchWord } = await req.body;
     // API는 1부터 (10/18 기준 30,286건이라는데 30,298건)
     // await DataToDb(startIdx + 2, startIdx + 1000);
     const joinSql = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score 
       FROM products p 
       left outer join reviews r 
-      on p.id = r.prod_id`;
+      on p.id = r.prod_id `;
 
-    const whereColumn =
+    const regexpColumnWhere =
       selectedNav.length > 0
         ? {
             nutrient: 'raw_material',
@@ -152,11 +152,17 @@ router.post('/getApiData', async (req, res, next) => {
 
     const reqexpString =
       selectedNav.length > 0
-        ? "'" + selectedNav.map((nav) => (whereColumn === 'brand' ? '^' : '') + nav.replace("'", '')).join('|') + "'"
+        ? "'" +
+          selectedNav.map((nav) => (regexpColumnWhere === 'brand' ? '^' : '') + nav.replace("'", '')).join('|') +
+          "'"
         : undefined;
 
     const conditionalSql =
-      (selectedNav.length > 0 ? ` WHERE ${whereColumn} REGEXP (${reqexpString})` : '') + ' GROUP BY p.id ';
+      (searchWord || selectedNav.length > 0 ? 'WHERE ' : '') +
+      (searchWord ? `p.api->"$.PRDLST_NM" LIKE '%${searchWord}%'` : '') +
+      (searchWord && selectedNav.length > 0 ? ' AND ' : '') +
+      (selectedNav.length > 0 ? `${regexpColumnWhere} REGEXP (${reqexpString})` : '') +
+      ' GROUP BY p.id ';
 
     let orderSql = 'ORDER BY ';
     switch (sort) {
@@ -172,29 +178,23 @@ router.post('/getApiData', async (req, res, next) => {
       case 'highPrice':
         orderSql += 'p.price DESC,';
     }
-    orderSql += 'p.api->"$.CRET_DTM" DESC limit ?,?';
+    orderSql += `p.api->"$.CRET_DTM" DESC limit ${startIdx},${countUnit}`;
 
 
-    const [rows, fiedls] = await (await db).execute(joinSql + conditionalSql + orderSql, [startIdx, countUnit]);
+    const [rows, fiedls] = await (await db).execute(joinSql + conditionalSql + orderSql, []);
 
     res.send(rows);
   } catch (err) {
     next(err);
   }
 });
-router.post('/searchSales', async (req, res, next) => {
+router.post('/searchSaleSimplify', async (req, res, next) => {
   try {
     const { input } = await req.body;
-    const joinSql = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score 
-      FROM products p 
-      left outer join reviews r 
-      on p.id = r.prod_id `;
+    const executionQuery = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status
+      FROM products p WHERE p.api->"$.PRDLST_NM" LIKE '%${input}%' limit ?,?`;
 
-    const conditionalSql = `WHERE p.api->"$.PRDLST_NM" LIKE '%${input}%' GROUP BY p.id limit ?,?`;
-
-    console.log(joinSql + conditionalSql);
-
-    const [rows, fiedls] = await (await db).execute(joinSql + conditionalSql, [0, 100]);
+    const [rows, fiedls] = await (await db).execute(executionQuery, [0, 100]);
 
     res.send(rows);
   } catch (err) {

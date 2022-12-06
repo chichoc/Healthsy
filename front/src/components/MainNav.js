@@ -35,7 +35,7 @@ const MainNav = () => {
       {openSearchForm && (
         <Portal>
           <AsideMain>
-            <SaleSearch name='searchMain' className='inner_button_left' placeHolder={'제품명 검색'} />
+            <SaleSearch />
             <button className='form_close' onClick={handleSaleSearch}>
               &#x2715;
             </button>
