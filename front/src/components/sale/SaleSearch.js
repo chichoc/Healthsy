@@ -91,6 +91,7 @@ const SaleSearch = () => {
               key='moreSearch'
               className='search_sales'
               onClick={() => {
+                saveSearchWord();
                 dispatch(changeSearchWord(inputToSearch));
                 navigate(`/sale/brand`);
               }}
@@ -121,7 +122,7 @@ const SaleSearch = () => {
                   setInputToSearch(word);
                   saveSearchWord(word);
                   isInSaleList && dispatch(changeSearchWord(word));
-                  setIsFocusedInputToSearch(false);
+                  isInSaleList && setIsFocusedInputToSearch(false);
                 }}
               >
                 <span>{word}</span>
@@ -149,13 +150,14 @@ const SaleSearch = () => {
 
   useEffect(() => {
     // 입력창 focus될 때마다 최근 기록 받아옴
-    if (isFocusedinputToSearch) setSearchHistory(JSON.parse(localStorage.getItem('searchWord')));
+    if (isFocusedinputToSearch && inputToSearch.length === 0)
+      setSearchHistory(JSON.parse(localStorage.getItem('searchWord')));
   }, [isFocusedinputToSearch]);
 
   useEffect(() => {
     if (!isInSaleList || !searchRef.current) return;
     const handleMouseDown = (e) => {
-      if (!searchRef.current?.contains(e.target)) setIsFocusedInputToSearch(false);
+      if (!searchRef.current.contains(e.target)) setIsFocusedInputToSearch(false);
     };
 
     document.addEventListener('mousedown', handleMouseDown);

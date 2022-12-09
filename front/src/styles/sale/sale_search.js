@@ -42,7 +42,7 @@ const DivSaleSearch = styled.div`
     padding-right: 45px;
   }
   &.sale section ul {
-    max-height: 460px;
+    max-height: 430px;
   }
 
   section ul li {
@@ -82,7 +82,6 @@ const DivSaleSearch = styled.div`
     padding-left: 10px;
     color: #a8a8a8;
   }
-
   section li button {
     padding-right: 0px;
     color: #787878;

@@ -36,18 +36,24 @@ const MainProduct = styled.main`
   div.product_primary h4.product_score {
     margin-bottom: 10px;
   }
-`;
 
-const DivProductBtns = styled.div`
-  button {
-    margin: 10px 0;
-    padding: 0;
+  button.svg_btns {
     align-items: center;
+    opacity: 0.7;
   }
-  span {
+  div.key_btns button {
+    margin: 10px 0;
+  }
+  button.svg_btns span {
     font-size: 15px;
     margin-left: 5px;
   }
+  button.svg_btns:hover {
+    opacity: 1;
+  }
+  button.svg_btns:hover svg {
+    fill: #00c9b7;
+  }
 `;
 
-export { MainProduct, DivProductBtns };
+export { MainProduct };

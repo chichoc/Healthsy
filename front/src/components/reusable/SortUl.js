@@ -2,20 +2,16 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from '@emotion/styled';
 
-const SortUl = ({ dataToMap, handleClick }) => {
+const SortUl = ({ dataToMap, selectedData, handleClick }) => {
   const dispatch = useDispatch();
-  const [selectedIdx, setSelectedIdx] = useState(0);
 
   return (
     <Ul className='horizontal_flex'>
       {dataToMap.map((item, index) => (
         <li
           key={index}
-          className={selectedIdx === index ? 'selected' : ''}
-          onClick={() => {
-            setSelectedIdx(index);
-            dispatch(handleClick(item.sortName));
-          }}
+          className={selectedData === item.sortName ? 'selected' : ''}
+          onClick={() => dispatch(handleClick(item.sortName))}
         >
           {item.name}
         </li>

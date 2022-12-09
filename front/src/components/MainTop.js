@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { onLogOut } from '../store/features/pageSlice';
-import { BsHeart } from 'react-icons/bs';
-import { BsPerson } from 'react-icons/bs';
 import axios from 'axios';
+import { BsBookmark, BsPerson } from 'react-icons/bs';
 import dataNotice from '../assets/api/dataNotice';
 import { Nav, Ul, ClickMenu } from '../styles/main_top';
 
@@ -13,7 +12,7 @@ const MainTop = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const noticeTitle = notice[notice.length - 1].title;
 
-  const page = useSelector((state) => state.page);
+  const isLoggedIn = useSelector((state) => state.page.isLoggedIn);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -30,11 +29,11 @@ const MainTop = () => {
 
       <Ul className='horizontal_flex' align='center'>
         <li>
-          <Link to='/mypage/like'>
-            <BsHeart title={'찜'} size={20} />
+          <Link to='/mypage/bookmarks'>
+            <BsBookmark title={'관심상품'} size={20} />
           </Link>
         </li>
-        {page.isLogin ? (
+        {isLoggedIn ? (
           // 로그인한 상태
           <li onClick={() => setOpenMenu(!openMenu)}>
             <BsPerson title={'마이페이지'} size={24} />

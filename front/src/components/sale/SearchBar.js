@@ -30,16 +30,23 @@ const SearchBar = ({
         onFocus={() => setIsFocusedInputToSearch(true)}
         onKeyDown={(e) => e.key === 'Enter' && handleClick()}
       />
-      <BsSearch className='inner_button_left' title={'검색'} size={19} onClick={() => handleClick()} />
-      <button
-        className='inner_button_right'
-        onClick={() => {
-          setInputToSearch('');
-          dispatch(changeSearchWord(''));
-        }}
-      >
-        &#x2715;
-      </button>
+      <BsSearch
+        className={`inner_button_left ${isInSaleList ? 'sale' : ''}`}
+        title={'검색'}
+        size={19}
+        onClick={() => isInSaleList && handleClick()}
+      />
+      {inputToSearch.length > 0 && (
+        <button
+          className='inner_button_right'
+          onClick={() => {
+            setInputToSearch('');
+            dispatch(changeSearchWord(''));
+          }}
+        >
+          &#x2715;
+        </button>
+      )}
     </DivSearchBar>
   );
 };
@@ -65,11 +72,13 @@ const DivSearchBar = styled.div`
     display: none;
   }
   svg.inner_button_left {
-    cursor: pointer;
     position: absolute;
     left: 5px;
     color: #616161;
     padding: 20px; /* input과 겹침 */
+  }
+  svg.inner_button_left.sale {
+    cursor: pointer;
   }
   button.inner_button_right {
     cursor: pointer;

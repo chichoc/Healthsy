@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 
 const MainMyPage = styled.main`
   margin-right: 100px;
-  flex: 1 0 auto;
+  margin-left: 10px;
+  flex: 1 0 80%;
   padding: 20px 0;
   h1 {
     font-size: 25px;

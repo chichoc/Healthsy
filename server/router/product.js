@@ -110,4 +110,57 @@ router.post('/addReviewThumbs', async (req, res, next) => {
   res.json({ ...rows });
 });
 
+router.post('/changeBookMarks', async (req, res, next) => {
+  try {
+    const { userId, productId } = req.body;
+
+    const [rowToCheck, _] = await (
+      await db
+    ).execute(`SELECT count(*) as isBookmarked FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`, [
+      userId,
+    ]);
+
+    const addBookmark = async () => {
+      const insertionSql = `INSERT INTO bookmarks (user_id, prod_id) VALUES (UNHEX(?), ${productId})`;
+      await (await db).execute(insertionSql, [userId]);
+      return true;
+    };
+
+    const removeBookmark = async () => {
+      const deletionSql = `DELETE FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`;
+      await (await db).execute(deletionSql, [userId]);
+      return false;
+    };
+
+    const isBookmarked = rowToCheck[0].isBookmarked ? await removeBookmark() : await addBookmark();
+
+    const [rowsToCount, fields] = await (
+      await db
+    ).execute(`SELECT count(*) as count FROM bookmarks WHERE prod_id = ${productId}`);
+
+    res.json({ isBookmarked, count: rowsToCount[0].count });
+  } catch (err) {
+    next(err);
+  }
+});
+router.post('/fetchBookmarks', async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    const executionQuery = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score
+    FROM bookmarks b 
+    INNER JOIN products p 
+    ON b.user_id = ? OR b.prod_id = p.id
+    LEFT OUTER JOIN reviews r
+    ON p.id = r.prod_id
+    GROUP BY p.id
+    LIMIT 0, 100`;
+
+    const [rows, fields] = await (await db).execute(executionQuery, [userId]);
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

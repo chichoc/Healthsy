@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = { isLogin: false, userId: '', userName: '' };
+const initialState = { isLoggedIn: false, userId: '', userName: '' };
 
 export const pageSlice = createSlice({
   name: 'page',
   initialState,
   reducers: {
     onLogIn: (state, action) => {
-      return { isLogin: true, ...action.payload };
+      return { isLoggedIn: true, ...action.payload };
     },
     onLogOut: () => initialState,
   },

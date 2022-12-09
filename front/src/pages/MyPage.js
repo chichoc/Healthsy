@@ -6,10 +6,10 @@ import MyNav from '../components/mypage/MyNav';
 import MyMain from '../components/mypage/MyMain';
 
 const MyPage = () => {
-  const isLogin = useSelector((state) => state.page.isLogin);
+  const isLoggedin = useSelector((state) => state.page.isLoggedIn);
   return (
-    <div className='horizontal_flex'>
-      {isLogin || <Navigate to='/login' replace={true} />}
+    <div className='horizontal_flex' style={{ flexWrap: 'nowrap' }}>
+      {!isLoggedin && <Navigate to='/login' />}
       <MyNav />
       <MyMain />
     </div>

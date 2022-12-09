@@ -10,13 +10,13 @@ import { IconContext } from 'react-icons';
 
 const withPage = (WrappedComponent) => {
   const Component = () => {
-    const isLogin = useSelector((state) => state.page.isLogin);
+    const isLoggedIn = useSelector((state) => state.page.isLoggedIn);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
     useLayoutEffect(() => {
-      if (!isLogin) {
+      if (!isLoggedIn) {
         axios.post('http://localhost:8888/login/authorization', {}, { withCredentials: true }).then((res, req) => {
           const { userId, userName } = res.data;
           // 로그인한 적 없는 경우

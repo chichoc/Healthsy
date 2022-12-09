@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useNavigationType, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct } from '../store/features/productSlice';
@@ -18,8 +18,10 @@ const Product = () => {
 
   useLayoutEffect(() => {
     dispatch(fetchProduct(productId));
+  }, [productId]);
+  useEffect(() => {
     if (navType !== 'POP') window.scrollTo(0, 0);
-  }, [productId, navType]);
+  }, [navType]);
 
   if (error) return <NotFound text={'오류가 발생했습니다.\n 잠시 후에 다시 시도해주시기 바랍니다.'} />;
 
