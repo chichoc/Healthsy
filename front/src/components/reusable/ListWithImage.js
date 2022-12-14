@@ -23,6 +23,7 @@ const ListWithImage = ({ salesToDisplay, countUnitToDisplay = 9, img }) => {
       {salesToDisplay &&
         salesToDisplay.map((sale) => (
           <li
+            key={sale.id}
             className={changeCountUnit(countUnitToDisplay)}
             onClick={() => {
               storeScroll();

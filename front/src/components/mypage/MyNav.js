@@ -11,8 +11,8 @@ const MyNav = () => {
           <h2>{menu}</h2>
           <ul>
             {dataMyMenu[menu].map(({ name, link }) => (
-              <li key={name}>
-                <Link to={`/mypage${link}`}>{name}</Link>
+              <li key={link}>
+                <Link to={`/mypage/${link}`}>{name}</Link>
               </li>
             ))}
           </ul>

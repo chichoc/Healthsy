@@ -2,28 +2,28 @@ import styled from '@emotion/styled';
 
 const NavMyPage = styled.nav`
   padding-top: 30px;
-  padding-left: 100px;
-  margin-right: 10px;
-  min-width: 105px;
-  flex: 0 0 12%;
+  margin-left: 100px;
+  margin-right: 40px;
+  flex: 0 0 auto;
   color: #383838;
 
   h2 {
+    letter-spacing: 0.8px;
     font-weight: bold;
     font-size: 20px;
+    padding-left: 5px;
+    margin-bottom: 5px;
   }
   ul {
-    padding-bottom: 20px;
-    width: 80%;
+    padding-bottom: 15px;
   }
   ul li {
-    padding: 10px 5px 10px 5px;
+    padding: 10px;
     margin: 10px 0px;
     border-radius: 10px;
-    text-align: center;
   }
   ul li:hover {
-    background-color: red;
+    background-color: #f0f0f0;
   }
 `;
 

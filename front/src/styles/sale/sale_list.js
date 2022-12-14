@@ -7,7 +7,7 @@ const MainSale = styled.main`
   }
 `;
 const UlSale = styled.ul`
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 15px;
   li {
@@ -17,12 +17,13 @@ const UlSale = styled.ul`
       width: 100%;
       aspect-ratio: 1 / 1;
       object-fit: cover;
+      border-radius: 10px;
     }
   }
   // 9개씩 배열
   li.small_unit {
     max-width: 30%;
-    flex: 1 0 30%;
+    margin-right: 5%; // (100 - 30*3) / 2
     &:nth-of-type(3n) {
       margin-right: 0px;
     }
@@ -30,8 +31,8 @@ const UlSale = styled.ul`
 
   // 16개씩 배열
   li.medium_unit {
-    max-width: 24%;
-    flex: 1 0 24%;
+    max-width: 23.5%;
+    margin-right: 2%; // (100 - 94) / 3
     &:nth-of-type(4n) {
       margin-right: 0px;
     }
@@ -39,8 +40,8 @@ const UlSale = styled.ul`
 
   // 25개씩 배열
   li.big_unit {
-    max-width: 19%;
-    flex: 1 0 19%;
+    max-width: 19.2%;
+    margin-right: 1%; // (100 - 96) / 4
     &:nth-of-type(5n) {
       margin-right: 0px;
     }

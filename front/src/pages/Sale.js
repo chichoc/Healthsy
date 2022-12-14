@@ -29,7 +29,7 @@ const Sale = () => {
 
   const addSalesToDisplay = (data) => {
     if (currentPageToFetch.current === 0) {
-      // 카테고리, 특정 성분/브랜드/기능 버튼, 정렬방식 변경하여 새로이 fetch하는 경우
+      // 카테고리, 특정 성분/브랜드/기능 버튼, 정렬방식 및 개수, 검색어 변경하여 새로이 fetch하는 경우
       setSales([...data.splice(countUnitToDisplay)]);
       setSalesToDisplay([...data]);
     } else {
@@ -81,7 +81,7 @@ const Sale = () => {
     threshold: 0.3,
   });
 
-  // 카테고리, 특정 성분/브랜드/기능 버튼, 정렬방식, 검색어 변경시에만 새로이 fetch
+  // 카테고리, 특정 성분/브랜드/기능 버튼, 정렬방식 및 개수, 검색어 변경시에만 새로이 fetch
   useEffect(() => {
     currentPageToFetch.current = 0;
     addSales();

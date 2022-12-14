@@ -7,15 +7,14 @@ import Portal from '../../Portal';
 import ReviewForm from './ReviewForm';
 import ReviewSort from './ReviewSort';
 import ReviewList from './ReviewList';
-import ReviewPagination from './ReviewPagination.js';
 import StarScore from '../reusable/StarScore';
 import NotFound from '../reusable/NotFound';
+import Pagination from '../reusable/Pagination';
 import { HeaderProdReview } from '../../styles/product/product_review';
 
 const ProductReview = forwardRef((props, reviewSection) => {
   const dispatch = useDispatch();
   let { id: productId } = useParams();
-  const pageUnit = 10;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [prevPage, setPrevPage] = useState(0);
@@ -95,13 +94,13 @@ const ProductReview = forwardRef((props, reviewSection) => {
       <ReviewList />
 
       {numberOfReviews > 0 && (
-        <ReviewPagination
-          pageUnit={pageUnit}
+        <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           setPrevPage={setPrevPage}
           pageOffset={pageOffset}
           setPageOffset={setPageOffset}
+          numberOfDatas={numberOfReviews}
         />
       )}
     </>

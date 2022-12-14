@@ -1,12 +1,19 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
 import { UlProdReview } from '../../styles/product/review_pagination';
 
-const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage, setPrevPage, pageOffset, setPageOffset }) => {
-  const numberOfReviews = useSelector((state) => state.product.count.numberOfReviews);
-  const maxPage = Math.ceil(numberOfReviews / pageUnit);
-  const maxPageOffset = maxPage - (maxPage % pageUnit) + 1;
+const Pagination = ({
+  unitOfPage = 10, // 한 페이지당 보여줄 데이터 개수
+  unitOfPageOffset = 10, // 페이지 블록 단위
+  currentPage,
+  setCurrentPage,
+  setPrevPage,
+  pageOffset,
+  setPageOffset,
+  numberOfDatas,
+}) => {
+  const maxPage = Math.ceil(numberOfDatas / unitOfPage);
+  const maxPageOffset = maxPage - (maxPage % unitOfPageOffset) + 1;
 
   return (
     <>
@@ -25,7 +32,7 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage, setPrevPage, 
           </button>
         )}
 
-        {[...Array(pageOffset === maxPageOffset ? maxPage % pageUnit : pageUnit)].map((_, index) => (
+        {[...Array(pageOffset === maxPageOffset ? maxPage % unitOfPageOffset : unitOfPageOffset)].map((_, index) => (
           <li key={index}>
             <button
               className={pageOffset + index === currentPage ? 'selectedBtn' : ''}
@@ -56,4 +63,4 @@ const ReviewPagination = ({ pageUnit, currentPage, setCurrentPage, setPrevPage, 
   );
 };
 
-export default ReviewPagination;
+export default Pagination;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -21,7 +21,7 @@ const ProductMain = () => {
 
   const [isClicked, setIsClicked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [countToBookmark, setCountToBookmark] = useState(5);
+  const [countToBookmark, setCountToBookmark] = useState(0);
 
   const commaToPrice = (price) => {
     if (price < 1000) return price;
@@ -52,10 +52,31 @@ const ProductMain = () => {
     }
   };
 
+
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        setIsClicked(true);
+        const { data } = await axios.post('http://localhost:8888/product/fetchKeyBtnsOfProdut', {
+          userId,
+          productId,
+        });
+        setIsBookmarked(data.isBookmarked);
+        setCountToBookmark(data.count);
+      } catch (error) {
+        alert('오류가 발생했습니다. 잠시 후에 다시 시도해주시기 바랍니다.');
+        console.log(error);
+      } finally {
+        setIsClicked(false);
+      }
+    };
+    if (!userId || !productId) return;
+    fetchBookmarks();
+  }, [userId, productId]);
+
   return (
     <MainProduct className='horizontal_flex'>
       <img src={productImg} alt='제품 이미지' />
-
       <div className='vertical_flex product_primary'>
         <div>
           <h2 className='product_brand'>{selectedProduct.brand}</h2>
@@ -74,7 +95,7 @@ const ProductMain = () => {
         <TableList columns={dataProductMain} datas={selectedProduct} />
 
         <div className='horizontal_flex key_btns'>
-          <button className='horizontal_flex svg_btns' onClick={handleBookMark}>
+          <button className='horizontal_flex svg_btns' name='bookmark' onClick={handleBookMark}>
             {isBookmarked ? (
               <BsBookmarkCheckFill size={35} color='#00c9b7' />
             ) : (
@@ -83,12 +104,12 @@ const ProductMain = () => {
             <span>관심상품</span>
             {countToBookmark ? <span>{countToBookmark}</span> : ''}
           </button>
-          <button className='horizontal_flex svg_btns'>
+          <button className='horizontal_flex svg_btns' name='comparing'>
             <BsPlusSquareDotted size={35} color='#00564A' />
             {/* <BsCheckSquareFill size={35} color='#00c9b7' /> */}
             <span>비교함</span>
           </button>
-          <button className='horizontal_flex svg_btns'>
+          <button className='horizontal_flex svg_btns' name='taking'>
             <AiOutlineAppstoreAdd size={35} color='#00564A' />
             {/* <AiFillAppstore size={35} color='#00c9b7' /> */}
             <span>복용함</span>

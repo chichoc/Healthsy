@@ -114,50 +114,37 @@ router.post('/changeBookMarks', async (req, res, next) => {
   try {
     const { userId, productId } = req.body;
 
-    const [rowToCheck, _] = await (
-      await db
-    ).execute(`SELECT count(*) as isBookmarked FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`, [
-      userId,
-    ]);
-
     const addBookmark = async () => {
-      const insertionSql = `INSERT INTO bookmarks (user_id, prod_id) VALUES (UNHEX(?), ${productId})`;
-      await (await db).execute(insertionSql, [userId]);
+      const insertionQuery = `INSERT INTO bookmarks (user_id, prod_id) VALUES (UNHEX(?), ${productId})`;
+      await (await db).execute(insertionQuery, [userId]);
       return true;
     };
 
     const removeBookmark = async () => {
-      const deletionSql = `DELETE FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`;
-      await (await db).execute(deletionSql, [userId]);
+      const deletionQuery = `DELETE FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`;
+      await (await db).execute(deletionQuery, [userId]);
       return false;
     };
+    // 추가,삭제 버튼이 따로 존재하지 않고 토글 형식이라 실시간 현황이 아닐 수 있으므로 관심상품 여부 다시 조회
+    const [rowToCheck, _] = await (
+      await db
+    ).execute(
+      `SELECT count(bookmarks.id) as isAdded FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`,
+      [userId]
+    );
 
-    const isBookmarked = rowToCheck[0].isBookmarked ? await removeBookmark() : await addBookmark();
+    const isAdded = rowToCheck[0].isAdded ? await removeBookmark() : await addBookmark();
 
     const [rowsToCount, fields] = await (
       await db
     ).execute(`SELECT count(*) as count FROM bookmarks WHERE prod_id = ${productId}`);
 
-    res.json({ isBookmarked, count: rowsToCount[0].count });
+    res.json({ isAdded, count: rowsToCount[0].count });
   } catch (err) {
     next(err);
   }
 });
-router.post('/fetchBookmarks', async (req, res, next) => {
   try {
-    const { userId } = req.body;
-
-    const executionQuery = `SELECT p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.price, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score
-    FROM bookmarks b 
-    INNER JOIN products p 
-    ON b.user_id = ? OR b.prod_id = p.id
-    LEFT OUTER JOIN reviews r
-    ON p.id = r.prod_id
-    GROUP BY p.id
-    LIMIT 0, 100`;
-
-    const [rows, fields] = await (await db).execute(executionQuery, [userId]);
-    res.json(rows);
   } catch (err) {
     next(err);
   }

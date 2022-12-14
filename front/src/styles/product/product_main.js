@@ -5,12 +5,12 @@ const MainProduct = styled.main`
   justify-content: center;
   img {
     max-width: 50%;
-    height: 400px;
+    aspect-ratio: auto 1 / 1;
   }
   div.product_primary {
     width: 45%;
     margin-left: 5%;
-    justify-content: flex-start;
+    justify-content: space-between;
   }
   div.product_primary div.product_header {
     align-content: center;
@@ -39,7 +39,7 @@ const MainProduct = styled.main`
 
   button.svg_btns {
     align-items: center;
-    opacity: 0.7;
+    opacity: 1;
   }
   div.key_btns button {
     margin: 10px 0;
@@ -49,7 +49,7 @@ const MainProduct = styled.main`
     margin-left: 5px;
   }
   button.svg_btns:hover {
-    opacity: 1;
+    opacity: 0.7;
   }
   button.svg_btns:hover svg {
     fill: #00c9b7;
