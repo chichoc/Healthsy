@@ -110,18 +110,20 @@ router.post('/addReviewThumbs', async (req, res, next) => {
   res.json({ ...rows });
 });
 
-router.post('/changeBookMarks', async (req, res, next) => {
+router.post('/changeKeyBtnsOfProdut', async (req, res, next) => {
   try {
-    const { userId, productId } = req.body;
+    const { type, userId, productId } = req.body;
 
-    const addBookmark = async () => {
-      const insertionQuery = `INSERT INTO bookmarks (user_id, prod_id) VALUES (UNHEX(?), ${productId})`;
+    const addTypeOfBtn = async () => {
+      const insertionQuery = `INSERT INTO ${type}s (user_id, prod_id) VALUES (UNHEX(?), ${productId})`;
+      console.log(insertionQuery);
       await (await db).execute(insertionQuery, [userId]);
       return true;
     };
 
-    const removeBookmark = async () => {
-      const deletionQuery = `DELETE FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`;
+    const removeTypeOfBtn = async () => {
+      const deletionQuery = `DELETE FROM ${type}s WHERE user_id = UNHEX(?) AND prod_id = ${productId}`;
+      console.log(deletionQuery);
       await (await db).execute(deletionQuery, [userId]);
       return false;
     };
@@ -129,22 +131,48 @@ router.post('/changeBookMarks', async (req, res, next) => {
     const [rowToCheck, _] = await (
       await db
     ).execute(
-      `SELECT count(bookmarks.id) as isAdded FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}`,
+      `SELECT count(${type}s.id) as isAdded FROM ${type}s WHERE user_id = UNHEX(?) AND prod_id = ${productId}`,
       [userId]
     );
 
-    const isAdded = rowToCheck[0].isAdded ? await removeBookmark() : await addBookmark();
+    const isAdded = rowToCheck[0].isAdded ? await removeTypeOfBtn() : await addTypeOfBtn();
 
-    const [rowsToCount, fields] = await (
-      await db
-    ).execute(`SELECT count(*) as count FROM bookmarks WHERE prod_id = ${productId}`);
+    if (type === 'comparing') res.json({ isAdded });
+    else {
+      const [rowsToCount, fields] = await (
+        await db
+      ).execute(`SELECT count(*) as count FROM ${type}s WHERE prod_id = ${productId}`);
 
-    res.json({ isAdded, count: rowsToCount[0].count });
+      res.json({ isAdded, count: rowsToCount[0].count });
+    }
   } catch (err) {
     next(err);
   }
 });
+
+router.post('/fetchKeyBtnsOfProdut', async (req, res, next) => {
   try {
+    const { userId, productId } = req.body;
+
+    const [rowToCheck, _] = await (
+      await db
+    ).execute(
+      `SELECT
+      (SELECT count(bookmarks.id) FROM bookmarks WHERE user_id = UNHEX(?) AND prod_id = ${productId}) as bookmark,
+      (SELECT count(comparings.id) FROM comparings WHERE user_id = UNHEX(?) AND prod_id = ${productId}) as comparing,
+      (SELECT count(takings.id) FROM takings WHERE user_id = UNHEX(?) AND prod_id = ${productId}) as taking`,
+      [userId, userId, userId]
+    );
+
+    const [rowsToCount, fields] = await (
+      await db
+    ).execute(
+      `SELECT
+      (SELECT count(bookmarks.id) FROM bookmarks WHERE prod_id = ${productId}) as bookmark,
+      (SELECT count(takings.id) FROM takings WHERE prod_id = ${productId}) as taking`
+    );
+
+    res.json({ isAdded: rowToCheck[0], count: rowsToCount[0] });
   } catch (err) {
     next(err);
   }

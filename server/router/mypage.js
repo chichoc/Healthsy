@@ -45,6 +45,24 @@ router.post('/fetchBookmarks', async (req, res, next) => {
   }
 });
 
+router.post('/fetchComparings', async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    const joinQuery = `SELECT c.id as comparingsId, p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.status
+    FROM products p
+    INNER JOIN comparings c
+    ON c.user_id = UNHEX(?) AND p.id = c.prod_id`;
+
+    const orderQuery = ` ORDER BY c.id DESC`;
+
+    console.log(joinQuery + orderQuery);
+    const [rows, fields] = await (await db).execute(joinQuery + orderQuery, [userId]);
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
 router.post('/fetchUserInfo', async (req, res, next) => {
   const { userId } = await req.body;
 

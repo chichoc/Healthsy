@@ -1,11 +1,18 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-const CircleCheck = ({ id, headerSpan, checked, onChangeMethod, detailSpan, className }) => {
+const CircleCheck = ({ id, headerSpan, checked, onChangeMethod, detailSpan, className, dark }) => {
   return (
     <LabelCheck className={className}>
-      <input type='checkbox' id={id} name={id} checked={checked} onChange={() => onChangeMethod(id)} />
-      <span>{headerSpan}</span>
+      <input
+        type='checkbox'
+        className={dark ? 'dark' : ''}
+        id={id}
+        name={id}
+        checked={checked}
+        onChange={() => onChangeMethod(id)}
+      />
+      {<span>{headerSpan}</span>}
       {detailSpan && <span className={detailSpan}>{detailSpan === 'required' ? '(필수)' : '(선택)'}</span>}
     </LabelCheck>
   );
@@ -31,6 +38,10 @@ const LabelCheck = styled.label`
     border-radius: 50%;
     margin-right: 10px;
     line-height: 16px;
+  }
+  input[type='checkbox'].dark + span::before {
+    color: white;
+    background-color: #dcdcdc;
   }
   input[type='checkbox']:checked + span::before {
     color: white;

@@ -1,12 +1,12 @@
 const myMenu = {
   '나의 헬씨': [
-    { name: '관심상품', link: 'bookmarks' },
+    { name: '관심상품', link: 'bookmark' },
     { name: '복용함', link: 'taking' },
     { name: '비교함', link: 'comparing' },
   ],
 
   '나의 활동': [
-    { name: '작성한 후기', link: 'reviews' },
+    { name: '작성한 후기', link: 'review' },
   ],
 
   '나의 계정': [

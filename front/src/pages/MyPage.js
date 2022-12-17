@@ -8,7 +8,7 @@ import MyMain from '../components/mypage/MyMain';
 const MyPage = () => {
   const isLoggedin = useSelector((state) => state.page.isLoggedIn);
   return (
-    <div className='horizontal_flex' style={{ flexWrap: 'nowrap' }}>
+    <div className='horizontal_flex' style={{ justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
       {!isLoggedin && <Navigate to='/login' />}
       <MyNav />
       <MyMain />

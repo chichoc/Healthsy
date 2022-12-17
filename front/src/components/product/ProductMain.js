@@ -2,9 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { BsBookmarkPlus, BsBookmarkCheckFill, BsPlusSquareDotted, BsCheckSquareFill } from 'react-icons/bs';
-import { AiOutlineAppstoreAdd, AiFillAppstore } from 'react-icons/ai';
-import { FiShare, FiShare2 } from 'react-icons/fi';
+import {
+  BsBookmarkPlus,
+  BsBookmarkCheckFill,
+  BsPlusSquareDotted,
+  BsCheckSquareFill,
+  BsFileEarmarkPlus,
+  BsFileEarmarkCheckFill,
+} from 'react-icons/bs';
+import { FiShare2 } from 'react-icons/fi';
 import StarScore from '../reusable/StarScore';
 import TableList from '../reusable/TableList';
 import productImg from '../../assets/img/testSale.jpeg';
@@ -20,26 +26,31 @@ const ProductMain = () => {
   const { numberOfReviews, avgScoreOfReviews } = useSelector((state) => state.product.count);
 
   const [isClicked, setIsClicked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [countToBookmark, setCountToBookmark] = useState(0);
+  const [keyBtns, setKeyBtns] = useState({ isAdded: {}, count: {} });
 
   const commaToPrice = (price) => {
     if (price < 1000) return price;
     return price.toLocaleString();
   };
 
-  const handleBookMark = async () => {
+  const handleKeyBtns = async (e) => {
+    const type = e.target.name || e.target.closest('button').name;
     if (isClicked) return;
     try {
       setIsClicked(true);
       if (isLoggedIn) {
-        const { data } = await axios.post('http://localhost:8888/product/changeBookMarks', {
+        const { data } = await axios.post('http://localhost:8888/product/changeKeyBtnsOfProdut', {
           userId,
           productId,
+          type,
         });
-        setIsBookmarked(data.isBookmarked);
-        setCountToBookmark(data.count);
-        window.confirm('관심상품 페이지로 이동하시겠습니까?') && navigate(`/mypage/bookmarks`);
+        Object.keys(data).forEach((key) =>
+          setKeyBtns((prev) => ({ ...prev, [key]: { ...prev[key], [type]: data[key] } }))
+        );
+        data.isAdded
+          ? window.confirm(`${keyBtnsDetails[type]['name']}에 담았습니다. \n 해당 페이지로 이동하시겠습니까?`) &&
+            navigate(keyBtnsDetails[type]['navigate'])
+          : alert(`${keyBtnsDetails[type]['name']}에서 삭제되었습니다.`);
       } else {
         alert('로그인해야 사용가능한 서비스입니다!');
         navigate(`/login`);
@@ -52,6 +63,26 @@ const ProductMain = () => {
     }
   };
 
+  const keyBtnsDetails = {
+    bookmark: {
+      name: '관심상품',
+      navigate: '/mypage/bookmark',
+      addedIcon: <BsBookmarkCheckFill size={33} color='#00c9b7' />,
+      removedIcon: <BsBookmarkPlus size={33} color='#00564A' />,
+    },
+    comparing: {
+      name: '비교함',
+      navigate: '/mypage/comparing',
+      addedIcon: <BsCheckSquareFill size={29} color='#00c9b7' />,
+      removedIcon: <BsPlusSquareDotted size={29} color='#00564A' />,
+    },
+    taking: {
+      name: '복용함',
+      navigate: '/mypage/taking',
+      addedIcon: <BsFileEarmarkCheckFill size={33} color='#00c9b7' />,
+      removedIcon: <BsFileEarmarkPlus size={33} color='#00564A' />,
+    },
+  };
 
   useEffect(() => {
     const fetchBookmarks = async () => {
@@ -61,8 +92,7 @@ const ProductMain = () => {
           userId,
           productId,
         });
-        setIsBookmarked(data.isBookmarked);
-        setCountToBookmark(data.count);
+        setKeyBtns(data);
       } catch (error) {
         alert('오류가 발생했습니다. 잠시 후에 다시 시도해주시기 바랍니다.');
         console.log(error);
@@ -95,25 +125,16 @@ const ProductMain = () => {
         <TableList columns={dataProductMain} datas={selectedProduct} />
 
         <div className='horizontal_flex key_btns'>
-          <button className='horizontal_flex svg_btns' name='bookmark' onClick={handleBookMark}>
-            {isBookmarked ? (
-              <BsBookmarkCheckFill size={35} color='#00c9b7' />
-            ) : (
-              <BsBookmarkPlus size={35} color='#00564A' />
-            )}
-            <span>관심상품</span>
-            {countToBookmark ? <span>{countToBookmark}</span> : ''}
-          </button>
-          <button className='horizontal_flex svg_btns' name='comparing'>
-            <BsPlusSquareDotted size={35} color='#00564A' />
-            {/* <BsCheckSquareFill size={35} color='#00c9b7' /> */}
-            <span>비교함</span>
-          </button>
-          <button className='horizontal_flex svg_btns' name='taking'>
-            <AiOutlineAppstoreAdd size={35} color='#00564A' />
-            {/* <AiFillAppstore size={35} color='#00c9b7' /> */}
-            <span>복용함</span>
-          </button>
+          {Object.keys(keyBtnsDetails).map((btn) => {
+            const { name, addedIcon, removedIcon } = keyBtnsDetails[btn];
+            return (
+              <button key={btn} className='horizontal_flex svg_btns' name={btn} onClick={handleKeyBtns}>
+                {keyBtns.isAdded[btn] ? addedIcon : removedIcon}
+                <span>{name}</span>
+                <span>{keyBtns.count[btn]}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </MainProduct>

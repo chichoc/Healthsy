@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 const MainMyPage = styled.main`
   margin-right: 100px;
   margin-left: 10px;
-  flex: 1 0 65%;
+  max-width: 67%;
   padding: 20px 0;
   h1 {
     font-size: 25px;

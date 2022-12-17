@@ -6,6 +6,7 @@ const NavMyPage = styled.nav`
   margin-right: 40px;
   flex: 0 0 auto;
   color: #383838;
+  max-width: 25%;
 
   h2 {
     letter-spacing: 0.8px;
