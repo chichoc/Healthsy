@@ -63,6 +63,46 @@ router.post('/fetchComparings', async (req, res, next) => {
     next(err);
   }
 });
+router.post('/fetchSelectedComparings', async (req, res, next) => {
+  try {
+    const { userId, productId } = req.body;
+
+    const columnNames = [
+      'LCNS_NO',
+      'BSSH_NM',
+      'PRDT_SHAP_CD_NM',
+      'DISPOS',
+      'STDR_STND',
+      'NTK_MTHD',
+      'IFTKN_ATNT_MATR_CN',
+      'CSTDY_MTHD',
+      'POG_DAYCNT',
+      'RAWMTRL_NM',
+      'PRDLST_NM',
+      'PRIMARY_FNCLTY',
+      'PRDLST_REPORT_NO',
+      'PRMS_DT',
+      'CRET_DTM',
+      'LAST_UPDT_DTM',
+    ];
+
+    let joinQuery = `SELECT c.id as comparingsId, p.id, p.brand, p.price, p.raw_material, p.status, count(r.id) as count, truncate(avg(r.score), 1) as score`;
+
+    columnNames.forEach((column) => (joinQuery += `, p.api->"$.${column}" as ${column}`));
+
+    joinQuery += ` FROM products p 
+    INNER JOIN comparings c 
+    ON c.user_id = UNHEX(?) AND p.id = c.prod_id AND p.id = ${productId}
+    LEFT JOIN reviews r
+    ON c.prod_id = r.prod_id
+    GROUP BY c.id, p.id`;
+
+    const [rows, fields] = await (await db).execute(joinQuery, [userId]);
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
 router.post('/fetchUserInfo', async (req, res, next) => {
   const { userId } = await req.body;
 

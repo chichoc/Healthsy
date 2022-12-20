@@ -1,36 +1,43 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import HorizontalList from './HorizontalList';
+import { BsStarFill } from 'react-icons/bs';
 
-const ComparingTable = ({ columns, datas }) => {
+const ComparingTable = ({ columns, checkedSales, datasOfCheckedSales }) => {
   const countHeaderLenMax = (arr) => {
     const ArrayOfLen = arr.map((elem) => elem['header'].length);
     return Math.max(...ArrayOfLen);
   };
+
   const splitString = (header, data) => {
     if (!data) return data;
     if (header.includes('일')) return data.slice(0, 4) + '년 ' + data.slice(4, 6) + '월 ' + data.slice(6) + '일';
-    // \n이 여러 개가 연속될 경우
-    return data.replaceAll(/[\n]{2,}/g, '\n');
-    // return string ? string.split(',').join(', ') : string;
+    if (header.includes('가격')) return (data < 1000 ? data : data.toLocaleString()) + '원';
+    return data;
   };
 
   return (
-    <UlProductInfo headerLen={countHeaderLenMax(columns) * 14}>
+    <UlProductInfo headerLen={countHeaderLenMax(columns) * 10}>
       {columns.map((column, index) => (
         <li key={column.code} className='horizontal_flex table'>
+          <h4>{column.header}</h4>
           {index > 0 ? (
             <>
-              <h4>{column.header}</h4>
-              {datas.map((data) => (
-                <p>{splitString(column.header, data[column.code])}</p>
-              ))}
+              {datasOfCheckedSales.map((data) =>
+                column.code.includes(',') ? (
+                  <p>
+                    <BsStarFill color='#fadd85' size={15} />{' '}
+                    <span>{column.code.split(',').map((c) => (c === 'count' ? ` (${data[c]})` : data[c] || 0))}</span>
+                  </p>
+                ) : data.hasOwnProperty(column.code) ? (
+                  <p>{splitString(column.header, data[column.code])}</p>
+                ) : (
+                  ''
+                )
+              )}
             </>
           ) : (
-            <>
-              <h4>{column.header}</h4>
-              <HorizontalList salesToDisplay={datas} width={'29%'} />
-            </>
+            <HorizontalList salesToDisplay={checkedSales} />
           )}
         </li>
       ))}
@@ -41,41 +48,42 @@ const ComparingTable = ({ columns, datas }) => {
 const UlProductInfo = styled.ul`
   margin-top: 30px;
   font-size: 14px;
+  overflow-x: auto;
+
   li.table {
     justify-content: flex-start;
     flex-wrap: nowrap;
     line-height: 1.5;
-    /* max-height: 300px; */
   }
   li.table h4 {
     min-width: ${(props) => props.headerLen}px;
     background-color: #f0f0f0;
-    padding: 1%;
-    /* margin: auto 0; */
-    align-items: center;
+    padding: 2% 1%;
     border-bottom: 1px solid white;
   }
   li.table p {
-    /* min-width: 30%; */
-    width: 29%;
-    /* margin-left: 10px; */
+    width: calc((100% - ${(props) => props.headerLen}px) / 4);
+    flex: 1 1 calc((100% - ${(props) => props.headerLen}px) / 4);
     padding: 2%;
     white-space: pre-line;
     border-right: 1px solid #f0f0f0;
     border-bottom: 1px solid #f0f0f0;
-    /* background-color: blue; */
+    letter-spacing: 0.2px;
+  }
+  li.table svg {
+    vertical-align: text-top;
   }
   li.table ul {
     margin: 0;
-    /* width: 100%; */
+    line-height: 1.2;
     li {
+      width: calc((100% - ${(props) => props.headerLen}px) / 4);
+      flex: 1 1 calc((100% - ${(props) => props.headerLen}px) / 4);
       margin: 0;
       padding: 2%;
-      /* padding: 10px; */
       border-top: 1px solid #f0f0f0;
       border-right: 1px solid #f0f0f0;
       border-bottom: 1px solid #f0f0f0;
-      /* background-color: red; */
     }
   }
 `;

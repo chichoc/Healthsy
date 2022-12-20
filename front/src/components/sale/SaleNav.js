@@ -14,9 +14,9 @@ const SaleNav = () => {
 
   return (
     <Nav>
-      <h5>
+      <p>
         최대 4개까지 선택 가능합니다 <span>({selectedNav.length}/4)</span>
-      </h5>
+      </p>
       <ul className='horizontal_flex'>
         <button
           className={selectedNav.length === 0 ? 'selectAll' : ''}

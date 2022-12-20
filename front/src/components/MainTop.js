@@ -29,7 +29,7 @@ const MainTop = () => {
 
       <Ul className='horizontal_flex' align='center'>
         <li>
-          <Link to='/mypage/bookmarks'>
+          <Link to='/mypage/bookmark'>
             <BsBookmark title={'관심상품'} size={20} />
           </Link>
         </li>

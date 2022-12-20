@@ -6,7 +6,7 @@ import Taking from './Taking';
 import Comparing from './Comparing';
 import InfoEdit from './InfoEdit';
 import InfoWithdrawl from './InfoWithdrawl';
-import { MainMyPage } from '../../styles/mypage/mymain';
+import { MainMyPage } from '../../styles/mypage/my_page';
 
 const MyMain = () => {
   let { mymenu } = useParams();

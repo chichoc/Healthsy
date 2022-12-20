@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { onLogIn } from '../store/features/pageSlice';
 import axios from 'axios';
 import withPage from './withPage';
@@ -12,6 +12,7 @@ const Login = () => {
   const [inputLogin, setInputLogin] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isLoggedin = useSelector((state) => state.page.isLoggedIn);
 
   const loginDB = () => {
     axios
@@ -36,6 +37,7 @@ const Login = () => {
 
   return (
     <>
+      {isLoggedin && <Navigate to='/' />}
       <LoginForm inputLogin={inputLogin} setInputLogin={setInputLogin} loginDB={loginDB} />
       <LoginOther />
       <LoginSocial />

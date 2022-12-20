@@ -5,21 +5,23 @@ import HorizontalList from '../reusable/HorizontalList';
 import ComparingTable from '../reusable/ComparingTable';
 import NotFound from '../reusable/NotFound';
 import dataComparing from '../../assets/api/dataComparing';
+import { SectionComparing } from '../../styles/mypage/my_comparing';
 
 const Comparing = () => {
   const userId = useSelector((state) => state.page.userId);
 
   const [comparings, setComparings] = useState([]);
+  const [checkedComparings, setCheckedComparings] = useState([]);
   const [selectedComparings, setSelectedComparings] = useState([]);
   // request state
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
   const handleCheck = (id) => {
-    const isSelected = selectedComparings.findIndex((comparing) => comparing.id === id);
-    isSelected !== -1
-      ? setSelectedComparings((prev) => prev.filter((comparing) => comparing.id !== id))
-      : setSelectedComparings((prev) => [...prev, { ...comparings.find((comparing) => comparing.id === id) }]);
+    const isChecked = checkedComparings.some((comparing) => comparing.id === id);
+    if (isChecked) setCheckedComparings((prev) => prev.filter((comparing) => comparing.id !== id));
+    else if (checkedComparings.length === 4) alert(`최대 4개까지 선택가능합니다.`);
+    else setCheckedComparings((prev) => [...prev, { ...comparings.find((comparing) => comparing.id === id) }]);
   };
 
   const fetchComparings = async () => {
@@ -40,11 +42,13 @@ const Comparing = () => {
   const fetchSelectedComparings = async () => {
     try {
       setApiLoading(true);
+      const selectedProductIds = selectedComparings.map((c) => c.id);
+      const productIdToFetch = checkedComparings.find((comparing) => !selectedProductIds.includes(comparing.id)).id;
       const { data } = await axios.post('http://localhost:8888/mypage/fetchSelectedComparings', {
         userId,
-        productIds: selectedComparings.map((comparing) => comparing.id),
+        productId: productIdToFetch,
       });
-      setComparings(data);
+      setSelectedComparings((prev) => [...prev, data[0]]);
     } catch (error) {
       setApiError(error);
       console.log(error);
@@ -58,29 +62,40 @@ const Comparing = () => {
   }, []);
 
   useEffect(() => {
-    fetchSelectedComparings();
-  }, [selectedComparings]);
+    if ((selectedComparings.length === 0) & (checkedComparings.length === 0)) return;
+    if (selectedComparings.length > checkedComparings.length) {
+      // 선택 해제
+      const checkedProductIds = checkedComparings.map((c) => c.id);
+      setSelectedComparings((prev) => prev.filter((p) => checkedProductIds.includes(p.id)));
+    } else fetchSelectedComparings(); // 선택 추가
+  }, [checkedComparings]);
 
+  if (comparings.length === 0 && apiError)
+    return <NotFound text={'오류가 발생했습니다.\n 잠시 후에 다시 시도해주시기 바랍니다.'} />;
   return (
-    <>
+    <SectionComparing>
       <h1>비교함 {!apiError && comparings.length}</h1>
-      {apiError ? (
-        <NotFound text={'오류가 발생했습니다. \n잠시 후에 다시 시도해주시기 바랍니다.'} />
+      <p className='nav'>
+        최대 4개까지 선택 가능합니다. <span>({checkedComparings.length}/4)</span>
+      </p>
+      <HorizontalList
+        salesToDisplay={comparings}
+        check={true}
+        checkedSales={checkedComparings}
+        handleCheck={handleCheck}
+        width='15%'
+      />
+
+      {checkedComparings.length < 2 ? (
+        <NotFound text='최소 2개 이상 선택해주세요' />
       ) : (
-        <>
-          <p>
-            최대 3개까지 선택 가능합니다 <span>({selectedComparings.length}/3)</span>
-          </p>
-          <HorizontalList
-            salesToDisplay={comparings}
-            check={true}
-            checkedSales={selectedComparings}
-            handleCheck={handleCheck}
-          />
-          <ComparingTable columns={dataComparing} datas={selectedComparings} />
-        </>
+        <ComparingTable
+          columns={dataComparing}
+          checkedSales={checkedComparings}
+          datasOfCheckedSales={selectedComparings}
+        />
       )}
-    </>
+    </SectionComparing>
   );
 };
 

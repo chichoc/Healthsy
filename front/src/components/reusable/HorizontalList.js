@@ -2,15 +2,19 @@ import styled from '@emotion/styled';
 import React from 'react';
 import CircleCheck from '../reusable/CircleCheck';
 import productImg from '../../assets/img/testSale.jpeg';
+import { useNavigate } from 'react-router-dom';
+import { RiCloseCircleFill } from 'react-icons/ri';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-const HorizontalList = ({ salesToDisplay, check = false, checkedSales, handleCheck, width = '15%' }) => {
+const HorizontalList = ({ salesToDisplay, check = false, checkedSales, handleCheck, width = 'auto' }) => {
+  const navigate = useNavigate();
   return (
     <UlSale className={`horizontal_flex`} width={width}>
       {salesToDisplay &&
         salesToDisplay.map(
           (sale) =>
             sale && (
-              <li key={sale.id} onClick={() => handleCheck(sale.id)}>
+              <li key={sale.id} onClick={() => (check ? handleCheck(sale.id) : navigate(`/product/${sale.id}`))}>
                 {check && (
                   <CircleCheck
                     id={sale.id}
@@ -19,8 +23,8 @@ const HorizontalList = ({ salesToDisplay, check = false, checkedSales, handleChe
                   />
                 )}
                 <img src={productImg} alt='제품 이미지' />
-                <h2 className='brand_prod'>{sale.brand}</h2>
-                <h2 className='name_prod'>{sale.PRDLST_NM}</h2>
+                <h3 className='brand_prod'>{sale.brand}</h3>
+                <h3 className='name_prod'>{sale.PRDLST_NM}</h3>
               </li>
             )
         )}
@@ -35,13 +39,12 @@ const UlSale = styled.ul`
   flex-wrap: nowrap;
   li {
     cursor: pointer;
-    margin: 20px 1% 20px 1%;
+    margin: 20px 1%;
     width: ${(props) => props.width};
-    flex: 0 0 ${(props) => props.width};
+    flex: 1 0 ${(props) => props.width};
     position: relative;
     text-align: left;
   }
-
   label {
     position: absolute;
     top: 2px;

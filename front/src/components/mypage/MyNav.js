@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import dataMyMenu from '../../assets/api/dataMyMenu';
-import { NavMyPage } from '../../styles/mypage/mynav';
+import { NavMyPage } from '../../styles/mypage/my_page';
 
 const MyNav = () => {
   return (
