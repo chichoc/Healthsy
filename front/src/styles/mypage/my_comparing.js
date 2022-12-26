@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const SectionComparing = styled.section`
-  p.nav {
+  p.guide {
     font-size: 15px;
     color: #383838;
     span {
@@ -9,8 +9,9 @@ const SectionComparing = styled.section`
       color: #989898;
     }
   }
-  & > ul:first-of-type {
-    max-height: 220px;
+
+  & > ul:first-of-type li {
+    flex: 0 0 15%;
   }
 `;
 

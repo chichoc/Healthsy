@@ -5,7 +5,7 @@ import { BsStarFill } from 'react-icons/bs';
 
 const ComparingTable = ({ columns, checkedSales, datasOfCheckedSales }) => {
   const countHeaderLenMax = (arr) => {
-    const ArrayOfLen = arr.map((elem) => elem['header'].length);
+    const ArrayOfLen = arr.map((elem) => elem.header.length + (elem.unit ? elem.unit.length : 0));
     return Math.max(...ArrayOfLen);
   };
 
@@ -17,27 +17,42 @@ const ComparingTable = ({ columns, checkedSales, datasOfCheckedSales }) => {
   };
 
   return (
-    <UlProductInfo headerLen={countHeaderLenMax(columns) * 10}>
+    <UlProductInfo headerLen={countHeaderLenMax(columns) * 13}>
       {columns.map((column, index) => (
-        <li key={column.code} className='horizontal_flex table'>
-          <h4>{column.header}</h4>
+        <li key={column.code || column.header} className='horizontal_flex table'>
+          <h4>
+            {column.header} {column.unit ? <span>({column.unit})</span> : ''}{' '}
+          </h4>
           {index > 0 ? (
             <>
               {datasOfCheckedSales.map((data) =>
-                column.code.includes(',') ? (
-                  <p>
-                    <BsStarFill color='#fadd85' size={15} />{' '}
-                    <span>{column.code.split(',').map((c) => (c === 'count' ? ` (${data[c]})` : data[c] || 0))}</span>
-                  </p>
-                ) : data.hasOwnProperty(column.code) ? (
-                  <p>{splitString(column.header, data[column.code])}</p>
+                column.code ? (
+                  column.code.includes(',') ? (
+                    <p key={data.id}>
+                      <BsStarFill color='#fadd85' size={15} />{' '}
+                      <span>{column.code.split(',').map((c) => (c === 'count' ? ` (${data[c]})` : data[c] || 0))}</span>
+                    </p>
+                  ) : (
+                    <p>{splitString(column.header, data[column.code])}</p>
+                  )
                 ) : (
-                  ''
+                  <p>
+                    {data.STDR_STND[column.header].content ? (
+                      <>
+                        <span>{data.STDR_STND[column.header].content}</span>
+                        <span> ({data.STDR_STND[column.header].percent}%) </span>
+                      </>
+                    ) : (
+                      ''
+                    )}
+                  </p>
                 )
               )}
             </>
           ) : (
-            <HorizontalList salesToDisplay={checkedSales} />
+            <>
+              <HorizontalList salesToDisplay={checkedSales} />
+            </>
           )}
         </li>
       ))}

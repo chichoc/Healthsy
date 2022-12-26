@@ -56,14 +56,13 @@ router.post('/fetchComparings', async (req, res, next) => {
 
     const orderQuery = ` ORDER BY c.id DESC`;
 
-    console.log(joinQuery + orderQuery);
     const [rows, fields] = await (await db).execute(joinQuery + orderQuery, [userId]);
     res.json(rows);
   } catch (err) {
     next(err);
   }
 });
-router.post('/fetchSelectedComparings', async (req, res, next) => {
+router.post('/fetchSelectedComparing', async (req, res, next) => {
   try {
     const { userId, productId } = req.body;
 
@@ -80,7 +79,6 @@ router.post('/fetchSelectedComparings', async (req, res, next) => {
       'RAWMTRL_NM',
       'PRDLST_NM',
       'PRIMARY_FNCLTY',
-      'PRDLST_REPORT_NO',
       'PRMS_DT',
       'CRET_DTM',
       'LAST_UPDT_DTM',
@@ -103,6 +101,73 @@ router.post('/fetchSelectedComparings', async (req, res, next) => {
     next(err);
   }
 });
+
+router.post('/removeComparing', async (req, res, next) => {
+  try {
+    const { userId, productId } = req.body;
+
+    const deleteQuery = `DELETE FROM comparings WHERE user_id = UNHEX(?) AND prod_id = ${productId}`;
+
+    await (await db).execute(deleteQuery, [userId]);
+
+    const selectQuery = `SELECT c.id as comparingsId, p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.status
+    FROM products p
+    INNER JOIN comparings c
+    ON c.user_id = UNHEX(?) AND p.id = c.prod_id 
+    ORDER BY c.id DESC`;
+
+    const [rows, fields] = await (await db).execute(selectQuery, [userId]);
+
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/fetchTakings', async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    let joinQuery = `SELECT t.id as takingsId, p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.status
+    `;
+
+    const columnNames = ['STDR_STND', 'IFTKN_ATNT_MATR_CN', 'POG_DAYCNT'];
+    columnNames.forEach((column) => (joinQuery += `, p.api->"$.${column}" as ${column}`));
+
+    joinQuery += ` FROM products p
+    INNER JOIN takings t
+    ON t.user_id = UNHEX(?) AND p.id = t.prod_id
+    ORDER BY t.id DESC`;
+
+    const [rows, fields] = await (await db).execute(joinQuery, [userId]);
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/removeTaking', async (req, res, next) => {
+  try {
+    const { userId, productId } = req.body;
+
+    const deleteQuery = `DELETE FROM takings WHERE user_id = UNHEX(?) AND prod_id = ${productId}`;
+
+    await (await db).execute(deleteQuery, [userId]);
+
+    const selectQuery = `SELECT t.id as takingsId, p.id, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.status
+    FROM products p
+    INNER JOIN takings t
+    ON t.user_id = UNHEX(?) AND p.id = t.prod_id 
+    ORDER BY t.id DESC`;
+
+    const [rows, fields] = await (await db).execute(selectQuery, [userId]);
+
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/fetchUserInfo', async (req, res, next) => {
   const { userId } = await req.body;
 

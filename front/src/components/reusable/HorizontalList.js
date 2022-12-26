@@ -1,12 +1,18 @@
-import styled from '@emotion/styled';
 import React from 'react';
-import CircleCheck from '../reusable/CircleCheck';
-import productImg from '../../assets/img/testSale.jpeg';
+import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import { RiCloseCircleFill } from 'react-icons/ri';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { IoCloseCircle } from 'react-icons/io5';
+import productImg from '../../assets/img/testSale.jpeg';
 
-const HorizontalList = ({ salesToDisplay, check = false, checkedSales, handleCheck, width = 'auto' }) => {
+const HorizontalList = ({
+  salesToDisplay,
+  check = false,
+  remove = false,
+  checkedSales,
+  handleCheck,
+  handleRemove,
+  width = 'auto',
+}) => {
   const navigate = useNavigate();
   return (
     <UlSale className={`horizontal_flex`} width={width}>
@@ -14,13 +20,17 @@ const HorizontalList = ({ salesToDisplay, check = false, checkedSales, handleChe
         salesToDisplay.map(
           (sale) =>
             sale && (
-              <li key={sale.id} onClick={() => (check ? handleCheck(sale.id) : navigate(`/product/${sale.id}`))}>
-                {check && (
-                  <CircleCheck
-                    id={sale.id}
-                    checked={checkedSales.find((comparing) => comparing.id === sale.id)}
-                    dark={true}
-                  />
+              <li
+                key={sale.id}
+                className={
+                  !checkedSales || checkedSales.some((checkedSale) => checkedSale.id === sale.id) ? '' : 'unchecked'
+                }
+                onClick={(e) => (check ? handleCheck(sale.id, e) : navigate(`/product/${sale.id}`))}
+              >
+                {remove && (
+                  <button onClick={() => handleRemove(sale.id)}>
+                    <IoCloseCircle color='#888888' size={22} />
+                  </button>
                 )}
                 <img src={productImg} alt='제품 이미지' />
                 <h3 className='brand_prod'>{sale.brand}</h3>
@@ -44,12 +54,29 @@ const UlSale = styled.ul`
     flex: 1 0 ${(props) => props.width};
     position: relative;
     text-align: left;
+    opacity: 1;
+  }
+  li.unchecked {
+    opacity: 0.5;
   }
   label {
     position: absolute;
     top: 2px;
     left: -5px;
   }
+  button {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+  }
+  button svg {
+    border-radius: 11px;
+    background-color: white;
+  }
+  button svg:hover {
+    fill: #cc2900;
+  }
+
   img {
     width: 100%;
     aspect-ratio: 1 / 1;

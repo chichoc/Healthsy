@@ -1,6 +1,7 @@
 const dataComparing = [
-  { header: '제품정보', code: '' },
+  { header: '제품 주요 정보', code: '' },
   //   { header: '제품명', code: 'PRDLST_NM' },
+  { header: '업소명', code: 'BSSH_NM' },
   { header: '후기 평점 (개수)', code: 'score,count' },
   { header: '가격', code: 'price' },
   { header: '품목 제조 번호', code: 'id' }, // PRDLST_REPORT_NO

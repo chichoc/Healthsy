@@ -17,11 +17,31 @@ const Comparing = () => {
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
-  const handleCheck = (id) => {
+  const findDiffProperty = () => {
+    if (selectedComparings.length === 0 && checkedComparings.length === 0) return undefined;
+    const selectedProductIds = selectedComparings.map((c) => c.id);
+    return checkedComparings.find((comparing) => !selectedProductIds.includes(comparing.id))?.id;
+  };
+
+  const handleCheck = (id, e) => {
+    if (e.target.tagName === 'path' || e.target.tagName === 'svg' || e.target.tagName === 'BUTTON') return;
     const isChecked = checkedComparings.some((comparing) => comparing.id === id);
     if (isChecked) setCheckedComparings((prev) => prev.filter((comparing) => comparing.id !== id));
     else if (checkedComparings.length === 4) alert(`최대 4개까지 선택가능합니다.`);
     else setCheckedComparings((prev) => [...prev, { ...comparings.find((comparing) => comparing.id === id) }]);
+  };
+
+  const handleRemove = async (id) => {
+    const isRemoved = window.confirm('해당 상품을 비교함에서 삭제하시겠습니까?');
+    if (isRemoved) {
+      const { data } = await axios.post('http://localhost:8888/mypage/removeComparing', {
+        userId,
+        productId: id,
+      });
+      setComparings(data);
+      const isChecked = checkedComparings.some((comparing) => comparing.id === id);
+      if (isChecked) setCheckedComparings((prev) => prev.filter((comparing) => comparing.id !== id));
+    }
   };
 
   const fetchComparings = async () => {
@@ -39,12 +59,11 @@ const Comparing = () => {
     }
   };
 
-  const fetchSelectedComparings = async () => {
+  const fetchSelectedComparing = async () => {
     try {
       setApiLoading(true);
-      const selectedProductIds = selectedComparings.map((c) => c.id);
-      const productIdToFetch = checkedComparings.find((comparing) => !selectedProductIds.includes(comparing.id)).id;
-      const { data } = await axios.post('http://localhost:8888/mypage/fetchSelectedComparings', {
+      const productIdToFetch = findDiffProperty();
+      const { data } = await axios.post('http://localhost:8888/mypage/fetchSelectedComparing', {
         userId,
         productId: productIdToFetch,
       });
@@ -62,12 +81,13 @@ const Comparing = () => {
   }, []);
 
   useEffect(() => {
-    if ((selectedComparings.length === 0) & (checkedComparings.length === 0)) return;
+    if (selectedComparings.length === checkedComparings.length && !findDiffProperty()) return;
+
     if (selectedComparings.length > checkedComparings.length) {
       // 선택 해제
       const checkedProductIds = checkedComparings.map((c) => c.id);
       setSelectedComparings((prev) => prev.filter((p) => checkedProductIds.includes(p.id)));
-    } else fetchSelectedComparings(); // 선택 추가
+    } else fetchSelectedComparing(); // 선택 추가
   }, [checkedComparings]);
 
   if (comparings.length === 0 && apiError)
@@ -75,14 +95,16 @@ const Comparing = () => {
   return (
     <SectionComparing>
       <h1>비교함 {!apiError && comparings.length}</h1>
-      <p className='nav'>
+      <p className='guide'>
         최대 4개까지 선택 가능합니다. <span>({checkedComparings.length}/4)</span>
       </p>
       <HorizontalList
         salesToDisplay={comparings}
         check={true}
+        remove={true}
         checkedSales={checkedComparings}
         handleCheck={handleCheck}
+        handleRemove={handleRemove}
         width='15%'
       />
 
