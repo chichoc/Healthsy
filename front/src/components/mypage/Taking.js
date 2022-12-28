@@ -48,27 +48,25 @@ const Taking = () => {
 
   const findContent = (name, text, standard, unit) => {
     // 표시량(의) (함량/전체함량)
-    if (text.indexOf(name) === -1) return { content: '' };
+    // 0.001g = 1mg = 1,000mcg = 1,000ug
+    if (text.indexOf(name) === -1) return { content: 0, percent: 0 };
     const splittedText = text.split(name)[1];
     const [start, end] = ['(', '/'].map((str) => splittedText.indexOf(str));
     const content = splittedText.slice(start + 1, end).replaceAll(/\s/g, '');
-    if (/^\d/.test(content)) return { content, percent: calculatePercent(content.replaceAll(',', ''), standard, unit) };
-    return {
-      content: '',
-      percent: '',
-    };
-  };
 
-  const calculatePercent = (content, standard, unit) => {
-    // 0.001g = 1mg = 1,000mcg = 1,000ug
-    let [numOfContent, unitOfContent] = content.split(/([^0-9.]+)/);
+    if (/^\D/.test(content)) return { content: 0, percent: 0 };
 
+    let [numOfContent, unitOfContent] = content.replaceAll(',', '').split(/([^0-9.]+)/);
     const unitObj = { g: 1, mg: 2, 'mga-TE': 2, mgNE: 2, mcg: 3, ug: 3, ugRE: 3, ugRAE: 3, µgRE: 3 };
     const differenceOfUnit = unitObj[unit] - unitObj[unitOfContent];
+
     if (differenceOfUnit !== 0)
       numOfContent *= differenceOfUnit > 0 ? 1000 ** differenceOfUnit : 1 / 1000 ** Math.abs(differenceOfUnit);
 
-    return Math.round((numOfContent / standard) * 100);
+    return {
+      content: +numOfContent % 1 === 0 ? numOfContent : (+numOfContent).toFixed(12),
+      percent: +((numOfContent * 100) / standard).toFixed(12),
+    };
   };
 
   const fetchTakings = async () => {
@@ -143,27 +141,21 @@ const Taking = () => {
         handleCheck={handleCheck}
         handleRemove={handleRemove}
       />
-      <h2>1일 섭취량 당 총 함량</h2>
+      <h2>1일 섭취량 당 함량</h2>
       <ComparingTable
-        columns={[{ header: '제품 주요 정보', code: '' }, ...dataTaking]}
+        columns={[{ header: '제품 주요 정보', sum: true }, ...dataTaking]}
         checkedSales={checkedTakings}
         datasOfCheckedSales={selectedTakings.map((taking) => ({ id: taking.id, STDR_STND: taking.STDR_STND }))}
       />
       <h2>유통기한</h2>
       <ComparingTable
-        columns={[
-          { header: '제품 주요 정보', code: '' },
-          { header: '유통기한', code: 'POG_DAYCNT' },
-        ]}
+        columns={[{ header: '제품 주요 정보' }, { header: '유통기한', code: 'POG_DAYCNT' }]}
         checkedSales={checkedTakings}
         datasOfCheckedSales={selectedTakings.map((taking) => ({ id: taking.id, POG_DAYCNT: taking.POG_DAYCNT }))}
       />
       <h2>섭취시 주의 사항</h2>
       <ComparingTable
-        columns={[
-          { header: '제품 주요 정보', code: '' },
-          { header: '섭취시 주의사항', code: 'IFTKN_ATNT_MATR_CN' },
-        ]}
+        columns={[{ header: '제품 주요 정보' }, { header: '섭취시 주의사항', code: 'IFTKN_ATNT_MATR_CN' }]}
         checkedSales={checkedTakings}
         datasOfCheckedSales={selectedTakings.map((taking) => ({
           id: taking.id,

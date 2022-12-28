@@ -20,12 +20,6 @@ const SectionTaking = styled.section`
   & > ul:first-of-type li {
     flex: 0 0 15%;
   }
-
-  ul li.table h4 {
-    position: sticky;
-    left: 0;
-    z-index: 1;
-  }
   ul li.table ul {
     overflow-x: visible;
   }
@@ -35,17 +29,18 @@ const SectionTaking = styled.section`
   }
   ul li.table h4 span {
     color: #888888;
+    font-size: 13px;
   }
-  ul li.table p {
+
+  ul li.table p,
+  ul li.table h5 {
     box-sizing: border-box;
     flex: 0 0 160px;
   }
-  ul li.table p span:last-of-type {
-    color: #00c9b7;
-  }
-  ul li.table p:empty:before {
-    content: '해당 없음';
-    color: #c8c8c8;
+  ul li.table p > span:first-of-type {
+    padding-left: 5px;
+    font-size: 13px;
+    color: #606060;
   }
 `;
 
