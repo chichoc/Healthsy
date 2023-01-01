@@ -30,8 +30,8 @@ const ListWithImage = ({ salesToDisplay, countUnitToDisplay = 9, img }) => {
               navigate(`/product/${sale.id}`);
             }}
           >
-            <img src={productImg} alt='제품 이미지' />
             <ArticleSale isScored={sale.score}>
+              <img src={productImg} alt='제품 이미지' />
               <h2 className='brand_prod'>{sale.brand}</h2>
               <h2 className='name_prod'>{sale.PRDLST_NM}</h2>
               <h3 className='price_prod'> {commaPrice(sale.price)}</h3>

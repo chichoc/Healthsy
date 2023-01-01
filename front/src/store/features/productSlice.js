@@ -50,7 +50,7 @@ export const fetchProduct = createAsyncThunk('products/fetchProduct', async (pro
 export const fetchReviews = createAsyncThunk(
   'products/fetchReviews',
   async ({ productId, currentPage, pageNumDiffer, sort }, { getState }) => {
-    let cursorIdx = '';
+    let cursorIdx;
     if (currentPage !== 1) {
       cursorIdx = pageNumDiffer > 0 ? getState().product.reviews[9].id : getState().product.reviews[0].id;
     }

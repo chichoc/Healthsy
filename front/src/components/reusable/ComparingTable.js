@@ -39,7 +39,7 @@ const ComparingTable = ({ columns, checkedSales, datasOfCheckedSales }) => {
           </h4>
           {index > 0 ? (
             <>
-              {!column.code && (
+              {column.standard && (
                 <p className='sticky'>
                   <span>{sumDatas(datasOfCheckedSales, column.header, 'content', column.unit)}</span>
                   <PercentBar percent={sumDatas(datasOfCheckedSales, column.header, 'percent')} />
@@ -99,7 +99,8 @@ const UlProductInfo = styled.ul`
     line-height: 1.5;
   }
   li.table h4 {
-    min-width: ${(props) => props.headerLen}px;
+    flex: 0 0 ${(props) => props.headerLen}px;
+    word-break: keep-all;
     background-color: #f0f0f0;
     padding: 2%;
     box-sizing: border-box;

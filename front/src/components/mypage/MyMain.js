@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import BookmarkList from './BookmarkList';
 import Taking from './Taking';
 import Comparing from './Comparing';
+import WrittenReview from './WrittenReview';
 import InfoEdit from './InfoEdit';
 import InfoWithdrawl from './InfoWithdrawl';
 import { MainMyPage } from '../../styles/mypage/my_page';
@@ -17,6 +18,7 @@ const MyMain = () => {
     comparing: <Comparing />,
     info: <InfoEdit />,
     withdrawl: <InfoWithdrawl />,
+    review: <WrittenReview />,
   };
   return (
     <MainMyPage>

@@ -32,12 +32,11 @@ router.post('/fetchBookmarks', async (req, res, next) => {
     ON b.prod_id = r.prod_id`;
 
     const conditionalQuery =
-      (cursorIdx && ` WHERE ` + (+pageNumDiffer > 0 ? `b.id < ${cursorIdx}` : `b.id > ${cursorIdx}`)) +
+      (cursorIdx ? ` WHERE ` + (+pageNumDiffer > 0 ? `b.id < ${cursorIdx}` : `b.id > ${cursorIdx}`) : '') +
       ` GROUP BY p.id, b.id `;
 
     const firstIdx = (Math.abs(pageNumDiffer) - 1) * 9;
     const orderQuery = `ORDER BY b.id ${cursorIdx && pageNumDiffer < 0 ? 'ASC' : 'DESC'} LIMIT ${firstIdx}, 9`;
-    console.log(joinQuery + conditionalQuery + orderQuery);
     const [rows, fields] = await (await db).execute(joinQuery + conditionalQuery + orderQuery, [userId]);
     res.json(rows);
   } catch (err) {
@@ -161,6 +160,44 @@ router.post('/removeTaking', async (req, res, next) => {
     ORDER BY t.id DESC`;
 
     const [rows, fields] = await (await db).execute(selectQuery, [userId]);
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/counthUserReviews', async (req, res, next) => {
+  const { userId } = await req.body;
+
+  const [rows, fields] = await (
+    await db
+  ).execute(
+    `SELECT count(id) as count
+    FROM reviews
+    WHERE user_id = UNHEX(?)`,
+    [userId]
+  );
+
+  res.json(rows[0]);
+});
+router.post('/fetchUserReviews', async (req, res, next) => {
+  try {
+    const { userId, pageNumDiffer, cursorIdx } = await req.body;
+
+    const joinQuery = `SELECT r.id as reviewId, p.id as productId, p.api->"$.PRDLST_NM" as PRDLST_NM, p.brand, p.status, r.score, r.content, r.thumbs_up as thumbsUp, r.thumbs_down as thumbsDown, date_format(r.reg_date,"%Y.%m.%d.") as date
+    FROM products p
+    INNER JOIN reviews r
+    ON r.user_id = UNHEX(?) AND p.id = r.prod_id`;
+
+    const conditionalQuery = cursorIdx
+      ? ` WHERE ` + (+pageNumDiffer > 0 ? `r.id < ${cursorIdx} ` : `r.id > ${cursorIdx} `)
+      : ' ';
+
+    const firstIdx = (Math.abs(pageNumDiffer) - 1) * 10;
+    const orderQuery = `ORDER BY r.id ${cursorIdx && pageNumDiffer < 0 ? 'ASC' : 'DESC'} LIMIT ${firstIdx}, 10`;
+
+
+    const [rows, fields] = await (await db).execute(joinQuery + conditionalQuery + orderQuery, [userId]);
 
     res.json(rows);
   } catch (err) {

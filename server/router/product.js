@@ -47,28 +47,29 @@ router.post('/fetchProduct', async (req, res, next) => {
 router.post('/fetchReviews', async (req, res, next) => {
   const { productId, pageNumDiffer, sort, cursorIdx } = await req.body;
 
-  const joinSql = `SELECT reviews.id, users.name, reviews.score, reviews.content, reviews.image, reviews.thumbs_up as thumbsUp, reviews.thumbs_down as thumbsDown, date_format(reviews.reg_date,"%Y.%m.%d.") as date 
-  FROM reviews join users 
-  ON reviews.user_id = users.id `;
+  const joinSql = `SELECT r.id, users.name, r.score, r.content, r.image, r.thumbs_up as thumbsUp, r.thumbs_down as thumbsDown, date_format(r.reg_date,"%Y.%m.%d.") as date 
+  FROM reviews r 
+  JOIN users
+  ON r.prod_id = ${productId} AND r.user_id = users.id `;
 
-  let conditionalSql = 'WHERE prod_id = ? ';
-  if (cursorIdx) {
-    conditionalSql += pageNumDiffer > 0 ? `and reviews.id < ${cursorIdx} ` : `and reviews.id > ${cursorIdx} `;
-  }
+  const conditionalSql = cursorIdx
+    ? 'WHERE ' + (pageNumDiffer > 0 ? `r.id < ${cursorIdx}` : `r.id > ${cursorIdx}`)
+    : '';
+
   const firstIdx = (Math.abs(pageNumDiffer) - 1) * 10;
-  let orderSql = 'ORDER BY ';
+  let orderSql = ' ORDER BY ';
   switch (sort) {
     case 'thumbsUp':
       orderSql += 'thumbsUp DESC,';
       break;
     case 'highScores':
-      orderSql += 'reviews.score DESC,';
+      orderSql += 'r.score DESC,';
       break;
     case 'lowScores':
-      orderSql += 'reviews.score ASC,';
+      orderSql += 'r.score ASC,';
       break;
   }
-  orderSql += `reviews.id ${cursorIdx && pageNumDiffer < 0 ? 'ASC' : 'DESC'} limit ${firstIdx}, 10`;
+  orderSql += `r.id ${cursorIdx && pageNumDiffer < 0 ? 'ASC' : 'DESC'} limit ${firstIdx}, 10`;
 
   const [rows, fields] = await (await db).execute(joinSql + conditionalSql + orderSql, [productId]);
 

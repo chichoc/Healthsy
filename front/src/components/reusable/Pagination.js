@@ -3,18 +3,15 @@ import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
 import { UlProdReview } from '../../styles/product/review_pagination';
 
 const Pagination = ({
-  unitOfPage = 10, // 한 페이지당 보여줄 데이터 개수
-  unitOfPageOffset = 10, // 페이지 블록 단위
+  unitOfPageOffset,
+  maxPage,
+  maxPageOffset,
   currentPage,
   setCurrentPage,
   setPrevPage,
   pageOffset,
   setPageOffset,
-  numberOfDatas,
 }) => {
-  const maxPage = Math.ceil(numberOfDatas / unitOfPage);
-  const maxPageOffset = maxPage - (maxPage % unitOfPageOffset) + 1;
-
   return (
     <>
       <UlProdReview className='horizontal_flex'>

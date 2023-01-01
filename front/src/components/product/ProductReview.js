@@ -9,27 +9,19 @@ import ReviewSort from './ReviewSort';
 import ReviewList from './ReviewList';
 import StarScore from '../reusable/StarScore';
 import NotFound from '../reusable/NotFound';
-import Pagination from '../reusable/Pagination';
+import usePagination from '../customHook/usePagination';
 import { HeaderProdReview } from '../../styles/product/product_review';
 
 const ProductReview = forwardRef((props, reviewSection) => {
   const dispatch = useDispatch();
   let { id: productId } = useParams();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [prevPage, setPrevPage] = useState(0);
-  const [pageOffset, setPageOffset] = useState(1);
-
   const isModal = useSelector((state) => state.modal.isModal.productReview);
   const { numberOfReviews, avgScoreOfReviews } = useSelector((state) => state.product.count);
   const { sortOfReviews: sort, typeOfReviews: type } = useSelector((state) => state.product.fetch);
   const reviewsError = useSelector((state) => state.product.error);
 
-  useEffect(() => {
-    setCurrentPage(1);
-    setPrevPage(0);
-    setPageOffset(1);
-  }, [sort]);
+  const [renderPagination, currentPage, prevPage] = usePagination({ numberOfDatas: numberOfReviews, sort });
 
   useEffect(() => {
     dispatch(
@@ -40,7 +32,7 @@ const ProductReview = forwardRef((props, reviewSection) => {
         sort,
       })
     );
-  }, [productId, currentPage, prevPage, sort]);
+  }, [productId, currentPage, sort]);
 
   useEffect(() => {
     window.scrollTo({ top: reviewSection.current.offsetTop });
@@ -92,17 +84,7 @@ const ProductReview = forwardRef((props, reviewSection) => {
       </HeaderProdReview>
       <ReviewSort />
       <ReviewList />
-
-      {numberOfReviews > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          setPrevPage={setPrevPage}
-          pageOffset={pageOffset}
-          setPageOffset={setPageOffset}
-          numberOfDatas={numberOfReviews}
-        />
-      )}
+      {renderPagination()}
     </>
   );
 });

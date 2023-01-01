@@ -4,7 +4,7 @@ const MainProduct = styled.main`
   margin: 30px 100px;
   justify-content: center;
   img {
-    max-width: 50%;
+    max-width: 40%;
     aspect-ratio: auto 1 / 1;
   }
   div.product_primary {

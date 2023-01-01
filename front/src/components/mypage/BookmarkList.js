@@ -1,21 +1,20 @@
 import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import usePagination from '../customHook/usePagination';
 import ListWithImage from '../reusable/ListWithImage';
 import NotFound from '../reusable/NotFound';
-import Pagination from '../reusable/Pagination';
 
 const BookmarkList = () => {
   const userId = useSelector((state) => state.page.userId);
 
   const [bookmarks, setBookmarks] = useState([]);
   const [numberOfBookmarks, setNumberOfBookmarks] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [prevPage, setPrevPage] = useState(0);
-  const [pageOffset, setPageOffset] = useState(1);
   // request state
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
+
+  const [renderPagination, currentPage, prevPage] = usePagination({ numberOfDatas: numberOfBookmarks });
 
   const countBoomarks = async () => {
     try {
@@ -34,9 +33,12 @@ const BookmarkList = () => {
 
   const fetchBoomarks = async () => {
     try {
-      const pageNumDiffer = currentPage === 1 ? 1 : currentPage - prevPage;
-      let cursorIdx = '';
-      if (currentPage !== 1) cursorIdx = pageNumDiffer > 0 ? bookmarks[8].bookmarksId : bookmarks[0].bookmarksId;
+      let pageNumDiffer, cursorIdx;
+      if (currentPage === 1) pageNumDiffer = 1;
+      else {
+        pageNumDiffer = currentPage - prevPage;
+        cursorIdx = pageNumDiffer > 0 ? bookmarks[8].bookmarksId : bookmarks[0].bookmarksId;
+      }
       setApiLoading(true);
       const { data } = await axios.post('http://localhost:8888/mypage/fetchBookmarks', {
         userId,
@@ -57,9 +59,9 @@ const BookmarkList = () => {
   }, []);
 
   useEffect(() => {
-    if (!numberOfBookmarks) return;
+    if (numberOfBookmarks === 0) return;
     fetchBoomarks();
-  }, [numberOfBookmarks, currentPage, prevPage]);
+  }, [numberOfBookmarks, currentPage]);
 
   if (!apiLoading && apiError)
     return <NotFound text={'오류가 발생했습니다.\n 잠시 후에 다시 시도해주시기 바랍니다.'} />;
@@ -68,15 +70,7 @@ const BookmarkList = () => {
     <>
       <h1>관심상품 {numberOfBookmarks}</h1>
       <ListWithImage salesToDisplay={bookmarks} />
-      <Pagination
-        unitOfPage={9}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        setPrevPage={setPrevPage}
-        pageOffset={pageOffset}
-        setPageOffset={setPageOffset}
-        numberOfDatas={numberOfBookmarks}
-      />
+      {renderPagination()}
     </>
   );
 };

@@ -90,7 +90,7 @@ const DivProdReview = styled.div`
         flex: 0 1 25%;
         margin-left: 2%;
         img {
-          width: 100%;
+          width: 70%;
           height: 100%;
         }
       }

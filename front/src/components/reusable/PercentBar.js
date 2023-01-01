@@ -3,13 +3,13 @@ import React from 'react';
 
 const PercentBar = ({ percent }) => {
   const selectColor = (percent) => {
-    if (percent === 0) return '';
+    if (isNaN(percent) || percent === 0) return '';
     if (percent >= 100) return 'green';
     return percent < 50 ? 'red' : 'orange';
   };
 
   return (
-    <DivBar className={`horizontal_flex ${selectColor(percent)}`} percent={percent}>
+    <DivBar className={`horizontal_flex ${selectColor(percent)}`} percent={percent || 0}>
       <div>
         <span></span>
       </div>
