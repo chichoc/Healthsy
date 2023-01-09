@@ -1,7 +1,6 @@
 import React from 'react';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import { useDispatch } from 'react-redux';
-import { onFocusInput } from '../../store/features/formSlice';
 import { onModalClose } from '../../store/features/modalSlice';
 import withModal from '../withModal';
 

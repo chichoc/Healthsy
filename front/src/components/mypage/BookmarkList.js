@@ -14,7 +14,7 @@ const BookmarkList = () => {
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
-  const [renderPagination, currentPage, prevPage] = usePagination({ numberOfDatas: numberOfBookmarks });
+  const [renderPagination, currentPage, prevPage, headerRef] = usePagination({ numberOfDatas: numberOfBookmarks });
 
   const countBoomarks = async () => {
     try {
@@ -68,7 +68,7 @@ const BookmarkList = () => {
 
   return (
     <>
-      <h1>관심상품 {numberOfBookmarks}</h1>
+      <h1 ref={headerRef}>관심상품 {numberOfBookmarks}</h1>
       <ListWithImage salesToDisplay={bookmarks} />
       {renderPagination()}
     </>

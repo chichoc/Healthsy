@@ -1,9 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import dataMyMenu from '../../assets/api/dataMyMenu';
 import { NavMyPage } from '../../styles/mypage/my_page';
 
 const MyNav = () => {
+  const selectedNavStyle = {
+    color: '#000000',
+    fontWeight: 500,
+  };
   return (
     <NavMyPage>
       {Object.keys(dataMyMenu).map((menu) => (
@@ -12,7 +16,9 @@ const MyNav = () => {
           <ul>
             {dataMyMenu[menu].map(({ name, link }) => (
               <li key={link}>
-                <Link to={`/mypage/${link}`}>{name}</Link>
+                <NavLink to={`/mypage/${link}`} style={({ isActive }) => (isActive ? selectedNavStyle : undefined)}>
+                  {name}
+                </NavLink>
               </li>
             ))}
           </ul>

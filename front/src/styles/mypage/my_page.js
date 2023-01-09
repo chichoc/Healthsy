@@ -26,6 +26,7 @@ const NavMyPage = styled.nav`
     padding: 10px;
     margin: 10px 0px;
     border-radius: 10px;
+    color: #686868;
   }
   ul li:hover {
     background-color: #f0f0f0;

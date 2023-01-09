@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import usePagination from '../customHook/usePagination';
+import NotFound from '../reusable/NotFound';
 import VerticalList from '../reusable/VerticalList';
 
 const WrittenReview = () => {
@@ -12,7 +13,7 @@ const WrittenReview = () => {
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
 
-  const [renderPagination, currentPage, prevPage] = usePagination({ numberOfDatas: numberOfReviews });
+  const [renderPagination, currentPage, prevPage, headerRef] = usePagination({ numberOfDatas: numberOfReviews });
 
   const countReviews = async () => {
     try {
@@ -61,9 +62,11 @@ const WrittenReview = () => {
     fetchReviews();
   }, [numberOfReviews, currentPage]);
 
+  if (!apiLoading && apiError)
+    return <NotFound text={'오류가 발생했습니다.\n 잠시 후에 다시 시도해주시기 바랍니다.'} />;
   return (
     <div>
-      <h1>작성한 후기 {numberOfReviews}</h1>
+      <h1 ref={headerRef}>작성한 후기 {numberOfReviews}</h1>
       <VerticalList datas={reviews} mypage={true} />
       {renderPagination()}
     </div>

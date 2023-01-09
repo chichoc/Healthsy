@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 const Nav = styled.nav`
   margin: 20px 100px;
-  h5 {
+  p {
     font-size: 12px;
     padding: 0 0 5px 10px;
     color: #acacac;

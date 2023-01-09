@@ -40,7 +40,7 @@ const Taking = () => {
         userId,
         productId: id,
       });
-      setTakings(data);
+      setTakings((prev) => prev.filter((taking) => taking.id !== id));
       const isChecked = checkedTakings.some((taking) => taking.id === id);
       if (isChecked) setCheckedTakings((prev) => prev.filter((t) => t.id !== id));
     }
@@ -57,7 +57,19 @@ const Taking = () => {
     if (/^\D/.test(content)) return { content: 0, percent: 0 };
 
     let [numOfContent, unitOfContent] = content.replaceAll(',', '').split(/([^0-9.]+)/);
-    const unitObj = { g: 1, mg: 2, 'mga-TE': 2, mgNE: 2, mcg: 3, ug: 3, ugRE: 3, ugRAE: 3, µgRE: 3 };
+    const unitObj = {
+      g: 1,
+      mg: 2,
+      'mga-TE': 2,
+      'mgα-TE': 2,
+      mgNE: 2,
+      mcg: 3,
+      ug: 3,
+      '㎍RE': 3,
+      ugRE: 3,
+      ugRAE: 3,
+      µgRE: 3,
+    };
     const differenceOfUnit = unitObj[unit] - unitObj[unitOfContent];
 
     if (differenceOfUnit !== 0)

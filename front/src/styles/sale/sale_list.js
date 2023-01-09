@@ -13,12 +13,6 @@ const UlSale = styled.ul`
   li {
     cursor: pointer;
     margin: 10px 1% 10px 0;
-    img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 10px;
-    }
   }
   // 9개씩 배열
   li.small_unit {
@@ -51,6 +45,12 @@ const UlSale = styled.ul`
 const ArticleSale = styled.article`
   margin: 0 auto;
   text-align: left;
+  img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 10px;
+  }
   .brand_prod,
   .name_prod {
     text-overflow: ellipsis;
@@ -78,8 +78,6 @@ const ArticleSale = styled.article`
   h4 {
     margin-top: 6px;
     ${(props) => !props.isScored && 'visibility: hidden;'};
-    span {
-    }
   }
 `;
 

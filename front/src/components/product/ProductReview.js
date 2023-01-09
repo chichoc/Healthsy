@@ -6,9 +6,9 @@ import { useParams } from 'react-router-dom';
 import Portal from '../../Portal';
 import ReviewForm from './ReviewForm';
 import ReviewSort from './ReviewSort';
-import ReviewList from './ReviewList';
 import StarScore from '../reusable/StarScore';
 import NotFound from '../reusable/NotFound';
+import VerticalList from '../reusable/VerticalList';
 import usePagination from '../customHook/usePagination';
 import { HeaderProdReview } from '../../styles/product/product_review';
 
@@ -19,9 +19,14 @@ const ProductReview = forwardRef((props, reviewSection) => {
   const isModal = useSelector((state) => state.modal.isModal.productReview);
   const { numberOfReviews, avgScoreOfReviews } = useSelector((state) => state.product.count);
   const { sortOfReviews: sort, typeOfReviews: type } = useSelector((state) => state.product.fetch);
+  const reviews = useSelector((state) => state.product.reviews);
   const reviewsError = useSelector((state) => state.product.error);
 
-  const [renderPagination, currentPage, prevPage] = usePagination({ numberOfDatas: numberOfReviews, sort });
+  const [renderPagination, currentPage, prevPage, headerRef] = usePagination({
+    numberOfDatas: numberOfReviews,
+    sort,
+    sticky: 60,
+  });
 
   useEffect(() => {
     dispatch(
@@ -33,10 +38,6 @@ const ProductReview = forwardRef((props, reviewSection) => {
       })
     );
   }, [productId, currentPage, sort]);
-
-  useEffect(() => {
-    window.scrollTo({ top: reviewSection.current.offsetTop });
-  }, [currentPage, reviewSection]);
 
   if (numberOfReviews === 0) {
     return (
@@ -82,8 +83,8 @@ const ProductReview = forwardRef((props, reviewSection) => {
         </div>
         {/* 별점 차트 */}
       </HeaderProdReview>
-      <ReviewSort />
-      <ReviewList />
+      <ReviewSort headerRef={headerRef} />
+      <VerticalList datas={reviews} figure={true} />
       {renderPagination()}
     </>
   );
