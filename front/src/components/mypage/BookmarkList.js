@@ -33,6 +33,7 @@ const BookmarkList = () => {
 
   const fetchBoomarks = async () => {
     try {
+      setApiLoading(true);
       let pageNumDiffer, cursorIdx;
       if (currentPage === 1) pageNumDiffer = 1;
       else {
@@ -69,8 +70,14 @@ const BookmarkList = () => {
   return (
     <>
       <h1 ref={headerRef}>관심상품 {numberOfBookmarks}</h1>
-      <ListWithImage salesToDisplay={bookmarks} />
-      {renderPagination()}
+      {numberOfBookmarks > 0 ? (
+        <>
+          <ListWithImage salesToDisplay={bookmarks} />
+          {renderPagination()}
+        </>
+      ) : (
+        <NotFound text={'아직 담으신 상품이 없습니다!'} />
+      )}
     </>
   );
 };

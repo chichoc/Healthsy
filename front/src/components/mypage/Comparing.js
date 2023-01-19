@@ -95,27 +95,33 @@ const Comparing = () => {
   return (
     <SectionComparing>
       <h1>비교함 {!apiError && comparings.length}</h1>
-      <p className='guide'>
-        최대 4개까지 선택 가능합니다. <span>({checkedComparings.length}/4)</span>
-      </p>
-      <HorizontalList
-        salesToDisplay={comparings}
-        check={true}
-        remove={true}
-        checkedSales={checkedComparings}
-        handleCheck={handleCheck}
-        handleRemove={handleRemove}
-        width='15%'
-      />
+      {comparings.length > 0 ? (
+        <>
+          <p className='guide'>
+            최대 4개까지 선택 가능합니다. <span>({checkedComparings.length}/4)</span>
+          </p>
+          <HorizontalList
+            salesToDisplay={comparings}
+            check={true}
+            remove={true}
+            checkedSales={checkedComparings}
+            handleCheck={handleCheck}
+            handleRemove={handleRemove}
+            width='15%'
+          />
 
-      {checkedComparings.length < 2 ? (
-        <NotFound text='최소 2개 이상 선택해주세요' />
+          {checkedComparings.length < 2 ? (
+            <NotFound text='최소 2개 이상 선택해주세요' />
+          ) : (
+            <ComparingTable
+              columns={dataComparing}
+              checkedSales={checkedComparings}
+              datasOfCheckedSales={selectedComparings}
+            />
+          )}
+        </>
       ) : (
-        <ComparingTable
-          columns={dataComparing}
-          checkedSales={checkedComparings}
-          datasOfCheckedSales={selectedComparings}
-        />
+        <NotFound text={'아직 담으신 상품이 없습니다!'} />
       )}
     </SectionComparing>
   );

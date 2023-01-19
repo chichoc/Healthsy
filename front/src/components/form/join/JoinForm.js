@@ -2,37 +2,29 @@ import React, { useState } from 'react';
 import JoinTerms from './JoinTerms';
 import InputForm from '../../reusable/InputForm';
 import PrimaryButton from '../../reusable/PrimaryButton';
+import useEmailVerification from '../../customHook/useEmailVerification';
 import { Join, Form } from '../../../styles/form/join/join_form';
 
-const JoinForm = ({
-  inputJoin,
-  setInputJoin,
-  emailVerificationJoin,
-  setEmailVerificationJoin,
-  sendCodeToEmail,
-  joinDB,
-}) => {
+const JoinForm = ({ inputJoin, setInputJoin, apiLoading, setApiLoading, apiError, setApiError, joinDB }) => {
   const [isValidatedJoin, setIsValidatedJoin] = useState({});
   const [isSubmitJoin, setIsSubmitJoin] = useState(false); // 중복 누름 방지
 
+  const [emailVerification, sendCodeToEmail, verifyEmail] = useEmailVerification({
+    email: inputJoin.email,
+    setApiError,
+    setApiLoading,
+  });
   let isCheckRequired = ['checkAge', 'checkService', 'checkInfo'].every((name) => inputJoin.check[name]);
 
   let isValidatedAllJoin =
     Object.keys(isValidatedJoin).length === 6 && Object.values(isValidatedJoin).every((value) => !!value);
 
-  let enableJoin = isValidatedAllJoin && emailVerificationJoin.isVerificated && isCheckRequired;
+  let enableJoin = isValidatedAllJoin && emailVerification.isVerificated && isCheckRequired;
+
 
   const onInputJoinChanged = (e) => {
     const { name, value } = e.target;
     setInputJoin({ ...inputJoin, [name]: value });
-  };
-
-  const verifyEmail = (e) => {
-    e.preventDefault();
-    if (emailVerificationJoin.sendedCode === +inputJoin.emailVerificationCode) {
-      alert('인증되었습니다.');
-      setEmailVerificationJoin({ ...emailVerificationJoin, isVerificated: true });
-    } else alert('일치하지 않습니다.\n 다시 확인해주시기 바랍니다.');
   };
 
   const checkPassword = (valueToCompare) => {
@@ -50,22 +42,21 @@ const JoinForm = ({
     <Join>
       <h1>회원가입</h1>
       <Form className='vertical_flex' align='start'>
-        <div>
-          <InputForm
-            label='이메일'
-            className='ovalInputWithButton'
-            rowSet={true}
-            name='email'
-            placeHolder='이메일'
-            changeMethod={onInputJoinChanged}
-            typeToValidate={'email'}
-            isValidated={isValidatedJoin}
-            setIsValidated={setIsValidatedJoin}
-            button='인증 요청'
-            btnClickMethod={sendCodeToEmail}
-            btnDisabled={!inputJoin.email || !isValidatedJoin.email}
-          />
-        </div>
+        <InputForm
+          label='이메일'
+          className='ovalInputWithButton'
+          rowSet={true}
+          name='email'
+          placeHolder='이메일'
+          changeMethod={onInputJoinChanged}
+          typeToValidate={'email'}
+          isValidated={isValidatedJoin}
+          setIsValidated={setIsValidatedJoin}
+          button='인증 요청'
+          btnClickMethod={sendCodeToEmail}
+          btnDisabled={!isValidatedJoin.email}
+        />
+
         <div>
           <InputForm
             label='인증번호'
@@ -77,9 +68,9 @@ const JoinForm = ({
             isValidated={isValidatedJoin}
             setIsValidated={setIsValidatedJoin}
             changeMethod={onInputJoinChanged}
-            inputDisabled={!emailVerificationJoin.sendedCode || emailVerificationJoin.isVerificated}
-            btnClickMethod={verifyEmail}
-            btnDisabled={!inputJoin.emailVerificationCode || emailVerificationJoin.isVerificated}
+            inputDisabled={!emailVerification.sendedCode || emailVerification.isVerificated}
+            btnClickMethod={(e) => verifyEmail(e, inputJoin.emailVerificationCode)}
+            btnDisabled={!inputJoin.emailVerificationCode || emailVerification.isVerificated}
           />
         </div>
 

@@ -6,7 +6,7 @@ import Taking from './Taking';
 import Comparing from './Comparing';
 import WrittenReview from './WrittenReview';
 import InfoEdit from './InfoEdit';
-import InfoWithdrawl from './InfoWithdrawl';
+import Withdrawl from './Withdrawl';
 import { MainMyPage } from '../../styles/mypage/my_page';
 
 const MyMain = () => {
@@ -17,7 +17,7 @@ const MyMain = () => {
     taking: <Taking />,
     comparing: <Comparing />,
     info: <InfoEdit />,
-    withdrawl: <InfoWithdrawl />,
+    withdrawl: <Withdrawl />,
     review: <WrittenReview />,
   };
   return (

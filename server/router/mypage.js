@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config-mysql');
 const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const redisClient = require('../config-redis');
 
@@ -211,11 +212,82 @@ router.post('/fetchUserInfo', async (req, res, next) => {
   const [rows, fields] = await (
     await db
   ).execute(
-    'SELECT email, password, name as userName, phone, sex, zip_code as zipCode, address, detailed_address as detailedAddress, marketing as checkMarketing FROM users WHERE id = UNHEX(?)',
+    'SELECT email, name as userName, phone, sex, zip_code as zipCode, address, detailed_address as detailedAddress, marketing as checkMarketing FROM users WHERE id = UNHEX(?)',
     [userId]
   );
 
-  res.json(rows);
+  res.json(rows[0]);
+});
+
+router.post('/updateUserInfo', async (req, res, next) => {
+  try {
+    const { userId, password, ...dataToEdit } = req.body;
+
+    const comparePw = async () => {
+      const [selectRow, selectFields] = await (
+        await db
+      ).execute('SELECT password FROM users WHERE id = UNHEX(?)', [userId]);
+      return await new Promise((resolve, reject) => {
+        bcrypt.compare(password, selectRow[0].password, (bcryptError, bcryptResult) => {
+          if (bcryptError) return reject(bcryptError);
+          return resolve(bcryptResult);
+        });
+      });
+    };
+
+    if (password && !(await comparePw())) return res.json({ result: false, content: 'password' });
+
+    let updateQuery = 'UPDATE users SET ';
+
+    for (let [index, [key, value]] of Object.entries(dataToEdit).entries()) {
+      if (['newPassword', 'sex', 'checkMarketing'].some((keyToChangeValue) => key === keyToChangeValue)) {
+        switch (key) {
+          case 'newPassword':
+            value = await bcrypt.hash(value, saltRounds);
+            break;
+          case 'sex':
+            value = value[0].toUpperCase();
+            break;
+          case 'checkMarketing':
+            value = value ? 'Y' : 'N';
+        }
+      }
+      if (/[A-Z]/.test(key)) {
+        switch (key) {
+          case 'userName':
+            key = 'name';
+          case 'zipCode':
+            key = 'zip_code';
+            break;
+          case 'detailedAddress':
+            key = 'detailed_address';
+            break;
+          case 'checkMarketing':
+            key = 'marketing';
+            break;
+          case 'verificatedEmail':
+            key = 'email';
+            break;
+          case 'newPassword':
+            key = 'password';
+        }
+      }
+      updateQuery += `${index > 0 ? ',' : ''} ${key} = '${value}'`;
+    }
+
+    await (await db).execute(updateQuery + ' WHERE id = UNHEX(?)', [userId]);
+
+    const [rows, fields] = await (
+      await db
+    ).execute(
+      'SELECT email, name as userName, phone, sex, zip_code as zipCode, address, detailed_address as detailedAddress, marketing as checkMarketing FROM users WHERE id = UNHEX(?)',
+      [userId]
+    );
+
+    res.json({ result: true, updatedData: rows[0] });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

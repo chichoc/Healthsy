@@ -30,7 +30,7 @@ const Main = styled.main`
     img {
       width: ${(props) => props.width}px;
       opacity: 0.3;
-      margin: 30px 0 -70px 0;
+      margin: 10px 0 -70px 0;
     }
     figcaption {
       font-size: 6px;

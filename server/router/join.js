@@ -49,7 +49,7 @@ router.post('/sendEmail', (req, res, next) => {
     if (error) next(error);
     else console.log('전송 완료 ' + result.response);
   });
-  res.send({ sendedCode: verifyCode });
+  res.json({ sendedCode: verifyCode });
 });
 
 router.post('/dataInsert', async (req, res, next) => {

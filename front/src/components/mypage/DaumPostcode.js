@@ -6,7 +6,7 @@ import withModal from '../withModal';
 
 const DaumPostcode = ({ props }) => {
   const dispatch = useDispatch();
-  const { inputEdit, setInputEdit, detailedAddressRef } = props;
+  const { input, setInput, detailedAddressRef } = props;
 
   const handleComplete = (data) => {
     let fullAddress = data.address;
@@ -22,7 +22,7 @@ const DaumPostcode = ({ props }) => {
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
 
-    setInputEdit({ ...inputEdit, zipCode: data.zonecode, address: fullAddress });
+    setInput({ ...input, zipCode: data.zonecode, address: fullAddress });
   };
 
   return (

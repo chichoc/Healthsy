@@ -4,6 +4,15 @@ const DivInputForm = styled.div`
   position: relative;
   font-size: 15px;
   margin-bottom: 20px;
+  &.row_set {
+    margin-bottom: 20px;
+  }
+  &.row_form {
+    margin-bottom: 35px;
+  }
+  div {
+    flex-wrap: nowrap;
+  }
 
   label {
     position: absolute;
@@ -16,7 +25,7 @@ const DivInputForm = styled.div`
     letter-spacing: 0.5px;
   }
   label.focus {
-    top: -5px;
+    top: -7px;
     left: 17px;
     padding: 0 3px;
     display: inline;
@@ -57,6 +66,11 @@ const DivInputForm = styled.div`
   input:focus {
     border: 1px solid ${(props) => (props.wrong ? '#ff8566' : '#ababab')};
   }
+
+  /* label 없는 경우 focus되어도 placeholder 보이도록 */
+  input.inner_button_left:focus::placeholder {
+    color: inherit;
+  }
   input:focus::placeholder {
     color: transparent;
   }
@@ -88,7 +102,6 @@ const DivInputForm = styled.div`
     border-radius: 20px 0 0 20px;
     padding: 10px 20px;
     ${(props) => props.wrong || 'border-right: none;'};
-    flex: 2;
   }
   .ovalButtonWithInput {
     border-radius: 0 20px 20px 0;
@@ -96,7 +109,12 @@ const DivInputForm = styled.div`
     border: 1px solid #00c9b7;
     color: #00c9b7;
     background-color: 'white';
-    flex: 1;
+    min-width: 150px;
+  }
+  .ovalButtonWithInput.dark {
+    border: 1px solid #00c9b7;
+    color: white;
+    background-color: #00c9b7;
   }
 
   .ovalButtonWithInput:disabled {

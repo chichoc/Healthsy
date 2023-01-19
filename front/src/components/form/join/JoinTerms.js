@@ -26,6 +26,7 @@ const JoinTerms = ({ inputJoin, setInputJoin }) => {
   const onCheck = (id) => {
     setInputJoin({ ...inputJoin, check: { ...inputJoin.check, [id]: !inputJoin.check[id] } });
   };
+
   const onCheckAll = (id) => {
     const checkValueToChange = !inputJoin.check[id];
     setInputJoin((prev) => {

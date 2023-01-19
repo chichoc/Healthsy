@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import HorizontalList from '../reusable/HorizontalList';
 import ComparingTable from '../reusable/ComparingTable';
 import NotFound from '../reusable/NotFound';
-import { SectionTaking } from '../../styles/mypage/my_taking';
 import dataTaking from '../../assets/api/dataTaking';
+import { SectionTaking } from '../../styles/mypage/my_taking';
 
 const Taking = () => {
   const userId = useSelector((state) => state.page.userId);
@@ -139,12 +139,17 @@ const Taking = () => {
   return (
     <SectionTaking>
       <h1>복용함</h1>
-      <p className='guide'>
-        최소 1개 이상 선택해야 합니다.{' '}
-        <span>
-          ({checkedTakings.length}/{takings.length})
-        </span>
-      </p>
+      {takings.length > 0 ? (
+        <p className='guide'>
+          최소 1개 이상 선택해야 합니다.{' '}
+          <span>
+            ({checkedTakings.length}/{takings.length})
+          </span>
+        </p>
+      ) : (
+        <NotFound text={'아직 담으신 상품이 없습니다!'} width={200} />
+      )}
+
       <HorizontalList
         salesToDisplay={takings}
         check={true}

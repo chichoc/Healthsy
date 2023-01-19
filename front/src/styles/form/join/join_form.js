@@ -14,13 +14,6 @@ const Join = styled.section`
 `;
 
 const Form = styled.form`
-  div .row_form {
-    margin-bottom: 35px;
-  }
-  div .row_set {
-    margin-bottom: 20px;
-  }
-
   input.password {
     max-width: 198px;
   }
