@@ -78,13 +78,61 @@ router.post('/authentication', async (req, res, next) => {
   }
 });
 
-router.post('/authorization', authMiddleware, async (req, res) => {
+router.post('/authorization', authMiddleware, async (req, res, next) => {
   try {
     // 유효한 토큰이 존재하는 경우
     const [rows, fields] = await (
       await db
     ).execute('SELECT name FROM users WHERE id = UNHEX(?)', [req.verifyTokenResult.userId]);
+
     res.json({ token: true, updated: true, userId: req.verifyTokenResult.userId, userName: rows[0].name });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/kakao', async (req, res, next) => {
+  const code = req.query.code;
+  try {
+    const { data } = await axios.post(
+      `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.REST_API_KEY}&redirect_uri=${process.env.REDIRECT_URI_KEY}&code=${code}&client_secret=${process.env.CLIENT_SECRET_KEY}`
+    );
+    const { access_token: accessTokenByKakao, expires_in } = data;
+
+    const getUserInfo = async () => {
+      const { data } = await axios.get(`https://kapi.kakao.com/v2/user/me`, {
+        headers: {
+          Authorization: `Bearer ${accessTokenByKakao}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      });
+      return data;
+    };
+
+    const { id: kakaoId, connected_at, kakao_account } = await getUserInfo();
+    const [rows, fields] = await (
+      await db
+    ).execute('SELECT count(*) as count FROM users WHERE id = UNHEX(?)', [kakaoId]);
+    const isInserted = rows[0].count;
+
+    if (!isInserted) {
+      const { profile, gender_needs_agreement, gender } = kakao_account;
+      await (
+        await db
+      ).execute('INSERT INTO users (id, name, sex, marketing) VALUES (UNHEX(?),?,?,?)', [
+        kakaoId,
+        profile.nickname,
+        gender_needs_agreement ? null : gender[0].toUpperCase(),
+        'N',
+      ]);
+    }
+
+    const accessToken = await createToken(kakaoId + '');
+    const resultRedis = await tokenToRedis(kakaoId + '', accessToken);
+    if (resultRedis) {
+      res.cookie(`accessToken=${accessToken}; HttpOnly;`);
+      res.redirect('http://localhost:3000');
+    }
   } catch (err) {
     next(err);
   }

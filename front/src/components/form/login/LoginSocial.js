@@ -1,14 +1,21 @@
 import React from 'react';
-import { Div, Button } from '../../../styles/form/login/login_social';
+import { DivSocial, BtnSocial } from '../../../styles/form/login/login_social';
+import kakao from '../../../assets/img/kakaoLoginLargeNarrow.png';
+import naver from '../../../assets/img/naverLoginCircle.png';
+import google from '../../../assets/img/googleLightNormalSignin.svg';
 
 const LoginSocial = () => {
   return (
-    <Div className='social'>
+    <DivSocial className='horizontal_flex'>
       <span>or</span>
-      <Button kakatalk>카톡</Button>
-      <Button naver>네버</Button>
-      <Button>페북</Button>
-    </Div>
+      <BtnSocial
+        style={{ backgroundImage: `url(${kakao})` }}
+        kakao
+        onClick={() =>
+          (window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY_KAKAO}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI_KAKAO}&response_type=code`)
+        }
+      ></BtnSocial>
+    </DivSocial>
   );
 };
 

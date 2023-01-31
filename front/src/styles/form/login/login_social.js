@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 
-const Div = styled.div`
-  /* background-color: red; */
+const DivSocial = styled.div`
   text-align: center;
   border-top: solid 1px #a3abbd;
   width: 250px;
@@ -19,15 +18,16 @@ const Div = styled.div`
   }
 `;
 
-const Button = styled.button`
-  padding: 15px;
-  width: 60px;
-  height: 60px;
+const BtnSocial = styled.button`
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   margin: 0 5px;
-  /* background-color: #e8f3f1; */
-  background-color: ${(props) => (props.kakatalk ? 'yellow' : props.naver ? '#19ce60' : '#1877f2')}
-  }
+  box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
+
+  background-position: ${(props) => (props.kakao ? '-8px center' : props.naver ? '0' : 'center')};
+  background-size: ${(props) => (props.kakao ? '500%' : props.naver ? 'contain' : '150%')};
+  background-repeat: no-repeat;
 `;
 
-export { Div, Button };
+export { DivSocial, BtnSocial };
