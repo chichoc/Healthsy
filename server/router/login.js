@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config-mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
+const db = require('../config-mysql');
 const redisClient = require('../config-redis');
 const authMiddleware = require('../middleware/auth');
 
@@ -52,6 +53,13 @@ const deleteRedisValue = async (key) => {
     });
 };
 
+const checkJoined = async (platform, id) => {
+  const [rows, fields] = await (
+    await db
+  ).execute(`SELECT count(*) as count FROM users WHERE id = ${platform === 'naver' ? '?' : 'UNHEX(?)'}`, [id]);
+  return rows[0].count;
+};
+
 router.post('/authentication', async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -67,7 +75,7 @@ router.post('/authentication', async (req, res, next) => {
           const resultRedis = await tokenToRedis(userId, accessToken);
           if (resultRedis) {
             res.cookie(`accessToken=${accessToken}; HttpOnly;`);
-            res.json({ result: true, userId: userId, userName: rows[0].name, content: accessToken });
+            res.json({ result: true, userId: userId, userName: rows[0].name });
           }
         } // 비밀번호가 db에서 조회된 것과 같지 않는 경우
         else res.json({ result: false, content: 'password' });
@@ -81,9 +89,12 @@ router.post('/authentication', async (req, res, next) => {
 router.post('/authorization', authMiddleware, async (req, res, next) => {
   try {
     // 유효한 토큰이 존재하는 경우
+    const idToBinary = Buffer.from(req.verifyTokenResult.userId, 'hex');
     const [rows, fields] = await (
       await db
-    ).execute('SELECT name FROM users WHERE id = UNHEX(?)', [req.verifyTokenResult.userId]);
+    ).execute(`SELECT name FROM users WHERE id = ${idToBinary.length > 0 ? 'UNHEX(?)' : '?'}`, [
+      req.verifyTokenResult.userId,
+    ]);
 
     res.json({ token: true, updated: true, userId: req.verifyTokenResult.userId, userName: rows[0].name });
   } catch (err) {
@@ -95,7 +106,7 @@ router.get('/kakao', async (req, res, next) => {
   const code = req.query.code;
   try {
     const { data } = await axios.post(
-      `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.REST_API_KEY}&redirect_uri=${process.env.REDIRECT_URI_KEY}&code=${code}&client_secret=${process.env.CLIENT_SECRET_KEY}`
+      `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.REST_API_KEY_KAKAO}&redirect_uri=${process.env.REDIRECT_URL}&code=${code}&client_secret=${process.env.CLIENT_SECRET_KEY_KAKAO}`
     );
     const { access_token: accessTokenByKakao, expires_in } = data;
 
@@ -110,10 +121,8 @@ router.get('/kakao', async (req, res, next) => {
     };
 
     const { id: kakaoId, connected_at, kakao_account } = await getUserInfo();
-    const [rows, fields] = await (
-      await db
-    ).execute('SELECT count(*) as count FROM users WHERE id = UNHEX(?)', [kakaoId]);
-    const isInserted = rows[0].count;
+
+    const isInserted = await checkJoined('kakao', kakaoId);
 
     if (!isInserted) {
       const { profile, gender_needs_agreement, gender } = kakao_account;
@@ -133,6 +142,103 @@ router.get('/kakao', async (req, res, next) => {
       res.cookie(`accessToken=${accessToken}; HttpOnly;`);
       res.redirect('http://localhost:3000');
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/naver', async (req, res, next) => {
+  try {
+    const { state, code, error } = req.query;
+    if (error) throw new Error('naver');
+    else if (state !== 'Healthsy_Test') throw new Error('naver: wrong access');
+    else {
+      const { data } = await axios.post(
+        `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.CLIENT_KEY_NAVER}&client_secret=${process.env.CLIENT_SECRET_KEY_NAVER}&code=${code}&state=${process.env.STATE}`
+      );
+      const { access_token: accessTokenByNaver, expires_in } = data;
+
+      const getUserInfo = async () => {
+        const { data } = await axios.get(`https://openapi.naver.com/v1/nid/me`, {
+          headers: {
+            Authorization: `Bearer ${accessTokenByNaver}`,
+          },
+        });
+        return data;
+      };
+
+      const {
+        response: { id: naverId, name, email, gender, mobile },
+      } = await getUserInfo();
+      const isInserted = await checkJoined('naver', naverId);
+
+      if (!isInserted) {
+        await (
+          await db
+        ).execute('INSERT INTO users (id, email, name, phone, sex, marketing) VALUES (?,?,?,?,?,?)', [
+          naverId,
+          email,
+          name,
+          mobile,
+          gender,
+          'N',
+        ]);
+      }
+      const accessToken = await createToken(naverId);
+      const resultRedis = await tokenToRedis(naverId, accessToken);
+      if (resultRedis) {
+        res.cookie(`accessToken=${accessToken}; HttpOnly;`);
+        res.redirect('http://localhost:3000');
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/google', async (req, res, next) => {
+  try {
+    const { state, code } = req.query;
+    // 사용자 요청이 맞는지 확인
+    if (state === process.env.STATE) {
+      const { data } = await axios.post(
+        `https://oauth2.googleapis.com/token?code=${code}&client_id=${process.env.CLIENT_KEY_GOOGLE}&client_secret=${process.env.CLIENT_SECRET_KEY_GOOGLE}&redirect_uri=${process.env.REDIRECT_URL}/google&grant_type=authorization_code`,
+        {
+          headers: {
+            'Content-Type': `application/x-www-form-urlencoded`,
+          },
+        }
+      );
+
+      const { access_token: accessTokenByGoogle, expires_in, scope, token_type, id_token, refresh_token } = data;
+
+      const getUserInfo = async () => {
+        const { data } = await axios.get(
+          `https://openidconnect.googleapis.com/v1/userinfo?access_token=${accessTokenByGoogle}`
+        );
+        return data;
+      };
+      const { sub: googleId, name, email } = await getUserInfo();
+
+      const isInserted = await checkJoined('google', googleId);
+
+      if (!isInserted) {
+        await (
+          await db
+        ).execute('INSERT INTO users (id, email, name, marketing) VALUES (UNHEX(?),?,?,?)', [
+          googleId,
+          email,
+          name,
+          'N',
+        ]);
+      }
+      const accessToken = await createToken(googleId);
+      const resultRedis = await tokenToRedis(googleId, accessToken);
+      if (resultRedis) {
+        res.cookie(`accessToken=${accessToken}; HttpOnly;`);
+        res.redirect('http://localhost:3000');
+      }
+    } else throw new Error('google: wrong access');
   } catch (err) {
     next(err);
   }
