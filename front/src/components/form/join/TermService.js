@@ -1,5 +1,4 @@
 import React from 'react';
-import withModal from '../../withModal';
 
 const TermService = () => {
   return (
@@ -437,4 +436,4 @@ const TermService = () => {
   );
 };
 
-export default withModal(TermService);
+export default TermService;

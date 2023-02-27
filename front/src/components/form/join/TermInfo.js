@@ -1,5 +1,4 @@
 import React from 'react';
-import withModal from '../../withModal';
 
 const TermInfo = () => {
   return (
@@ -14,4 +13,4 @@ const TermInfo = () => {
   );
 };
 
-export default withModal(TermInfo);
+export default TermInfo;

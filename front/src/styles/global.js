@@ -19,6 +19,11 @@ const global = () => {
             -webkit-font-smoothing: antialiased;
             font-smoothing: antialiased;
           }
+          *,
+          *::after,
+          *::before {
+            min-width: 0px;
+          }
           a {
             text-decoration: none;
             color: inherit;
@@ -65,6 +70,10 @@ const global = () => {
           .react-icons {
             color: black;
             vertical-align: text-top;
+          }
+          .active {
+            color: #000000;
+            font-weight: 500;
           }
         `}
       />

@@ -8,7 +8,7 @@ const Notice = () => {
   const [renderPagination, currentPage, prevPage, headerRef] = usePagination({ numberOfDatas: lengthOfNotices });
 
   return (
-    <div>
+    <>
       <h1 ref={headerRef}>공지사항</h1>
       <UlBoard>
         {dataNotice.slice((currentPage - 1) * 10, currentPage * 10).map(({ id, title, createDate }) => (
@@ -20,7 +20,7 @@ const Notice = () => {
         ))}
       </UlBoard>
       {renderPagination()}
-    </div>
+    </>
   );
 };
 

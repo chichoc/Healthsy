@@ -8,9 +8,8 @@ import dataNotice from '../assets/api/dataNotice';
 import { Nav, Ul, ClickMenu } from '../styles/main_top';
 
 const MainTop = () => {
-  const [notice, setNotice] = useState(dataNotice);
   const [openMenu, setOpenMenu] = useState(false);
-  const noticeTitle = notice[notice.length - 1].title;
+  const fixedNoticeTitle = dataNotice[0].title;
 
   const isLoggedIn = useSelector((state) => state.page.isLoggedIn);
   const dispatch = useDispatch();
@@ -25,7 +24,7 @@ const MainTop = () => {
 
   return (
     <Nav className='horizontal_flex' align='center'>
-      <Link to='/help'>[공지사항] {noticeTitle}</Link>
+      <Link to='/help/notice'>[공지사항] {fixedNoticeTitle}</Link>
 
       <Ul className='horizontal_flex' align='center'>
         <li>

@@ -3,11 +3,7 @@ import MainContent from '../components/MainContent';
 import withPage from './withPage';
 
 const Main = () => {
-  return (
-    <>
-      <MainContent />
-    </>
-  );
+  return <MainContent />;
 };
 
 export default withPage(Main);

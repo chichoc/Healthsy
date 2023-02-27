@@ -3,15 +3,16 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../store/features/modalSlice';
 import { onLogIn } from '../../store/features/pageSlice';
-import TermMarketing from '../form/join/TermMarketing';
-import Portal from '../../Portal';
-import DaumPostcode from './DaumPostcode';
 import { IoIosArrowForward } from 'react-icons/io';
+import DaumPostcode from './DaumPostcode';
+import Portal from '../../Portal';
+import withModal from '../withModal';
 import InputForm from '../reusable/InputForm';
 import PrimaryButton from '../reusable/PrimaryButton';
 import CircleCheck from '../reusable/CircleCheck';
 import CircleRadio from '../reusable/CircleRadio';
 import useEmailVerification from '../customHook/useEmailVerification';
+import TermMarketing from '../form/join/TermMarketing';
 import dataJoinTerms from '../../assets/api/dataJoinTerms';
 import { Join, Form } from '../../styles/mypage/info_edit';
 import { Terms } from '../../styles/form/join/join_terms';
@@ -150,6 +151,11 @@ const InfoEdit = () => {
     const checkMarketing = data.checkMarketing === 'Y' ? true : false;
     setInputSaved({ ...data, sex, checkMarketing });
     setInputEdited({ ...data, sex, checkMarketing });
+  };
+
+  const setTermModal = (header) => {
+    const TermWithModal = withModal(TermMarketing);
+    return <TermWithModal termHeader={header} />;
   };
 
   useEffect(() => {
@@ -394,11 +400,7 @@ const InfoEdit = () => {
               }}
             />
 
-            {isModal.joinTerm === 4 && (
-              <Portal>
-                <TermMarketing termHeader={dataJoinTerms[4].header.slice(0, -3)} />
-              </Portal>
-            )}
+            {isModal.joinTerm === 4 && <Portal>{setTermModal(dataJoinTerms[4].header.slice(0, -3))}</Portal>}
           </li>
         </Terms>
 

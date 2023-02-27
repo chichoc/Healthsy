@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onModalOpen } from '../../../store/features/modalSlice';
 import Portal from '../../../Portal';
+import withModal from '../../withModal';
 import TermService from './TermService';
 import TermInfo from './TermInfo';
 import TermMarketing from './TermMarketing';
@@ -38,11 +39,12 @@ const JoinTerms = ({ inputJoin, setInputJoin }) => {
 
   const setTermModal = (index, termProps) => {
     const mapIndexToComponent = {
-      2: <TermService {...termProps} />,
-      3: <TermInfo {...termProps} />,
-      4: <TermMarketing {...termProps} />,
+      2: withModal(TermService),
+      3: withModal(TermInfo),
+      4: withModal(TermMarketing),
     };
-    return mapIndexToComponent[index];
+    const Component = mapIndexToComponent[index];
+    return <Component {...termProps} />;
   };
 
   const setTermComponent = (id, termData, index) => {

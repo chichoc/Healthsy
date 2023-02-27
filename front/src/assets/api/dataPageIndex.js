@@ -15,6 +15,7 @@ const dataPageIndex = [
   { path: '/sale', component: () => <Sale /> },
   { path: '/product/:id', component: () => <Product /> },
   { path: '/product', component: () => <Product /> },
+  { path: '/help/:helpmenu/:termType', component: () => <Help /> },
   { path: '/help/:helpmenu', component: () => <Help /> },
   { path: '/mypage/:mymenu', component: () => <MyPage /> },
   { path: '/mypage', component: () => <MyPage /> },

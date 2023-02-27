@@ -7,9 +7,6 @@ const NavHelp = styled.nav`
   max-width: 25%;
   min-width: 95px;
 
-  ul {
-    padding-bottom: 15px;
-  }
   ul li {
     padding: 10px;
     margin: 10px 0px;

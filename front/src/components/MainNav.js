@@ -21,11 +21,6 @@ const MainNav = () => {
     else setOpenSearchForm(!openSearchForm);
   };
 
-  const selectedNavStyle = {
-    color: '#000000',
-    fontWeight: 500,
-  };
-
   useEffect(() => {
     setIsInSaleList(location.pathname.includes('sale'));
   }, [location, isInSaleList]);
@@ -51,7 +46,7 @@ const MainNav = () => {
         <UlMain className='horizontal_flex'>
           {dataMainMenu.map((menu, index) => (
             <li key={index}>
-              <NavLink to={menu.link} style={({ isActive }) => (isActive ? selectedNavStyle : undefined)}>
+              <NavLink to={menu.link} className={({ isActive }) => (isActive ? 'active' : undefined)}>
                 {menu.name}
               </NavLink>
             </li>
