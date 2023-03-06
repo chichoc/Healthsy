@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarScore from './StarScore';
 import useScrollY from '../customHook/useScrollY';
-import productImg from '../../assets/img/testSale.jpeg';
+import productImg from '../../assets/img/supplementsSample.jpeg';
 import { UlSale, ArticleSale } from '../../styles/sale/sale_list';
 
 const ListWithImage = ({ salesToDisplay, countUnitToDisplay = 9, img }) => {

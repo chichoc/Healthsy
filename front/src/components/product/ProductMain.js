@@ -13,7 +13,7 @@ import {
 import { FiShare2 } from 'react-icons/fi';
 import StarScore from '../reusable/StarScore';
 import TableList from '../reusable/TableList';
-import productImg from '../../assets/img/testSale.jpeg';
+import productImg from '../../assets/img/supplementsSample.jpeg';
 import dataProductMain from '../../assets/api/dataProductMain';
 import { MainProduct } from '../../styles/product/product_main';
 

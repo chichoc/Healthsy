@@ -5,7 +5,6 @@ const NavMain = styled.nav`
   align-items: center;
   justify-content: center;
   padding: 0 100px;
-  margin-bottom: 10px;
   box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.3);
   ${(props) => props.searchForm && 'visibility: hidden;'};
   .logo {

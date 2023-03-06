@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { onLogOut } from '../store/features/pageSlice';
 import axios from 'axios';
 import { BsBookmark, BsPerson } from 'react-icons/bs';
-import dataNotice from '../assets/api/dataNotice';
+import dataHelpNotice from '../assets/api/dataHelpNotice';
 import { Nav, Ul, ClickMenu } from '../styles/main_top';
 
 const MainTop = () => {
   const [openMenu, setOpenMenu] = useState(false);
-  const fixedNoticeTitle = dataNotice[0].title;
+  const fixedNoticeTitle = dataHelpNotice[0].title;
 
   const isLoggedIn = useSelector((state) => state.page.isLoggedIn);
   const dispatch = useDispatch();

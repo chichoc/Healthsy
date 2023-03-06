@@ -7,7 +7,7 @@ import NotFound from './NotFound';
 import StarScore from './StarScore';
 import useScrollY from '../customHook/useScrollY';
 import userProfileImg from '../../assets/img/userProfile.png';
-import productImg from '../../assets/img/testSale.jpeg';
+import productImg from '../../assets/img/supplementsSample.jpeg';
 import { useDispatch } from 'react-redux';
 
 const VerticalList = ({ datas, figure = false, mypage = false }) => {

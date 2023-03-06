@@ -65,9 +65,11 @@ const Taking = () => {
       mgNE: 2,
       mcg: 3,
       ug: 3,
+      '㎍': 3,
       '㎍RE': 3,
       ugRE: 3,
       ugRAE: 3,
+      '㎍RAE': 3,
       µgRE: 3,
     };
     const differenceOfUnit = unitObj[unit] - unitObj[unitOfContent];

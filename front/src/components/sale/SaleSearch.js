@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeSearchWord } from '../../store/features/saleSlice';
 import SearchBar from './SearchBar';
-import productImg from '../../assets/img/testSale.jpeg';
+import productImg from '../../assets/img/supplementsSample.jpeg';
 import { DivSaleSearch } from '../../styles/sale/sale_search';
 
 const SaleSearch = () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { IoCloseCircle } from 'react-icons/io5';
-import productImg from '../../assets/img/testSale.jpeg';
+import productImg from '../../assets/img/supplementsSample.jpeg';
 
 const HorizontalList = ({
   salesToDisplay,
