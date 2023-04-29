@@ -3,8 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
-const db = require('../config-mysql');
-const redisClient = require('../config-redis');
+const db = require('../config/mysql');
+const redisClient = require('../config/redis');
 const authMiddleware = require('../middleware/auth');
 
 const createToken = async (id) => {

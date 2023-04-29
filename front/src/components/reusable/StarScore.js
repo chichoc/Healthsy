@@ -22,7 +22,7 @@ const ScoreIcons = styled.span`
   justify-content: flex-start;
   align-items: center;
   .score_icon {
-    color: #e8f3f1;
+    color: #f0f0f0;
   }
   .score_select {
     color: #fadd85;

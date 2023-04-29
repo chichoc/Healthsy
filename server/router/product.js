@@ -1,18 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const db = require('../config-mysql');
-const multer = require('multer');
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage });
+const db = require('../config/mysql');
+const upload = require('../config/s3');
 
 router.post('/fetchProduct', async (req, res, next) => {
   const { productId } = await req.body;
@@ -47,53 +37,77 @@ router.post('/fetchProduct', async (req, res, next) => {
 router.post('/fetchReviews', async (req, res, next) => {
   const { productId, pageNumDiffer, sort, cursorIdx } = await req.body;
 
-  const joinSql = `SELECT r.id, users.name, r.score, r.content, r.image, r.thumbs_up as thumbsUp, r.thumbs_down as thumbsDown, date_format(r.reg_date,"%Y.%m.%d.") as date 
+  const joinQuery = `SELECT r.id, users.name, r.score, r.content, p.locations, r.thumbs_up as thumbsUp, r.thumbs_down as thumbsDown, date_format(r.reg_date,"%Y.%m.%d.") as date 
   FROM reviews r 
-  JOIN users
-  ON r.prod_id = ${productId} AND r.user_id = users.id `;
+  LEFT JOIN users
+  ON r.prod_id = ${productId} AND r.user_id = users.id
+  LEFT JOIN 
+  (
+    SELECT review_id, GROUP_CONCAT(location) as locations 
+    FROM review_photos
+    WHERE prod_id =  ${productId}
+    GROUP BY review_id
+  ) p 
+  ON r.id = p.review_id `;
 
-  const conditionalSql = cursorIdx
+  const conditionalQuery = cursorIdx
     ? 'WHERE ' + (pageNumDiffer > 0 ? `r.id < ${cursorIdx}` : `r.id > ${cursorIdx}`)
     : '';
 
   const firstIdx = (Math.abs(pageNumDiffer) - 1) * 10;
-  let orderSql = ' ORDER BY ';
+  let orderQuery = ' ORDER BY ';
   switch (sort) {
     case 'thumbsUp':
-      orderSql += 'thumbsUp DESC,';
+      orderQuery += 'thumbsUp DESC,';
       break;
     case 'highScores':
-      orderSql += 'r.score DESC,';
+      orderQuery += 'r.score DESC,';
       break;
     case 'lowScores':
-      orderSql += 'r.score ASC,';
+      orderQuery += 'r.score ASC,';
       break;
   }
-  orderSql += `r.id ${cursorIdx && pageNumDiffer < 0 ? 'ASC' : 'DESC'} limit ${firstIdx}, 10`;
+  orderQuery += `r.id ${cursorIdx && pageNumDiffer < 0 ? 'ASC' : 'DESC'} limit ${firstIdx}, 10`;
 
-  const [rows, fields] = await (await db).execute(joinSql + conditionalSql + orderSql, [productId]);
+  const [rows, fields] = await (await db).execute(joinQuery + conditionalQuery + orderQuery, [productId]);
 
   res.json(cursorIdx && pageNumDiffer < 0 ? rows.reverse() : rows);
 });
 
-router.use('/photo', express.static('./uploads'));
-router.post('/addReview', upload.single('file'), async (req, res, next) => {
-  const { userId, productId, selectedScore, content } = await req.body;
-  let photoPath;
+router.post('/addReview', upload.array('photos', 4), async (req, res, next) => {
+  try {
+    const { userId, productId, selectedScore, content } = await req.body;
 
-  if (req.file) {
-    photoPath = 'http://localhost:8888/photo/' + req.file.filename;
+    // 후기글 저장
+    const reviewQuery = `INSERT INTO reviews (prod_id, user_id, score, content) VALUES (${productId}, UNHEX(?), ${selectedScore}, '${content}')`;
+
+    const [reviewsRows, reviewsFields] = await (await db).execute(reviewQuery, [userId]);
+    const { affectedRows, insertId } = reviewsRows;
+    if (affectedRows !== 1) res.json({ addReview: false });
+
+    // 후기사진(들) 저장
+    if (req.files.length > 0) {
+      let reviewPhotosQuery = `INSERT INTO review_photos (prod_id, review_id, location) VALUES `;
+      for (let i = 0; i < req.files.length; i++) {
+        reviewPhotosQuery += `${i > 0 ? ',' : ''}(${productId}, ${insertId}, '${req.files[i].location}')`;
+      }
+      const [rows, fields] = await (await db).execute(reviewPhotosQuery);
+      if (rows.affectedRows > 0) res.json({ addReview: true });
+      else res.json({ addReview: false });
+    } else res.json({ addReview: true });
+  } catch (err) {
+    next(err);
   }
+});
 
-  let executeSql = `INSERT INTO reviews (prod_id, user_id, score, content` + (!req.file ? `) ` : `, photo) `);
+router.post('/updateCount', async (req, res, next) => {
+  const { productId } = await req.body;
 
-  executeSql +=
-    `VALUES (${productId}, UNHEX(?), ${selectedScore}, '${content}'` + (!req.file ? `)` : `, '${photoPath}')`);
+  const executeSql =
+    'SELECT count(r.id) as count, truncate(avg(r.score), 1) as score FROM reviews r WHERE r.prod_id = ?';
 
-  const [rows, fields] = await (await db).execute(executeSql, [userId]);
-  if (rows.affectedRows === 1) {
-    res.json({ addReview: true });
-  }
+  const [rows, fields] = await (await db).execute(executeSql, [productId]);
+  res.send(rows);
 });
 
 router.post('/addReviewThumbs', async (req, res, next) => {

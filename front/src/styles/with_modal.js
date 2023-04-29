@@ -2,15 +2,15 @@ import styled from '@emotion/styled';
 
 const ArticleModal = styled.article`
   background: white;
-  padding: 20px 30px 40px 40px;
+  padding: 20px 0px 20px 40px; // 스크롤 사이 여백 없애고자 오른쪽 padding만 값 안 줌
   width: 100%;
   max-width: 350px;
-  height: 500px;
+  height: 600px;
   border-radius: 30px;
 
   header {
     height: 40px;
-    padding: 10px 0 10px 0;
+    padding: 10px 0;
   }
   header h1 {
     font-size: 23px;
@@ -20,36 +20,12 @@ const ArticleModal = styled.article`
   header button {
     color: #ababab;
     font-size: 25px;
+    padding-right: 30px;
   }
-  main {
-    max-height: 430px;
+  & > div {
+    max-height: 530px;
     overflow-y: auto;
-    padding-right: 10px;
-  }
-  main h2 {
-    font-weight: bold;
-    padding: 10px 0;
-  }
-  main p,
-  main ol {
-    line-height: 1.3;
-    padding-bottom: 5px;
-    font-size: 15px;
-  }
-  main ol {
-    display: list-item;
-    padding-left: 20px;
-  }
-  main ol li {
-    padding: 2px 0;
-    list-style: decimal outside;
-    word-break: keep-all;
-  }
-  main li > ol {
-    padding-left: 0px;
-  }
-  main li > ol li {
-    list-style: none;
+    padding-right: 40px;
   }
 `;
 

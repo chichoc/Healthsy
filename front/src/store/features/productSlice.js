@@ -63,6 +63,12 @@ export const fetchReviews = createAsyncThunk(
     return data;
   }
 );
+export const updateCount = createAsyncThunk('products/updateCount', async (productId) => {
+  const { data } = await axios.post('http://localhost:8888/product/updateCount', {
+    productId,
+  });
+  return data[0];
+});
 
 export const addReviewThumbs = createAsyncThunk(
   'products/addReviewThumbs',
@@ -109,6 +115,18 @@ export const productSlice = createSlice({
       })
       .addCase(fetchReviews.rejected, (state, action) => {
         state.status.reviews = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(updateCount.pending, (state, action) => {
+        state.status.product = 'loading';
+      })
+      .addCase(updateCount.fulfilled, (state, action) => {
+        state.status.product = 'succeeded';
+        const { count, score } = action.payload;
+        state.count = { numberOfReviews: count, avgScoreOfReviews: score };
+      })
+      .addCase(updateCount.rejected, (state, action) => {
+        state.status.product = 'failed';
         state.error = action.error.message;
       })
       .addCase(addReviewThumbs.fulfilled, (state, action) => {

@@ -37,7 +37,7 @@ const ProductReview = forwardRef((props, reviewSection) => {
         sort,
       })
     );
-  }, [productId, currentPage, sort]);
+  }, [productId, currentPage, sort, numberOfReviews]);
 
   if (numberOfReviews === 0) {
     return (
@@ -66,11 +66,11 @@ const ProductReview = forwardRef((props, reviewSection) => {
         <div className='horizontal_flex'>
           <h2 ref={reviewSection}>상품 후기 ({numberOfReviews})</h2>
           <button onClick={() => dispatch(onModalOpen({ component: 'productReview', isModal: true }))}>
-            리뷰 작성하기
+            후기 작성하기
           </button>
           {isModal && (
             <Portal>
-              <ReviewForm termHeader={'리뷰쓰기'} />
+              <ReviewForm termHeader={'후기 작성'} />
             </Portal>
           )}
         </div>

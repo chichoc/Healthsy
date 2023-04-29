@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { addReviewThumbs } from '../../store/features/productSlice';
@@ -15,10 +15,23 @@ const VerticalList = ({ datas, figure = false, mypage = false }) => {
   const dispatch = useDispatch();
 
   const [thumbs, setThumbs] = useState({});
+  const [clipped, setClipped] = useState(Array(10));
+  // undefined: clip할 필요 없음, true: clip (더보기 가능하지만 누르지 않음), false: clip 해제(더보기 누름)
+  const contentRef = useRef([]);
+
   const { storeScroll } = useScrollY();
 
   const capitalizeFirstChar = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const splitLocations = (locations, num) => {
+    if (num === 1) return <img src={locations.split(',')[0]} alt='사진' />;
+    return locations.split(',').map((location) => <img src={location} alt='사진' />);
+  };
+
+  const changeClipped = (idx) => {
+    setClipped(clipped.map((tf, index) => (index === idx && tf !== undefined ? !tf : tf)));
   };
 
   const onChangeThumbs = (id, event) => {
@@ -75,6 +88,14 @@ const VerticalList = ({ datas, figure = false, mypage = false }) => {
     }
   };
 
+  useEffect(() => {
+    setClipped(
+      contentRef.current.map(
+        (p, idx) => p.clientHeight < p.scrollHeight || datas[idx].locations?.split(',').length > 1 || undefined
+      )
+    );
+  }, [datas]);
+
   if (!datas) return <NotFound text={'작성하신 후기가 없습니다.'} />;
   return (
     <UlList mypage={mypage}>
@@ -113,7 +134,19 @@ const VerticalList = ({ datas, figure = false, mypage = false }) => {
             <div className='content_review horizontal_flex'>
               <p>{data.content}</p>
               <div className='photo_review'>{index % 2 ? <img src={productImg} alt='사진' /> : ''}</div>
+              <p
+                ref={(el) => (contentRef.current[index] = el)}
+                className={clipped[index] ? 'clipped' : ''}
+                onClick={() => changeClipped(index)}
+              >
+                {data.content}
+              </p>
+
+              <div className='photo_review'>
+                {data.locations && splitLocations(data.locations, clipped[index] ? 1 : 4)}
+              </div>
             </div>
+            {clipped[index] && <button>더보기</button>}
           </div>
           <aside className='thumbs_buttons vertical_flex'>
             <button
@@ -156,7 +189,7 @@ const UlList = styled.ul`
     max-width: 100px;
     text-align: center;
     img {
-      width: 50px;
+      width: 40px;
       opacity: 0.4;
     }
     span {
@@ -226,15 +259,26 @@ const UlList = styled.ul`
         line-height: 1.3;
         font-size: 13px;
         flex: 1 2 auto;
+        min-height: 80px;
       }
+      p.clipped {
+        text-overflow: ellipsis;
+        white-space: wrap;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 5;
+      }
+
       div.photo_review {
-        
-        flex: 0 1 25%;
+        flex: 0 0 13%;
         margin-left: 2%;
         img {
-          width: 70%;
-          height: 100%;
+          width: 100%;
         }
+      }
+      div.photo_review.clipped {
+        width: 20px;
       }
     }
   }

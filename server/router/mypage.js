@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config-mysql');
+const db = require('../config/mysql');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
-const redisClient = require('../config-redis');
+const redisClient = require('../config/redis');
 
 router.post('/countBookmarks', async (req, res, next) => {
   const { userId } = await req.body;
