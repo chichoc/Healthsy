@@ -36,7 +36,6 @@ export const saleSlice = createSlice({
       state.search.word = action.payload;
     },
     },
-  },
 });
 
 export const { handleNav, removeNav, onSelectCountUnit, onSelectSort, handleSearchBar, changeSearchWord } =

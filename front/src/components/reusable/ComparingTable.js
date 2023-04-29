@@ -15,6 +15,7 @@ const ComparingTable = ({ columns, checkedSales, datasOfCheckedSales }) => {
     if (header.includes('일')) return data.slice(0, 4) + '년 ' + data.slice(4, 6) + '월 ' + data.slice(6) + '일';
     if (header.includes('가격')) return (data < 1000 ? data : data.toLocaleString()) + '원';
     return data;
+  };
 
   const sumDatas = (datas, header, type, unit) => {
     const sum = datas.reduce((sum, data) => +data.STDR_STND[header][type] + sum, 0);
